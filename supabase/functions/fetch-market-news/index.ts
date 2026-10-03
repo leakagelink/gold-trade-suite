@@ -120,7 +120,7 @@ Deno.serve(async (req) => {
 
     // TEMP DIAGNOSTIC: try param variants and log found counts
     const keys = getServiceKeys('MARKETAUX');
-    const token = keys[0];
+    const token = keys[keys.length - 1];
     const variants: Record<string, URLSearchParams> = {
       full: new URLSearchParams(baseParams),
       no_filter_entities: (() => { const p = new URLSearchParams(baseParams); p.delete('filter_entities'); return p; })(),
