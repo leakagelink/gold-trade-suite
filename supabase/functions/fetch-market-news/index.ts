@@ -1,4 +1,5 @@
 // Marketaux news fetcher for Crypto, Forex, Commodities
+import { fetchJsonWithRotation } from "../_shared/apiKeyRotator.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -94,19 +95,12 @@ Deno.serve(async (req) => {
       });
     }
 
-    const apiKey = Deno.env.get('MARKETAUX_API_KEY');
-    if (!apiKey) {
-      console.error('[News] MARKETAUX_API_KEY not set, returning fallback');
-      return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Build Marketaux query based on category
-    // Only fetch news from the last 24 hours
+    // Build Marketaux query based on category.
+    // Only fetch news from the last 24 hours.
+    // MARKETAUX_API_KEY + MARKETAUX_API_KEY_1..N are tried in order; when a
+    // key hits its rate limit the next one takes over automatically.
     const publishedAfter = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const params = new URLSearchParams({
-      api_token: apiKey,
+    const baseParams = new URLSearchParams({
       language: 'en',
       limit: String(Math.min(limit, 50)),
       filter_entities: 'true',
@@ -115,28 +109,34 @@ Deno.serve(async (req) => {
     });
 
     if (category === 'crypto') {
-      params.set('industries', 'Cryptocurrency');
+      baseParams.set('industries', 'Cryptocurrency');
     } else if (category === 'forex') {
-      params.set('search', 'forex OR currency OR EUR OR USD OR JPY OR GBP');
+      baseParams.set('search', 'forex OR currency OR EUR OR USD OR JPY OR GBP');
     } else if (category === 'commodities') {
-      params.set('search', 'gold OR silver OR oil OR commodities OR crude');
+      baseParams.set('search', 'gold OR silver OR oil OR commodities OR crude');
     } else {
-      params.set('search', 'crypto OR forex OR gold OR oil OR bitcoin');
+      baseParams.set('search', 'crypto OR forex OR gold OR oil OR bitcoin');
     }
 
-    const apiUrl = `https://api.marketaux.com/v1/news/all?${params.toString()}`;
-    console.log(`[News] Fetching ${category} from Marketaux`);
+    console.log(`[News] Fetching ${category} from Marketaux (with key rotation)`);
+    const { data: json, error: marketauxError } = await fetchJsonWithRotation(
+      'MARKETAUX',
+      (apiKey) => {
+        const params = new URLSearchParams(baseParams);
+        params.set('api_token', apiKey);
+        return { url: `https://api.marketaux.com/v1/news/all?${params.toString()}` };
+      },
+      { validate: (d: any) => d && Array.isArray(d.data), timeoutMs: 10000 },
+    );
 
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      console.error(`[News] Marketaux error: ${response.status}`);
+    if (!json || !Array.isArray(json.data)) {
+      console.error(`[News] All Marketaux keys failed: ${marketauxError}`);
       return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const json = await response.json();
-    const allArticles = json.data || [];
+    const allArticles = json.data;
 
     // Safety filter: keep only articles from the last 24 hours
     const cutoff = Date.now() - 24 * 60 * 60 * 1000;

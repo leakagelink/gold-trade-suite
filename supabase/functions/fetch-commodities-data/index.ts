@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { gfxPriceNow, gfxChangePct } from "../_shared/gfxSynthetic.ts";
+import { fetchJsonWithRotation, getServiceKeys } from "../_shared/apiKeyRotator.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -95,25 +96,27 @@ async function fetchFromYahooFinance(): Promise<any[]> {
   return filtered;
 }
 
-// Fetch commodity prices from CoinGecko (FREE - no API key needed)
+// Fetch commodity prices from CoinGecko — rotates across COINGECKO_API_KEY_1..N
+// when a key hits its limit; falls back to keyless access if no keys are set.
 // Uses commodity-backed tokens: PAXG (gold), calculates silver from gold/silver ratio
 async function fetchFromCoinGecko(): Promise<any[]> {
   try {
-    console.log('Fetching commodity prices from CoinGecko (free API)...');
-    
-    // Fetch PAXG (gold-backed token) - 1 PAXG = 1 troy oz gold
-    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd&include_24hr_change=true';
-    
-    const response = await fetch(url, {
-      headers: { 'Accept': 'application/json' }
-    });
+    console.log('Fetching commodity prices from CoinGecko (with key rotation)...');
 
-    if (!response.ok) {
-      console.error('CoinGecko API error:', response.status);
+    // Fetch PAXG (gold-backed token) - 1 PAXG = 1 troy oz gold
+    const { data, error } = await fetchJsonWithRotation(
+      'COINGECKO',
+      (apiKey) => ({
+        url: 'https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd&include_24hr_change=true',
+        headers: apiKey ? { 'x-cg-demo-api-key': apiKey } : undefined,
+      }),
+      { validate: (d: any) => d && d['pax-gold'], allowKeyless: true },
+    );
+
+    if (!data) {
+      console.error('CoinGecko API error (all keys):', error);
       return [];
     }
-
-    const data = await response.json();
     console.log('CoinGecko response:', JSON.stringify(data));
     
     const results: any[] = [];
