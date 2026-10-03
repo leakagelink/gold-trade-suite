@@ -140,24 +140,34 @@ Deno.serve(async (req) => {
     const allArticles = json.data;
     console.log(`[News] Marketaux returned ${allArticles.length} raw articles via key #${(keyIndex ?? 0) + 1}`);
 
-    // Safety filter: keep only articles from the last 24 hours.
-    // If the 24h filter empties everything, fall back to the newest articles as-is.
+    // Freshness filter: keep only articles from the last 24 hours.
+    // The Marketaux free plan ignores sort/published_after and returns old
+    // relevance-ranked articles, so when nothing is fresh we fall back to
+    // Google News RSS (free, no key, always fresh) for real articles.
     const cutoff = Date.now() - 24 * 60 * 60 * 1000;
-    let articles = allArticles.filter((a: any) => {
+    const fresh = allArticles.filter((a: any) => {
       const t = new Date(a.published_at).getTime();
       return !isNaN(t) && t >= cutoff;
     });
-    if (articles.length === 0) articles = allArticles;
 
-    if (articles.length === 0) {
-      return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true }), {
+    if (fresh.length > 0) {
+      cache = { data: fresh, timestamp: Date.now(), category };
+      return new Response(JSON.stringify({ data: fresh, cached: false }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    cache = { data: articles, timestamp: Date.now(), category };
+    console.log(`[News] No fresh Marketaux articles (${allArticles.length} stale) — trying Google News RSS`);
+    const rssArticles = await fetchGoogleNews(RSS_QUERIES[category] ?? RSS_QUERIES.all, limit);
+    if (rssArticles.length > 0) {
+      console.log(`[News] Google News RSS returned ${rssArticles.length} articles`);
+      cache = { data: rssArticles, timestamp: Date.now(), category };
+      return new Response(JSON.stringify({ data: rssArticles, cached: false, source: 'google-news' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
-    return new Response(JSON.stringify({ data: articles, cached: false }), {
+    return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
