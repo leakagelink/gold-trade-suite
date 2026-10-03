@@ -1,5 +1,5 @@
 // Marketaux news fetcher for Crypto, Forex, Commodities
-import { fetchJsonWithRotation, getServiceKeys } from "../_shared/apiKeyRotator.ts";
+import { fetchJsonWithRotation } from "../_shared/apiKeyRotator.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
