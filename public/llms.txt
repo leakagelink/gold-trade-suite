@@ -1,0 +1,16 @@
+# Grow FX Trade
+
+> Professional trading platform for Crypto, Forex and Commodities — real-time markets, advanced charts, secure execution, and INR/USD deposits.
+
+Grow FX Trade is a multi-asset online trading platform serving retail and professional traders. The platform offers real-time pricing from Binance, CurrencyFreaks, and CoinGecko/FMP across crypto, forex, and commodities, with leverage, KYC verification, broker-managed deposits, and an Android mobile app.
+
+## Pages
+
+- [Home](/): Overview of Grow FX Trade — markets, features, security, and FAQ.
+- [Sign In / Sign Up](/auth): Create an account or sign in to start trading.
+- [Reset Password](/reset-password): Password recovery flow.
+
+## Optional
+
+- [Sitemap](/sitemap.xml): Full machine-readable list of indexable pages.
+- [Robots](/robots.txt): Crawler directives.
