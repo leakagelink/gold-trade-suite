@@ -418,7 +418,8 @@ serve(async (req) => {
       }
     }
 
-    // CoinGecko fallback for metals if still missing
+    // CoinGecko fallback for metals if still missing; CoinMarketCap is the
+    // last resort when CoinGecko also fails (all keys rate-limited/error).
     const hasGold = commoditiesData.some((c) => c.symbol === 'XAU');
     if (!hasGold) {
       console.log('Trying CoinGecko (free API) for metals...');
@@ -426,6 +427,13 @@ serve(async (req) => {
       if (cg.length > 0) {
         commoditiesData = [...commoditiesData, ...cg];
         dataSource = dataSource === 'static' ? 'CoinGecko' : `${dataSource}+CoinGecko`;
+      } else {
+        console.log('CoinGecko failed — trying CoinMarketCap fallback for metals...');
+        const cmc = await fetchFromCoinMarketCap();
+        if (cmc.length > 0) {
+          commoditiesData = [...commoditiesData, ...cmc];
+          dataSource = dataSource === 'static' ? 'CoinMarketCap' : `${dataSource}+CoinMarketCap`;
+        }
       }
     }
 
