@@ -55,7 +55,7 @@ const Settings = () => {
 
   return (
     <PageShell title="Settings" subtitle="Manage your preferences and security" icon={SettingsIcon} maxWidth="4xl">
-      <Seo title="Settings — Grow FX Trade" description="Manage notifications, security, language and preferences for your Grow FX Trade account." path="/settings" noindex />
+      <Seo title="Settings — SkyFX Trade" description="Manage notifications, security, language and preferences for your SkyFX Trade account." path="/settings" noindex />
       <div className="space-y-5 sm:space-y-6 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
         <SectionCard icon={Bell} title="Notifications">
           <SettingRow id="email-notif" label="Email Notifications" description="Receive updates via email" defaultChecked />

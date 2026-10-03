@@ -125,7 +125,7 @@ const AdminPanel = () => {
   const [paymentSettings, setPaymentSettings] = useState({
     upiId: "growfxtrade@upi",
     qrCodeUrl: "",
-    accountName: "Grow FX Trade Account",
+    accountName: "SkyFX Trade Account",
     accountNumber: "1234567890",
     ifsc: "BANK0001234",
     bankName: "Demo Bank",
@@ -312,7 +312,7 @@ const AdminPanel = () => {
         setPaymentSettings({
           upiId: settings.upiId || "growfxtrade@upi",
           qrCodeUrl: settings.qrCodeUrl || "",
-          accountName: settings.accountName || "Grow FX Trade Account",
+          accountName: settings.accountName || "SkyFX Trade Account",
           accountNumber: settings.accountNumber || "1234567890",
           ifsc: settings.ifscCode || "BANK0001234",
           bankName: settings.bankName || "Demo Bank",

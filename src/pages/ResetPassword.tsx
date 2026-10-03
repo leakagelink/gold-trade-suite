@@ -142,7 +142,7 @@ const ResetPassword = () => {
       <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 flex items-center justify-center p-4">
         <Card className="w-full max-w-md p-8 text-center">
           <div className="flex items-center justify-center gap-2 mb-8">
-            <img src={logo} alt="Grow FX Trade" className="h-16 w-auto object-contain" />
+            <img src={logo} alt="SkyFX Trade" className="h-16 w-auto object-contain" />
           </div>
           <div className="flex flex-col items-center gap-4">
             <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center">
@@ -167,7 +167,7 @@ const ResetPassword = () => {
       <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 flex items-center justify-center p-4">
         <Card className="w-full max-w-md p-8 text-center">
           <div className="flex items-center justify-center gap-2 mb-8">
-            <img src={logo} alt="Grow FX Trade" className="h-16 w-auto object-contain" />
+            <img src={logo} alt="SkyFX Trade" className="h-16 w-auto object-contain" />
           </div>
           <p className="text-muted-foreground">Verifying reset link...</p>
         </Card>
@@ -181,7 +181,7 @@ const ResetPassword = () => {
       <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 flex items-center justify-center p-4">
         <Card className="w-full max-w-md p-8 text-center">
           <div className="flex items-center justify-center gap-2 mb-8">
-            <img src={logo} alt="Grow FX Trade" className="h-16 w-auto object-contain" />
+            <img src={logo} alt="SkyFX Trade" className="h-16 w-auto object-contain" />
           </div>
           <div className="flex flex-col items-center gap-4">
             <CheckCircle className="h-16 w-16 text-green-500" />
@@ -199,14 +199,14 @@ const ResetPassword = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 flex items-center justify-center p-4">
       <Seo
-        title="Reset Your Password — Grow FX Trade"
-        description="Securely reset your Grow FX Trade account password and regain access to your trading dashboard."
+        title="Reset Your Password — SkyFX Trade"
+        description="Securely reset your SkyFX Trade account password and regain access to your trading dashboard."
         path="/reset-password"
         noindex
       />
       <Card className="w-full max-w-md p-8">
         <div className="flex items-center justify-center gap-2 mb-8">
-          <img src={logo} alt="Grow FX Trade" className="h-16 w-auto object-contain" />
+          <img src={logo} alt="SkyFX Trade" className="h-16 w-auto object-contain" />
         </div>
 
         <h1 className="text-2xl font-bold text-center mb-2">Reset Your Password</h1>

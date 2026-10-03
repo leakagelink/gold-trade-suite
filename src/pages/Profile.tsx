@@ -155,7 +155,7 @@ const Profile = () => {
 
   return (
     <PageShell title="My Profile" subtitle="Account management and identity" icon={User} maxWidth="wide">
-      <Seo title="My Profile — Grow FX Trade" description="Manage your account details, KYC status, security and download the Grow FX Trade Android app." path="/profile" noindex />
+      <Seo title="My Profile — SkyFX Trade" description="Manage your account details, KYC status, security and download the SkyFX Trade Android app." path="/profile" noindex />
       <div className="lg:grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-6 xl:gap-8">
         {/* LEFT COLUMN */}
         <div className="space-y-6">

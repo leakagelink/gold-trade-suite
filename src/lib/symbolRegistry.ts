@@ -39,7 +39,7 @@ const SYMBOL_REGISTRY: SymbolSpec[] = [
   ...['EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'NZD', 'INR', 'CNY', 'SGD', 'HKD', 'ZAR', 'MXN', 'TRY']
     .map<SymbolSpec>((s) => ({ symbol: s, ...CLASS_DEFAULTS.forex })),
 
-  // In-house GrowFX forex synthetic (1 lot = 100,000 GFX)
+  // In-house SkyFX forex synthetic (1 lot = 100,000 GFX)
   { symbol: 'GFX', ...CLASS_DEFAULTS.forex },
 
   // Metals
@@ -48,7 +48,7 @@ const SYMBOL_REGISTRY: SymbolSpec[] = [
   { symbol: 'XPT', ...CLASS_DEFAULTS.metals },                                  // Platinum 100 oz
   { symbol: 'XPD', ...CLASS_DEFAULTS.metals },                                  // Palladium 100 oz
 
-  // In-house GrowFX commodity synthetic (1 lot = 100 oz, like Gold)
+  // In-house SkyFX commodity synthetic (1 lot = 100 oz, like Gold)
   { symbol: 'GFXM', ...CLASS_DEFAULTS.metals },
 
   // Energy

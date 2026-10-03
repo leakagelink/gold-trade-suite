@@ -41,7 +41,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
   const [upiId, setUpiId] = useState("growfxtrade@upi");
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [bankDetails, setBankDetails] = useState({
-    accountName: "Grow FX Trade Account",
+    accountName: "SkyFX Trade Account",
     accountNumber: "1234567890",
     ifsc: "BANK0001234",
     bankName: "Demo Bank",
@@ -152,7 +152,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
         setUpiId(settings.upi_id || "growfxtrade@upi");
         setQrCodeUrl(settings.qr_code_url || "");
         setBankDetails({
-          accountName: settings.account_name || "Grow FX Trade Account",
+          accountName: settings.account_name || "SkyFX Trade Account",
           accountNumber: settings.account_number || "1234567890",
           ifsc: settings.ifsc_code || "BANK0001234",
           bankName: settings.bank_name || "Demo Bank",
@@ -539,7 +539,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
                 <img src={qrCodeUrl} alt="Payment QR Code" className="w-[200px] h-[200px] object-contain" />
               ) : (
                 <QRCodeSVG 
-                  value={`upi://pay?pa=${upiId}&pn=Grow FX Trade&am=${amount}&cu=INR`} 
+                  value={`upi://pay?pa=${upiId}&pn=SkyFX Trade&am=${amount}&cu=INR`} 
                   size={200} 
                 />
               )}
@@ -551,7 +551,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <button
               onClick={() => {
-                const upiLink = `phonepe://pay?pa=${upiId}&pn=Grow FX Trade&am=${amount}&cu=INR`;
+                const upiLink = `phonepe://pay?pa=${upiId}&pn=SkyFX Trade&am=${amount}&cu=INR`;
                 window.location.href = upiLink;
               }}
               className="flex flex-col items-center gap-1 p-2 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
@@ -564,7 +564,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
             
             <button
               onClick={() => {
-                const upiLink = `gpay://upi/pay?pa=${upiId}&pn=Grow FX Trade&am=${amount}&cu=INR`;
+                const upiLink = `gpay://upi/pay?pa=${upiId}&pn=SkyFX Trade&am=${amount}&cu=INR`;
                 window.location.href = upiLink;
               }}
               className="flex flex-col items-center gap-1 p-2 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
@@ -577,7 +577,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
             
             <button
               onClick={() => {
-                const upiLink = `paytmmp://pay?pa=${upiId}&pn=Grow FX Trade&am=${amount}&cu=INR`;
+                const upiLink = `paytmmp://pay?pa=${upiId}&pn=SkyFX Trade&am=${amount}&cu=INR`;
                 window.location.href = upiLink;
               }}
               className="flex flex-col items-center gap-1 p-2 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
@@ -590,7 +590,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
             
             <button
               onClick={() => {
-                const upiLink = `upi://pay?pa=${upiId}&pn=Grow FX Trade&am=${amount}&cu=INR`;
+                const upiLink = `upi://pay?pa=${upiId}&pn=SkyFX Trade&am=${amount}&cu=INR`;
                 window.location.href = upiLink;
               }}
               className="flex flex-col items-center gap-1 p-2 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
@@ -691,7 +691,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
                 {qrCodeUrl ? (
                   <img src={qrCodeUrl} alt="Payment QR Code" className="w-[200px] h-[200px] object-contain" />
                 ) : (
-                  <QRCodeSVG value={`upi://pay?pa=${upiId}&pn=Grow FX Trade&cu=INR`} size={200} />
+                  <QRCodeSVG value={`upi://pay?pa=${upiId}&pn=SkyFX Trade&cu=INR`} size={200} />
                 )}
               </div>
             </div>

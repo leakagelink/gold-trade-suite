@@ -11,7 +11,7 @@ const News = () => {
       icon={Newspaper}
       maxWidth="6xl"
     >
-      <Seo title="Market News — Grow FX Trade" description="Live financial headlines across crypto, forex, commodities and global equities, curated for active traders." path="/news" />
+      <Seo title="Market News — SkyFX Trade" description="Live financial headlines across crypto, forex, commodities and global equities, curated for active traders." path="/news" />
       <div className="relative rounded-2xl bg-card/50 backdrop-blur-xl border border-border/60 p-4 sm:p-6 shadow-xl">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
         <MarketNewsFeed variant="dashboard" defaultCategory="all" limit={30} />
