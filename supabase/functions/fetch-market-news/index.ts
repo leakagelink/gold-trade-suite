@@ -96,15 +96,15 @@ Deno.serve(async (req) => {
     }
 
     // Build Marketaux query based on category.
-    // Only fetch news from the last 24 hours.
+    // Note: Marketaux free plan rejects timestamp-format published_after (HTTP 400)
+    // and returns 0 results for date-only published_after — so we omit it entirely
+    // and filter the last 24 hours locally (results are sorted published_desc).
     // MARKETAUX_API_KEY + MARKETAUX_API_KEY_1..N are tried in order; when a
     // key hits its rate limit the next one takes over automatically.
-    const publishedAfter = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10); // Marketaux free plan: date only (YYYY-MM-DD)
     const baseParams = new URLSearchParams({
       language: 'en',
       limit: String(Math.min(limit, 50)),
       filter_entities: 'true',
-      published_after: publishedAfter,
       sort: 'published_desc',
     });
 
@@ -118,27 +118,45 @@ Deno.serve(async (req) => {
       baseParams.set('search', 'crypto OR forex OR gold OR oil OR bitcoin');
     }
 
-    // TEMP DIAGNOSTIC: try param variants and log found counts
-    const keys = getServiceKeys('MARKETAUX');
-    const token = keys[keys.length - 1];
-    const variants: Record<string, URLSearchParams> = {
-      full: new URLSearchParams(baseParams),
-      no_filter_entities: (() => { const p = new URLSearchParams(baseParams); p.delete('filter_entities'); return p; })(),
-      no_published_after: (() => { const p = new URLSearchParams(baseParams); p.delete('published_after'); return p; })(),
-      minimal: new URLSearchParams({ language: 'en', limit: String(Math.min(limit, 50)), sort: 'published_desc' }),
-    };
-    for (const [name, p] of Object.entries(variants)) {
-      p.set('api_token', token);
-      try {
-        const res = await fetch(`https://api.marketaux.com/v1/news/all?${p.toString()}`, { signal: AbortSignal.timeout(10000) });
-        const body = await res.json();
-        console.log(`[News] variant ${name}: HTTP ${res.status}, found=${body?.meta?.found}, returned=${body?.meta?.returned}, body0=${JSON.stringify(body)?.slice(0, 200)}`);
-      } catch (e) {
-        console.log(`[News] variant ${name}: ERROR ${String(e).slice(0, 150)}`);
-      }
+    console.log(`[News] Fetching ${category} from Marketaux (with key rotation)`);
+    const { data: json, keyIndex, error: marketauxError } = await fetchJsonWithRotation(
+      'MARKETAUX',
+      (apiKey) => {
+        const params = new URLSearchParams(baseParams);
+        params.set('api_token', apiKey);
+        return { url: `https://api.marketaux.com/v1/news/all?${params.toString()}` };
+      },
+      { validate: (d: any) => d && Array.isArray(d.data), timeoutMs: 10000 },
+    );
+
+    if (!json || !Array.isArray(json.data)) {
+      console.error(`[News] All Marketaux keys failed: ${marketauxError}`);
+      return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
-    // END TEMP DIAGNOSTIC
-    return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true, diagnostic: true }), {
+
+    const allArticles = json.data;
+    console.log(`[News] Marketaux returned ${allArticles.length} raw articles via key #${(keyIndex ?? 0) + 1}`);
+
+    // Safety filter: keep only articles from the last 24 hours.
+    // If the 24h filter empties everything, fall back to the newest articles as-is.
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+    let articles = allArticles.filter((a: any) => {
+      const t = new Date(a.published_at).getTime();
+      return !isNaN(t) && t >= cutoff;
+    });
+    if (articles.length === 0) articles = allArticles;
+
+    if (articles.length === 0) {
+      return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    cache = { data: articles, timestamp: Date.now(), category };
+
+    return new Response(JSON.stringify({ data: articles, cached: false }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
