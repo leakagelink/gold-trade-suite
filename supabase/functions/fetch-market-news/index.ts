@@ -99,7 +99,7 @@ Deno.serve(async (req) => {
     // Only fetch news from the last 24 hours.
     // MARKETAUX_API_KEY + MARKETAUX_API_KEY_1..N are tried in order; when a
     // key hits its rate limit the next one takes over automatically.
-    const publishedAfter = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const publishedAfter = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10); // Marketaux free plan: date only (YYYY-MM-DD)
     const baseParams = new URLSearchParams({
       language: 'en',
       limit: String(Math.min(limit, 50)),
