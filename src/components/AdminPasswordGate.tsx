@@ -1,34 +1,23 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Lock, Eye, EyeOff } from "lucide-react";
-import { toast } from "sonner";
+import { ShieldX, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-const ADMIN_PASSWORD = "Gonnagannareadyroshanpura@123";
-const STORAGE_KEY = "admin_panel_unlocked";
+const BROKER_EMAIL = "hello@skyfx.com";
 
 export const AdminPasswordGate = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
+  const navigate = useNavigate();
   const [unlocked, setUnlocked] = useState(false);
   const [checkingAccess, setCheckingAccess] = useState(true);
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    if (sessionStorage.getItem(STORAGE_KEY) === "true") {
-      setUnlocked(true);
-      setCheckingAccess(false);
-      return;
-    }
-
     if (authLoading) return;
 
     if (!user?.id) {
-      sessionStorage.removeItem(STORAGE_KEY);
       setUnlocked(false);
       setCheckingAccess(false);
       return;
@@ -42,28 +31,11 @@ export const AdminPasswordGate = ({ children }: { children: React.ReactNode }) =
         _role: "admin",
       });
 
-      if (isAdmin) {
-        sessionStorage.setItem(STORAGE_KEY, "true");
-        setUnlocked(true);
-      } else {
-        sessionStorage.removeItem(STORAGE_KEY);
-        setUnlocked(false);
-      }
+      // Only the broker account (admin role) may open this panel
+      setUnlocked(Boolean(isAdmin) && user.email === BROKER_EMAIL);
       setCheckingAccess(false);
     })();
-  }, [authLoading, user?.id]);
-
-  const handleUnlock = () => {
-    if (password === ADMIN_PASSWORD) {
-      sessionStorage.setItem(STORAGE_KEY, "true");
-      setUnlocked(true);
-      setPassword("");
-      toast.success("Admin panel unlocked");
-    } else {
-      toast.error("Incorrect password");
-      setPassword("");
-    }
-  };
+  }, [authLoading, user?.id, user?.email]);
 
   if (checkingAccess) {
     return (
@@ -80,40 +52,41 @@ export const AdminPasswordGate = ({ children }: { children: React.ReactNode }) =
       <Card className="p-8 w-full max-w-md">
         <div className="text-center mb-6">
           <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-            <Lock className="h-8 w-8 text-primary" />
+            {user ? (
+              <ShieldX className="h-8 w-8 text-destructive" />
+            ) : (
+              <Lock className="h-8 w-8 text-primary" />
+            )}
           </div>
-          <h2 className="text-2xl font-bold mb-2">Admin Panel Access</h2>
+          <h2 className="text-2xl font-bold mb-2">Broker Panel Access</h2>
           <p className="text-muted-foreground text-sm">
-            Enter the password to access the admin panel
+            {user
+              ? "This account does not have broker access. Please sign in with the broker account."
+              : "Please sign in with the broker account to continue."}
           </p>
         </div>
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="admin-password">Password</Label>
-            <div className="relative mt-2">
-              <Input
-                id="admin-password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleUnlock()}
-                placeholder="Enter password"
-                className="pr-10"
-                autoFocus
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+        <div className="space-y-3">
+          {user ? (
+            <>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={async () => {
+                  await signOut();
+                }}
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-          </div>
-          <Button onClick={handleUnlock} className="w-full">
-            <Lock className="h-4 w-4 mr-2" />
-            Unlock
-          </Button>
+                Sign out & switch account
+              </Button>
+              <Button variant="ghost" className="w-full" onClick={() => navigate("/dashboard")}>
+                Back to Dashboard
+              </Button>
+            </>
+          ) : (
+            <Button className="w-full" onClick={() => navigate("/auth")}>
+              <Lock className="h-4 w-4 mr-2" />
+              Go to Sign In
+            </Button>
+          )}
         </div>
       </Card>
     </div>
