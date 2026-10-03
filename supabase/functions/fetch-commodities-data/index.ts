@@ -233,7 +233,7 @@ async function fetchFromCoinMarketCap(): Promise<any[]> {
         currencySymbol: "$",
         fullName,
       });
-etcd    };
+    };
 
     // Real silver from KAG if available, otherwise derived from gold
     let silverPrice = 0;
@@ -257,7 +257,7 @@ etcd    };
     if (kag && typeof kag.price === 'number' && kag.price > 0) {
       silverPrice = kag.price;
       silverChange = kag.percent_change_24h || 0;
-etcd  }
+    }
 
     if (silverPrice > 0) {
       push("Silver", "XAG", silverPrice, silverChange, "🥈", "Silver");
