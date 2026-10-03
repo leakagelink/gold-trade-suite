@@ -198,6 +198,80 @@ async function fetchFromCoinGecko(): Promise<any[]> {
   }
 }
 
+// Fetch metals from CoinMarketCap — LAST-RESORT fallback when CoinGecko also
+// fails (e.g. all CoinGecko keys rate-limited). Rotates across
+// COINMARKETCAP_API_KEY_1..N. Commodity-backed tokens: PAXG = 1 troy oz gold,
+// KAG (Kinesis) = 1 troy oz silver; platinum/palladium derived from gold the
+// same way as the CoinGecko path.
+async function fetchFromCoinMarketCap(): Promise<any[]> {
+  try {
+    console.log('Fetching metals from CoinMarketCap (with key rotation)...');
+
+    const { data, keyIndex, error } = await fetchJsonWithRotation(
+      'COINMARKETCAP',
+      (apiKey) => ({
+        url: 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=PAXG,KAG&convert=USD',
+        headers: { 'X-CMC_PRO_API_KEY': apiKey },
+      }),
+      { validate: (d: any) => d && d.data && (d.data.PAXG || d.data.KAG) },
+    );
+
+    if (!data || !data.data) {
+      console.error('CoinMarketCap API error (all keys):', error);
+      return [];
+    }
+
+    const results: any[] = [];
+    const push = (name: string, symbol: string, price: number, change: number, icon: string, fullName: string) => {
+      results.push({
+        name,
+        symbol,
+        price: price.toFixed(2),
+        change: `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`,
+        isPositive: change >= 0,
+        icon,
+        currencySymbol: "$",
+        fullName,
+      });
+    };
+
+    // Real silver from KAG if available, otherwise derived from gold
+    let silverPrice = 0;
+    let silverChange = 0;
+
+    const paxg = data.data.PAXG?.quote?.USD;
+    if (paxg && typeof paxg.price === 'number' && paxg.price > 0) {
+      const goldPrice = paxg.price;
+      const goldChange = paxg.percent_change_24h || 0;
+
+      push("Gold", "XAU", goldPrice, goldChange, "🥇", "Gold");
+      console.log(`CoinMarketCap Gold (PAXG): $${goldPrice.toFixed(2)} (${goldChange.toFixed(2)}%) [key #${keyIndex + 1}]`);
+
+      silverPrice = goldPrice / 59.65;
+      silverChange = goldChange * 1.2;
+      push("Platinum", "XPT", goldPrice * 0.495, goldChange * 0.9, "💎", "Platinum");
+      push("Palladium", "XPD", goldPrice * 0.22, goldChange * 0.8, "⬜", "Palladium");
+    }
+
+    const kag = data.data.KAG?.quote?.USD;
+    if (kag && typeof kag.price === 'number' && kag.price > 0) {
+      silverPrice = kag.price;
+      silverChange = kag.percent_change_24h || 0;
+    }
+
+    if (silverPrice > 0) {
+      push("Silver", "XAG", silverPrice, silverChange, "🥈", "Silver");
+      console.log(`CoinMarketCap Silver: $${silverPrice.toFixed(2)} (${silverChange.toFixed(2)}%)`);
+    }
+
+    console.log(`Successfully fetched ${results.length} metals from CoinMarketCap`);
+    return results;
+  } catch (error) {
+    console.error('CoinMarketCap fetch error:', error);
+    return [];
+  }
+}
+
 // Fetch Oil & Gas from FMP (Financial Modeling Prep) — rotates across FMP_API_KEY_1..N
 async function fetchFromFMP(): Promise<any[]> {
   try {
@@ -344,7 +418,8 @@ serve(async (req) => {
       }
     }
 
-    // CoinGecko fallback for metals if still missing
+    // CoinGecko fallback for metals if still missing; CoinMarketCap is the
+    // last resort when CoinGecko also fails (all keys rate-limited/error).
     const hasGold = commoditiesData.some((c) => c.symbol === 'XAU');
     if (!hasGold) {
       console.log('Trying CoinGecko (free API) for metals...');
@@ -352,6 +427,13 @@ serve(async (req) => {
       if (cg.length > 0) {
         commoditiesData = [...commoditiesData, ...cg];
         dataSource = dataSource === 'static' ? 'CoinGecko' : `${dataSource}+CoinGecko`;
+      } else {
+        console.log('CoinGecko failed — trying CoinMarketCap fallback for metals...');
+        const cmc = await fetchFromCoinMarketCap();
+        if (cmc.length > 0) {
+          commoditiesData = [...commoditiesData, ...cmc];
+          dataSource = dataSource === 'static' ? 'CoinMarketCap' : `${dataSource}+CoinMarketCap`;
+        }
       }
     }
 
