@@ -11,7 +11,7 @@ function buildGfxcEntry(): CryptoItem {
   const change = gfxChangePct("GFXC");
   const { high, low } = gfx24hRange("GFXC");
   return {
-    name: "GrowFX Coin",
+    name: "SkyFX Coin",
     symbol: "GFXC",
     price: fmt(price),
     change: `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`,

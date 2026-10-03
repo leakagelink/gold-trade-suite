@@ -190,7 +190,7 @@ serve(async (req) => {
       isPositive: gfxChange >= 0,
       icon: "🏷️",
       currencySymbol: "$",
-      fullName: "GrowFX Dollar",
+      fullName: "SkyFX Dollar",
     });
 
     return new Response(

@@ -17,7 +17,7 @@ interface KYCNotificationRequest {
 
 const brandHeader = (title: string, gradient: string) => `
   <div style="text-align: center; padding: 30px 20px 20px; background: #ffffff;">
-    <img src="${LOGO_URL}" alt="Grow FX Trade" style="max-width: 180px; height: auto; margin-bottom: 10px;" />
+    <img src="${LOGO_URL}" alt="SkyFX Trade" style="max-width: 180px; height: auto; margin-bottom: 10px;" />
   </div>
   <div style="background: ${gradient}; padding: 30px; text-align: center;">
     <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 700;">${title}</h1>
@@ -26,9 +26,9 @@ const brandHeader = (title: string, gradient: string) => `
 
 const brandFooter = `
   <div style="background: #0a1f17; padding: 25px 20px; text-align: center; border-radius: 0 0 12px 12px;">
-    <p style="margin: 0 0 8px; color: #10b981; font-size: 16px; font-weight: 700; letter-spacing: 1px;">Grow FX Trade</p>
+    <p style="margin: 0 0 8px; color: #10b981; font-size: 16px; font-weight: 700; letter-spacing: 1px;">SkyFX Trade</p>
     <p style="margin: 0; color: #86efac; font-size: 12px;">Trade Smart. Grow Fast.</p>
-    <p style="margin: 12px 0 0; color: #6b7280; font-size: 11px;">© ${new Date().getFullYear()} Grow FX Trade. All rights reserved.</p>
+    <p style="margin: 12px 0 0; color: #6b7280; font-size: 11px;">© ${new Date().getFullYear()} SkyFX Trade. All rights reserved.</p>
   </div>
 `;
 
@@ -55,8 +55,8 @@ const handler = async (req: Request): Promise<Response> => {
     const isApproved = status === "approved";
     
     const subject = isApproved 
-      ? "✅ Your Grow FX Trade KYC is Approved!" 
-      : "Grow FX Trade KYC Verification Update";
+      ? "✅ Your SkyFX Trade KYC is Approved!" 
+      : "SkyFX Trade KYC Verification Update";
 
     const htmlContent = isApproved 
       ? `
@@ -122,7 +122,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Grow FX Trade <noreply@growfxtrade.com>",
+        from: "SkyFX Trade <noreply@growfxtrade.com>",
         to: [email],
         subject: subject,
         html: htmlContent,

@@ -183,8 +183,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background overflow-hidden font-sans">
       <Seo
-        title="Grow FX Trade — Trade Crypto, Forex & Commodities"
-        description="Trade Crypto, Forex and Commodities on Grow FX Trade — a professional, secure platform with real-time markets, advanced tools and instant execution."
+        title="SkyFX Trade — Trade Crypto, Forex & Commodities"
+        description="Trade Crypto, Forex and Commodities on SkyFX Trade — a professional, secure platform with real-time markets, advanced tools and instant execution."
         path="/"
       />
       {/* ───────────────── NAV ───────────────── */}
@@ -193,7 +193,7 @@ const Index = () => {
           <div className="flex items-center gap-2 sm:gap-3 cursor-pointer">
             <img
               src={logo}
-              alt="Grow FX Trade"
+              alt="SkyFX Trade"
               className="h-12 w-auto sm:h-16 object-contain transition-transform duration-300 hover:scale-105"
             />
           </div>
@@ -501,7 +501,7 @@ const Index = () => {
         <div className="container mx-auto px-3 sm:px-4">
           <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
             <p className="text-xs uppercase tracking-[0.22em] text-primary font-semibold mb-3">
-              Why Grow FX Trade
+              Why SkyFX Trade
             </p>
             <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold mb-4">
               Built like a desk, <br className="hidden sm:block" />
@@ -725,7 +725,7 @@ const Index = () => {
           <Accordion type="single" collapsible className="space-y-3">
             {[
               {
-                q: "How do I get started with Grow FX Trade?",
+                q: "How do I get started with SkyFX Trade?",
                 a: "Create your free account, complete the KYC verification, deposit via UPI / Net Banking / Crypto, and start trading across markets within minutes.",
               },
               {
@@ -733,7 +733,7 @@ const Index = () => {
                 a: "We support USD bank wire, ACH, debit/credit cards and major crypto. Deposits are typically instant. Withdrawals are processed within 24–48 hours after broker approval.",
               },
               {
-                q: "Is my money safe on Grow FX Trade?",
+                q: "Is my money safe on SkyFX Trade?",
                 a: "Yes — SSL encryption, segregated funds, cold storage for crypto, and strict KYC/AML policies keep your account and capital protected.",
               },
               {
@@ -781,7 +781,7 @@ const Index = () => {
             <span className="text-[hsl(var(--gold))]">today.</span>
           </h2>
           <p className="text-base sm:text-xl text-primary-foreground/85 mb-9 max-w-xl mx-auto">
-            Join 50,000+ traders trusting Grow FX Trade for daily market access.
+            Join 50,000+ traders trusting SkyFX Trade for daily market access.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Button
@@ -813,7 +813,7 @@ const Index = () => {
         <div className="container mx-auto px-3 sm:px-4 max-w-6xl">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
             <div className="sm:col-span-2 md:col-span-1 flex flex-col items-center md:items-start gap-3">
-              <img src={logo} alt="Grow FX Trade" className="h-14 w-14 object-contain" />
+              <img src={logo} alt="SkyFX Trade" className="h-14 w-14 object-contain" />
               <p className="text-sm text-muted-foreground text-center md:text-left max-w-xs leading-relaxed">
                 Your trusted desk for crypto, forex & commodities. Built for professionals,
                 accessible to everyone.
@@ -894,7 +894,7 @@ const Index = () => {
 
           <div className="mt-12 pt-6 border-t border-border/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
             <p className="text-xs text-muted-foreground">
-              © 2007 <span className="font-semibold text-foreground">Grow FX Trade</span>. All
+              © 2007 <span className="font-semibold text-foreground">SkyFX Trade</span>. All
               rights reserved.
             </p>
             <p className="text-[11px] text-muted-foreground/80 max-w-md">

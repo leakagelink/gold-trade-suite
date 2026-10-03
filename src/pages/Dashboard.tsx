@@ -272,7 +272,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-muted/40 to-background">
-      <Seo title="Dashboard — Grow FX Trade" description="Your live trading dashboard: real-time crypto, forex and commodities markets with one-click execution." path="/dashboard" noindex />
+      <Seo title="Dashboard — SkyFX Trade" description="Your live trading dashboard: real-time crypto, forex and commodities markets with one-click execution." path="/dashboard" noindex />
       {/* Animated Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] animate-pulse" />
@@ -301,7 +301,7 @@ const Dashboard = () => {
             >
               <img
                 src={logo}
-                alt="Grow FX Trade"
+                alt="SkyFX Trade"
                 className="h-10 w-auto sm:h-12 object-contain transition-transform duration-500 group-hover:scale-105"
               />
             </div>

@@ -1,4 +1,4 @@
-// GrowFX in-house synthetic instruments — not available on TradingView/Binance/Yahoo.
+// SkyFX in-house synthetic instruments — not available on TradingView/Binance/Yahoo.
 // Three custom symbols: GFX (forex), GFXM (commodity), GFXC (crypto).
 // Prices follow a deterministic multi-sine random-walk so all clients agree
 // on the value at any given moment but the curve still feels alive.
@@ -112,7 +112,7 @@ export const GFX_META: Record<GfxSymbol, {
   logo: string;
   decimals: number;
 }> = {
-  GFX:  { name: "GFX/USD", fullName: "GrowFX Dollar", flag: "🏷️", currencySymbol: "$", logo: "", decimals: 4 },
-  GFXM: { name: "GFXM",    fullName: "GrowFX Metal",  flag: "🪙", currencySymbol: "$", logo: "", decimals: 2 },
-  GFXC: { name: "GFXC",    fullName: "GrowFX Coin",   flag: "💠", currencySymbol: "$", logo: "", decimals: 2 },
+  GFX:  { name: "GFX/USD", fullName: "SkyFX Dollar", flag: "🏷️", currencySymbol: "$", logo: "", decimals: 4 },
+  GFXM: { name: "GFXM",    fullName: "SkyFX Metal",  flag: "🪙", currencySymbol: "$", logo: "", decimals: 2 },
+  GFXC: { name: "GFXC",    fullName: "SkyFX Coin",   flag: "💠", currencySymbol: "$", logo: "", decimals: 2 },
 };

@@ -20,7 +20,7 @@ interface AuthEmailRequest {
 const brandEmail = (title: string, gradient: string, body: string) => `
   <div style="max-width: 560px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; font-family: Arial, sans-serif; border: 1px solid #e5e7eb;">
     <div style="text-align: center; padding: 30px 20px 20px; background: #ffffff;">
-      <img src="${LOGO_URL}" alt="Grow FX Trade" style="max-width: 180px; height: auto; margin-bottom: 10px;" />
+      <img src="${LOGO_URL}" alt="SkyFX Trade" style="max-width: 180px; height: auto; margin-bottom: 10px;" />
     </div>
     <div style="background: ${gradient}; padding: 30px; text-align: center;">
       <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 700;">${title}</h1>
@@ -29,9 +29,9 @@ const brandEmail = (title: string, gradient: string, body: string) => `
       ${body}
     </div>
     <div style="background: #0a1f17; padding: 25px 20px; text-align: center;">
-      <p style="margin: 0 0 8px; color: #10b981; font-size: 16px; font-weight: 700; letter-spacing: 1px;">Grow FX Trade</p>
+      <p style="margin: 0 0 8px; color: #10b981; font-size: 16px; font-weight: 700; letter-spacing: 1px;">SkyFX Trade</p>
       <p style="margin: 0; color: #86efac; font-size: 12px;">Trade Smart. Grow Fast.</p>
-      <p style="margin: 12px 0 0; color: #6b7280; font-size: 11px;">© ${new Date().getFullYear()} Grow FX Trade. All rights reserved.</p>
+      <p style="margin: 12px 0 0; color: #6b7280; font-size: 11px;">© ${new Date().getFullYear()} SkyFX Trade. All rights reserved.</p>
     </div>
   </div>
 `;
@@ -101,18 +101,18 @@ const handler = async (req: Request): Promise<Response> => {
 
     const isRecovery = type === "recovery";
     const subject = isRecovery
-      ? "Reset Your Grow FX Trade Password"
-      : "Verify Your Grow FX Trade Account";
+      ? "Reset Your SkyFX Trade Password"
+      : "Verify Your SkyFX Trade Account";
     const html = isRecovery
       ? brandEmail("Password Reset", "linear-gradient(135deg, #1e3a5f, #0d9488)", `
           <p>Hello,</p>
-          <p>We received a request to reset the password for your Grow FX Trade account. Click the button below to set a new password:</p>
+          <p>We received a request to reset the password for your SkyFX Trade account. Click the button below to set a new password:</p>
           ${button(actionLink, "Reset Password")}
           <p style="font-size: 13px; color: #6b7280;">This link expires in 1 hour. If you didn't request a password reset, you can safely ignore this email.</p>
         `)
       : brandEmail("Verify Your Email", "linear-gradient(135deg, #0d9488, #10b981)", `
           <p>Hello,</p>
-          <p>Welcome to Grow FX Trade! Please confirm your email address to activate your account:</p>
+          <p>Welcome to SkyFX Trade! Please confirm your email address to activate your account:</p>
           ${button(actionLink, "Verify My Account")}
           <p style="font-size: 13px; color: #6b7280;">This link expires in 24 hours. If you didn't create an account, you can safely ignore this email.</p>
         `);
@@ -124,7 +124,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Grow FX Trade <noreply@growfxtrade.com>",
+        from: "SkyFX Trade <noreply@growfxtrade.com>",
         to: [email.trim()],
         subject,
         html,

@@ -475,7 +475,7 @@ serve(async (req) => {
     };
     commoditiesData.sort((a, b) => (orderMap[a.symbol] || 50) - (orderMap[b.symbol] || 50));
 
-    // Append in-house GFXM (GrowFX Metal) synthetic commodity.
+    // Append in-house GFXM (SkyFX Metal) synthetic commodity.
     const gfxmPrice = gfxPriceNow("GFXM");
     const gfxmChange = gfxChangePct("GFXM");
     commoditiesData.push({
@@ -486,7 +486,7 @@ serve(async (req) => {
       isPositive: gfxmChange >= 0,
       icon: "🪙",
       currencySymbol: "$",
-      fullName: "GrowFX Metal",
+      fullName: "SkyFX Metal",
     });
 
     console.log(`Returning ${commoditiesData.length} commodities (source: ${dataSource})`);

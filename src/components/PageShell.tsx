@@ -68,7 +68,7 @@ const PageShell = ({
             >
               <img
                 src={logo}
-                alt="Grow FX Trade"
+                alt="SkyFX Trade"
                 className="h-10 w-auto sm:h-12 object-contain transition-transform duration-500 group-hover:scale-105"
               />
             </div>

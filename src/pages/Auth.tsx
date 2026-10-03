@@ -282,12 +282,12 @@ const Auth = () => {
         >
           <img
             src={logo}
-            alt="Grow FX Trade"
+            alt="SkyFX Trade"
             className="h-14 w-auto object-contain transition-transform group-hover:scale-110"
           />
           <div>
             <h1 className="text-2xl font-black bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-              Sign In to Grow FX Trade
+              Sign In to SkyFX Trade
             </h1>
             <p className="text-xs text-muted-foreground tracking-wider">PREMIUM TRADING</p>
           </div>
@@ -360,13 +360,13 @@ const Auth = () => {
   if (showResendVerification) {
     return (
       <div className="min-h-screen relative overflow-hidden grid lg:grid-cols-2">
-        <Seo title="Resend Verification Email — Grow FX Trade" description="Resend your account verification email to activate your Grow FX Trade account." path="/auth" />
+        <Seo title="Resend Verification Email — SkyFX Trade" description="Resend your account verification email to activate your SkyFX Trade account." path="/auth" />
         <AnimatedBackground />
         <BrandPanel />
         <div className="relative z-10 flex items-center justify-center p-4 sm:p-8">
           <Card className="w-full max-w-md p-6 sm:p-10 bg-card/70 backdrop-blur-2xl border border-border/50 shadow-2xl shadow-primary/10 animate-scale-in">
             <div className="lg:hidden flex items-center justify-center mb-6">
-              <img src={logo} alt="Grow FX Trade" className="h-14 w-auto object-contain" />
+              <img src={logo} alt="SkyFX Trade" className="h-14 w-auto object-contain" />
             </div>
             <div className="text-center mb-6">
               <div className="inline-flex h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-accent items-center justify-center mb-4 shadow-lg shadow-primary/30">
@@ -416,13 +416,13 @@ const Auth = () => {
   if (showForgotPassword) {
     return (
       <div className="min-h-screen relative overflow-hidden grid lg:grid-cols-2">
-        <Seo title="Sign In or Sign Up — Grow FX Trade" description="Create your Grow FX Trade account or sign in to trade crypto, forex and commodities with real-time pricing and instant execution." path="/auth" />
+        <Seo title="Sign In or Sign Up — SkyFX Trade" description="Create your SkyFX Trade account or sign in to trade crypto, forex and commodities with real-time pricing and instant execution." path="/auth" />
         <AnimatedBackground />
         <BrandPanel />
         <div className="relative z-10 flex items-center justify-center p-4 sm:p-8">
           <Card className="w-full max-w-md p-6 sm:p-10 bg-card/70 backdrop-blur-2xl border border-border/50 shadow-2xl shadow-primary/10 animate-scale-in">
             <div className="lg:hidden flex items-center justify-center mb-6">
-              <img src={logo} alt="Grow FX Trade" className="h-14 w-auto object-contain" />
+              <img src={logo} alt="SkyFX Trade" className="h-14 w-auto object-contain" />
             </div>
 
             <div className="text-center mb-6">
@@ -483,9 +483,9 @@ const Auth = () => {
         <Card className="w-full max-w-md p-6 sm:p-8 bg-card/70 backdrop-blur-2xl border border-border/50 shadow-2xl shadow-primary/10 animate-scale-in">
           {/* Mobile logo */}
           <div className="lg:hidden flex flex-col items-center justify-center mb-6">
-            <img src={logo} alt="Grow FX Trade" className="h-14 w-auto object-contain" />
+            <img src={logo} alt="SkyFX Trade" className="h-14 w-auto object-contain" />
             <h1 className="text-xl font-black bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mt-2">
-              Grow FX Trade
+              SkyFX Trade
             </h1>
           </div>
 
