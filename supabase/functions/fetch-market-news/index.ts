@@ -137,7 +137,7 @@ Deno.serve(async (req) => {
     }
 
     const allArticles = json.data;
-    console.log(`[News] Marketaux returned ${allArticles.length} raw articles via key #${keyIndex + 1}`);
+    console.log(`[News] Marketaux returned ${allArticles.length} raw articles via key #${keyIndex + 1}; meta: ${JSON.stringify(json.meta ?? null)?.slice(0, 300)}`);
 
     // Safety filter: keep only articles from the last 24 hours
     const cutoff = Date.now() - 24 * 60 * 60 * 1000;
