@@ -333,11 +333,11 @@ serve(async (req) => {
     if (commoditiesData.length > 0) dataSource = 'Yahoo';
 
     // Try GoldPricez API for metals (if configured) - only if Yahoo missed metals
-    const goldPricezApiKey = Deno.env.get('GOLDPRICEZ_API_KEY');
+    const hasGoldPricezKey = getServiceKeys('GOLDPRICEZ').length > 0;
     const hasMetals = commoditiesData.some((c) => ['XAU','XAG','XPT','XPD'].includes(c.symbol));
-    if (!hasMetals && goldPricezApiKey) {
+    if (!hasMetals && hasGoldPricezKey) {
       console.log('Trying GoldPricez API for metals...');
-      const metals = await fetchFromGoldPricez(goldPricezApiKey);
+      const metals = await fetchFromGoldPricez();
       if (metals.length > 0) {
         commoditiesData = [...commoditiesData, ...metals];
         dataSource = dataSource === 'static' ? 'GoldPricez' : `${dataSource}+GoldPricez`;
@@ -355,12 +355,12 @@ serve(async (req) => {
       }
     }
 
-    // Try FMP API for Oil, Gas, Copper (uses existing FMP_API_KEY)
-    const fmpApiKey = Deno.env.get('FMP_API_KEY');
-    
-    if (fmpApiKey) {
+    // Try FMP API for Oil, Gas, Copper (rotates across FMP_API_KEY_1..N)
+    const hasFmpKey = getServiceKeys('FMP').length > 0;
+
+    if (hasFmpKey) {
       console.log('Trying FMP API for energy commodities...');
-      energyData = await fetchFromFMP(fmpApiKey);
+      energyData = await fetchFromFMP();
       if (energyData.length > 0) {
         console.log(`Got ${energyData.length} energy commodities from FMP`);
         // Merge energy data
