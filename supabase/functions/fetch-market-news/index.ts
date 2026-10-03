@@ -1,5 +1,5 @@
 // Marketaux news fetcher for Crypto, Forex, Commodities
-import { fetchJsonWithRotation } from "../_shared/apiKeyRotator.ts";
+import { fetchJsonWithRotation, getServiceKeys } from "../_shared/apiKeyRotator.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -120,7 +120,7 @@ Deno.serve(async (req) => {
 
     // TEMP DIAGNOSTIC: try param variants and log found counts
     const keys = getServiceKeys('MARKETAUX');
-    const token = keys[keyIndex ?? 0];
+    const token = keys[0];
     const variants: Record<string, URLSearchParams> = {
       full: new URLSearchParams(baseParams),
       no_filter_entities: (() => { const p = new URLSearchParams(baseParams); p.delete('filter_entities'); return p; })(),
