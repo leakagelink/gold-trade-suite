@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { gfxPriceNow, gfxChangePct } from "../_shared/gfxSynthetic.ts";
+import { fetchJsonWithRotation, getServiceKeys } from "../_shared/apiKeyRotator.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -95,25 +96,27 @@ async function fetchFromYahooFinance(): Promise<any[]> {
   return filtered;
 }
 
-// Fetch commodity prices from CoinGecko (FREE - no API key needed)
+// Fetch commodity prices from CoinGecko — rotates across COINGECKO_API_KEY_1..N
+// when a key hits its limit; falls back to keyless access if no keys are set.
 // Uses commodity-backed tokens: PAXG (gold), calculates silver from gold/silver ratio
 async function fetchFromCoinGecko(): Promise<any[]> {
   try {
-    console.log('Fetching commodity prices from CoinGecko (free API)...');
-    
-    // Fetch PAXG (gold-backed token) - 1 PAXG = 1 troy oz gold
-    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd&include_24hr_change=true';
-    
-    const response = await fetch(url, {
-      headers: { 'Accept': 'application/json' }
-    });
+    console.log('Fetching commodity prices from CoinGecko (with key rotation)...');
 
-    if (!response.ok) {
-      console.error('CoinGecko API error:', response.status);
+    // Fetch PAXG (gold-backed token) - 1 PAXG = 1 troy oz gold
+    const { data, error } = await fetchJsonWithRotation(
+      'COINGECKO',
+      (apiKey) => ({
+        url: 'https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd&include_24hr_change=true',
+        headers: apiKey ? { 'x-cg-demo-api-key': apiKey } : undefined,
+      }),
+      { validate: (d: any) => d && d['pax-gold'], allowKeyless: true },
+    );
+
+    if (!data) {
+      console.error('CoinGecko API error (all keys):', error);
       return [];
     }
-
-    const data = await response.json();
     console.log('CoinGecko response:', JSON.stringify(data));
     
     const results: any[] = [];
@@ -195,13 +198,13 @@ async function fetchFromCoinGecko(): Promise<any[]> {
   }
 }
 
-// Fetch Oil & Gas from FMP (Financial Modeling Prep) - Already has API key configured
-async function fetchFromFMP(apiKey: string): Promise<any[]> {
+// Fetch Oil & Gas from FMP (Financial Modeling Prep) — rotates across FMP_API_KEY_1..N
+async function fetchFromFMP(): Promise<any[]> {
   try {
-    console.log('Fetching oil & gas from FMP API...');
-    
+    console.log('Fetching oil & gas from FMP API (with key rotation)...');
+
     const results: any[] = [];
-    
+
     // FMP commodity symbols
     const commoditySymbols = [
       { symbol: 'CLUSD', name: 'Crude Oil', appSymbol: 'WTI', icon: '🛢️', fullName: 'Crude Oil WTI' },
@@ -209,44 +212,42 @@ async function fetchFromFMP(apiKey: string): Promise<any[]> {
       { symbol: 'NGUSD', name: 'Natural Gas', appSymbol: 'NG', icon: '🔥', fullName: 'Natural Gas' },
       { symbol: 'HGUSD', name: 'Copper', appSymbol: 'XCU', icon: '🔶', fullName: 'Copper' },
     ];
-    
+
     for (const commodity of commoditySymbols) {
       try {
-        const url = `https://financialmodelingprep.com/api/v3/quote/${commodity.symbol}?apikey=${apiKey}`;
-        
-        const response = await fetch(url, {
-          headers: { 'Accept': 'application/json' }
-        });
+        const { data, keyIndex, error } = await fetchJsonWithRotation(
+          'FMP',
+          (apiKey) => ({
+            url: `https://financialmodelingprep.com/api/v3/quote/${commodity.symbol}?apikey=${apiKey}`,
+          }),
+          { validate: (d: any) => Array.isArray(d) && d.length > 0 && d[0] && typeof d[0].price === 'number' },
+        );
 
-        if (!response.ok) {
-          console.error(`FMP ${commodity.name} error:`, response.status);
+        if (!data || !Array.isArray(data) || data.length === 0) {
+          console.error(`FMP ${commodity.name} error:`, error);
           continue;
         }
 
-        const data = await response.json();
-        
-        if (data && data.length > 0) {
-          const quote = data[0];
-          const price = quote.price || 0;
-          const changePercent = quote.changesPercentage || 0;
-          
-          results.push({
-            name: commodity.name,
-            symbol: commodity.appSymbol,
-            price: price.toFixed(2),
-            change: `${changePercent >= 0 ? '+' : ''}${changePercent.toFixed(2)}%`,
-            isPositive: changePercent >= 0,
-            icon: commodity.icon,
-            currencySymbol: "$",
-            fullName: commodity.fullName
-          });
-          console.log(`FMP ${commodity.name}: $${price.toFixed(2)} (${changePercent.toFixed(2)}%)`);
-        }
+        const quote = data[0];
+        const price = quote.price || 0;
+        const changePercent = quote.changesPercentage || 0;
+
+        results.push({
+          name: commodity.name,
+          symbol: commodity.appSymbol,
+          price: price.toFixed(2),
+          change: `${changePercent >= 0 ? '+' : ''}${changePercent.toFixed(2)}%`,
+          isPositive: changePercent >= 0,
+          icon: commodity.icon,
+          currencySymbol: "$",
+          fullName: commodity.fullName
+        });
+        console.log(`FMP ${commodity.name}: $${price.toFixed(2)} (${changePercent.toFixed(2)}%) [key #${keyIndex + 1}]`);
       } catch (err) {
         console.error(`Error fetching ${commodity.name} from FMP:`, err);
       }
     }
-    
+
     console.log(`Successfully fetched ${results.length} energy commodities from FMP`);
     return results;
   } catch (error) {
@@ -255,34 +256,31 @@ async function fetchFromFMP(apiKey: string): Promise<any[]> {
   }
 }
 
-// Fetch from GoldPricez API (primary source for metals - requires API key)
-async function fetchFromGoldPricez(apiKey: string): Promise<any[]> {
+// Fetch from GoldPricez API (primary source for metals — rotates across GOLDPRICEZ_API_KEY_1..N)
+async function fetchFromGoldPricez(): Promise<any[]> {
   try {
-    console.log('Fetching commodities from GoldPricez API...');
-    
+    console.log('Fetching commodities from GoldPricez API (with key rotation)...');
+
     const results: any[] = [];
     const metalsToFetch = ['XAU', 'XAG', 'XPT', 'XPD'];
-    
+
     for (const metal of metalsToFetch) {
       try {
-        const url = `https://goldpricez.com/api/rates/${metal}/usd?api_key=${apiKey}`;
-        console.log(`Fetching ${metal} from GoldPricez...`);
-        
-        const response = await fetch(url, {
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
+        const { data, keyIndex, error } = await fetchJsonWithRotation(
+          'GOLDPRICEZ',
+          (apiKey) => ({
+            url: `https://goldpricez.com/api/rates/${metal}/usd?api_key=${apiKey}`,
+          }),
+          { validate: (d: any) => d && typeof d.price !== 'undefined' },
+        );
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(`GoldPricez ${metal} error:`, response.status, errorText);
+        if (!data) {
+          console.error(`GoldPricez ${metal} error:`, error);
           continue;
         }
 
-        const data = await response.json();
         console.log(`GoldPricez ${metal} response:`, JSON.stringify(data));
-        
+
         if (data && data.price) {
           const config = COMMODITIES_CONFIG.find(c => c.apiSymbol === metal);
           if (config) {
@@ -297,14 +295,14 @@ async function fetchFromGoldPricez(apiKey: string): Promise<any[]> {
               currencySymbol: "$",
               fullName: config.fullName
             });
-            console.log(`GoldPricez ${config.name}: $${data.price} (${changePercent}%)`);
+            console.log(`GoldPricez ${config.name}: $${data.price} (${changePercent}%) [key #${keyIndex + 1}]`);
           }
         }
       } catch (metalError) {
         console.error(`Error fetching ${metal}:`, metalError);
       }
     }
-    
+
     console.log(`Successfully fetched ${results.length} metals from GoldPricez`);
     return results;
   } catch (error) {
@@ -335,11 +333,11 @@ serve(async (req) => {
     if (commoditiesData.length > 0) dataSource = 'Yahoo';
 
     // Try GoldPricez API for metals (if configured) - only if Yahoo missed metals
-    const goldPricezApiKey = Deno.env.get('GOLDPRICEZ_API_KEY');
+    const hasGoldPricezKey = getServiceKeys('GOLDPRICEZ').length > 0;
     const hasMetals = commoditiesData.some((c) => ['XAU','XAG','XPT','XPD'].includes(c.symbol));
-    if (!hasMetals && goldPricezApiKey) {
+    if (!hasMetals && hasGoldPricezKey) {
       console.log('Trying GoldPricez API for metals...');
-      const metals = await fetchFromGoldPricez(goldPricezApiKey);
+      const metals = await fetchFromGoldPricez();
       if (metals.length > 0) {
         commoditiesData = [...commoditiesData, ...metals];
         dataSource = dataSource === 'static' ? 'GoldPricez' : `${dataSource}+GoldPricez`;
@@ -357,12 +355,12 @@ serve(async (req) => {
       }
     }
 
-    // Try FMP API for Oil, Gas, Copper (uses existing FMP_API_KEY)
-    const fmpApiKey = Deno.env.get('FMP_API_KEY');
-    
-    if (fmpApiKey) {
+    // Try FMP API for Oil, Gas, Copper (rotates across FMP_API_KEY_1..N)
+    const hasFmpKey = getServiceKeys('FMP').length > 0;
+
+    if (hasFmpKey) {
       console.log('Trying FMP API for energy commodities...');
-      energyData = await fetchFromFMP(fmpApiKey);
+      energyData = await fetchFromFMP();
       if (energyData.length > 0) {
         console.log(`Got ${energyData.length} energy commodities from FMP`);
         // Merge energy data
