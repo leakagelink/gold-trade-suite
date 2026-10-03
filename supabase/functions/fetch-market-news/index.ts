@@ -1,5 +1,72 @@
 // Marketaux news fetcher for Crypto, Forex, Commodities
-import { fetchJsonWithRotation, getServiceKeys } from "../_shared/apiKeyRotator.ts";
+import { fetchJsonWithRotation } from "../_shared/apiKeyRotator.ts";
+
+// ============= Google News RSS fallback =============
+// The Marketaux free plan returns only old relevance-ranked articles, so when
+// nothing is fresh we pull real, current headlines from Google News RSS
+// (free, no API key, no quota).
+const RSS_QUERIES: Record<string, string> = {
+  crypto: 'cryptocurrency OR bitcoin OR ethereum when:7d',
+  forex: 'forex OR "currency market" OR "exchange rate" when:7d',
+  commodities: 'gold price OR crude oil OR commodities market when:7d',
+  all: 'stock market OR cryptocurrency OR forex OR commodities when:7d',
+};
+
+function decodeXmlEntities(s: string): string {
+  return s
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
+function extractTag(block: string, tag: string): string {
+  const m = block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i'));
+  return m ? decodeXmlEntities(m[1]).trim() : '';
+}
+
+async function fetchGoogleNews(query: string, limit: number) {
+  try {
+    const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NewsBot/1.0)' },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!res.ok) {
+      console.error(`[News] Google News RSS HTTP ${res.status}`);
+      return [];
+    }
+    const xml = await res.text();
+    const items = xml.match(/<item>[\s\S]*?<\/item>/g) ?? [];
+    return items.slice(0, Math.min(limit, 20)).map((item, i) => {
+      const title = extractTag(item, 'title');
+      const link = extractTag(item, 'link');
+      const pubDate = extractTag(item, 'pubDate');
+      const source = extractTag(item, 'source') || 'Google News';
+      const description = extractTag(item, 'description');
+      // Google News descriptions are HTML; strip tags for a clean snippet.
+      const snippet = description.replace(/<[^>]*>/g, '').slice(0, 300);
+      const t = pubDate ? new Date(pubDate).getTime() : NaN;
+      return {
+        uuid: `gn-${i}-${pubDate}`,
+        title,
+        description: snippet || title,
+        snippet,
+        url: link,
+        source,
+        published_at: !isNaN(t) ? new Date(t).toISOString() : new Date().toISOString(),
+        entities: [],
+      };
+    }).filter((a) => a.title && a.url);
+  } catch (err) {
+    console.error('[News] Google News RSS error:', String(err));
+    return [];
+  }
+}
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -108,8 +175,9 @@ Deno.serve(async (req) => {
       sort: 'published_desc',
     });
 
+    // Note: `industries` filter returns 0 results on the free plan — use `search` instead.
     if (category === 'crypto') {
-      baseParams.set('industries', 'Cryptocurrency');
+      baseParams.set('search', 'crypto OR bitcoin OR ethereum OR cryptocurrency OR blockchain');
     } else if (category === 'forex') {
       baseParams.set('search', 'forex OR currency OR EUR OR USD OR JPY OR GBP');
     } else if (category === 'commodities') {
@@ -139,24 +207,34 @@ Deno.serve(async (req) => {
     const allArticles = json.data;
     console.log(`[News] Marketaux returned ${allArticles.length} raw articles via key #${(keyIndex ?? 0) + 1}`);
 
-    // Safety filter: keep only articles from the last 24 hours.
-    // If the 24h filter empties everything, fall back to the newest articles as-is.
+    // Freshness filter: keep only articles from the last 24 hours.
+    // The Marketaux free plan ignores sort/published_after and returns old
+    // relevance-ranked articles, so when nothing is fresh we fall back to
+    // Google News RSS (free, no key, always fresh) for real articles.
     const cutoff = Date.now() - 24 * 60 * 60 * 1000;
-    let articles = allArticles.filter((a: any) => {
+    const fresh = allArticles.filter((a: any) => {
       const t = new Date(a.published_at).getTime();
       return !isNaN(t) && t >= cutoff;
     });
-    if (articles.length === 0) articles = allArticles;
 
-    if (articles.length === 0) {
-      return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true }), {
+    if (fresh.length > 0) {
+      cache = { data: fresh, timestamp: Date.now(), category };
+      return new Response(JSON.stringify({ data: fresh, cached: false }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    cache = { data: articles, timestamp: Date.now(), category };
+    console.log(`[News] No fresh Marketaux articles (${allArticles.length} stale) — trying Google News RSS`);
+    const rssArticles = await fetchGoogleNews(RSS_QUERIES[category] ?? RSS_QUERIES.all, limit);
+    if (rssArticles.length > 0) {
+      console.log(`[News] Google News RSS returned ${rssArticles.length} articles`);
+      cache = { data: rssArticles, timestamp: Date.now(), category };
+      return new Response(JSON.stringify({ data: rssArticles, cached: false, source: 'google-news' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
-    return new Response(JSON.stringify({ data: articles, cached: false }), {
+    return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
