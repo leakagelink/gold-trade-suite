@@ -99,7 +99,9 @@ export async function fetchJsonWithRotation(
       }
       if (!res.ok) {
         lastError = `HTTP ${res.status}`;
-        console.warn(`[rotator] ${service} key #${idx + 1} HTTP ${res.status}`);
+        let body = '';
+        try { body = (await res.text()).slice(0, 300); } catch { /* ignore */ }
+        console.warn(`[rotator] ${service} key #${idx + 1} HTTP ${res.status} body: ${body}`);
         continue;
       }
 

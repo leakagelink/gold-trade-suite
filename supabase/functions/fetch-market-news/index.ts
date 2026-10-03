@@ -1,5 +1,5 @@
 // Marketaux news fetcher for Crypto, Forex, Commodities
-import { fetchJsonWithRotation } from "../_shared/apiKeyRotator.ts";
+import { fetchJsonWithRotation, getServiceKeys } from "../_shared/apiKeyRotator.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -96,15 +96,15 @@ Deno.serve(async (req) => {
     }
 
     // Build Marketaux query based on category.
-    // Only fetch news from the last 24 hours.
+    // Note: Marketaux free plan rejects timestamp-format published_after (HTTP 400)
+    // and returns 0 results for date-only published_after — so we omit it entirely
+    // and filter the last 24 hours locally (results are sorted published_desc).
     // MARKETAUX_API_KEY + MARKETAUX_API_KEY_1..N are tried in order; when a
     // key hits its rate limit the next one takes over automatically.
-    const publishedAfter = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     const baseParams = new URLSearchParams({
       language: 'en',
       limit: String(Math.min(limit, 50)),
       filter_entities: 'true',
-      published_after: publishedAfter,
       sort: 'published_desc',
     });
 
@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
     }
 
     console.log(`[News] Fetching ${category} from Marketaux (with key rotation)`);
-    const { data: json, error: marketauxError } = await fetchJsonWithRotation(
+    const { data: json, keyIndex, error: marketauxError } = await fetchJsonWithRotation(
       'MARKETAUX',
       (apiKey) => {
         const params = new URLSearchParams(baseParams);
@@ -137,13 +137,16 @@ Deno.serve(async (req) => {
     }
 
     const allArticles = json.data;
+    console.log(`[News] Marketaux returned ${allArticles.length} raw articles via key #${(keyIndex ?? 0) + 1}`);
 
-    // Safety filter: keep only articles from the last 24 hours
+    // Safety filter: keep only articles from the last 24 hours.
+    // If the 24h filter empties everything, fall back to the newest articles as-is.
     const cutoff = Date.now() - 24 * 60 * 60 * 1000;
-    const articles = allArticles.filter((a: any) => {
+    let articles = allArticles.filter((a: any) => {
       const t = new Date(a.published_at).getTime();
       return !isNaN(t) && t >= cutoff;
     });
+    if (articles.length === 0) articles = allArticles;
 
     if (articles.length === 0) {
       return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true }), {
