@@ -108,8 +108,9 @@ Deno.serve(async (req) => {
       sort: 'published_desc',
     });
 
+    // Note: `industries` filter returns 0 results on the free plan — use `search` instead.
     if (category === 'crypto') {
-      baseParams.set('industries', 'Cryptocurrency');
+      baseParams.set('search', 'crypto OR bitcoin OR ethereum OR cryptocurrency OR blockchain');
     } else if (category === 'forex') {
       baseParams.set('search', 'forex OR currency OR EUR OR USD OR JPY OR GBP');
     } else if (category === 'commodities') {
