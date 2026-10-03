@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
     }
 
     console.log(`[News] Fetching ${category} from Marketaux (with key rotation)`);
-    const { data: json, error: marketauxError } = await fetchJsonWithRotation(
+    const { data: json, keyIndex, error: marketauxError } = await fetchJsonWithRotation(
       'MARKETAUX',
       (apiKey) => {
         const params = new URLSearchParams(baseParams);
