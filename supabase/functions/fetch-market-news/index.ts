@@ -118,43 +118,27 @@ Deno.serve(async (req) => {
       baseParams.set('search', 'crypto OR forex OR gold OR oil OR bitcoin');
     }
 
-    console.log(`[News] Fetching ${category} from Marketaux (with key rotation)`);
-    const { data: json, keyIndex, error: marketauxError } = await fetchJsonWithRotation(
-      'MARKETAUX',
-      (apiKey) => {
-        const params = new URLSearchParams(baseParams);
-        params.set('api_token', apiKey);
-        return { url: `https://api.marketaux.com/v1/news/all?${params.toString()}` };
-      },
-      { validate: (d: any) => d && Array.isArray(d.data), timeoutMs: 10000 },
-    );
-
-    if (!json || !Array.isArray(json.data)) {
-      console.error(`[News] All Marketaux keys failed: ${marketauxError}`);
-      return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    // TEMP DIAGNOSTIC: try param variants and log found counts
+    const keys = getServiceKeys('MARKETAUX');
+    const token = keys[keyIndex ?? 0];
+    const variants: Record<string, URLSearchParams> = {
+      full: new URLSearchParams(baseParams),
+      no_filter_entities: (() => { const p = new URLSearchParams(baseParams); p.delete('filter_entities'); return p; })(),
+      no_published_after: (() => { const p = new URLSearchParams(baseParams); p.delete('published_after'); return p; })(),
+      minimal: new URLSearchParams({ language: 'en', limit: String(Math.min(limit, 50)), sort: 'published_desc' }),
+    };
+    for (const [name, p] of Object.entries(variants)) {
+      p.set('api_token', token);
+      try {
+        const res = await fetch(`https://api.marketaux.com/v1/news/all?${p.toString()}`, { signal: AbortSignal.timeout(10000) });
+        const body = await res.json();
+        console.log(`[News] variant ${name}: HTTP ${res.status}, found=${body?.meta?.found}, returned=${body?.meta?.returned}, body0=${JSON.stringify(body)?.slice(0, 200)}`);
+      } catch (e) {
+        console.log(`[News] variant ${name}: ERROR ${String(e).slice(0, 150)}`);
+      }
     }
-
-    const allArticles = json.data;
-    console.log(`[News] Marketaux returned ${allArticles.length} raw articles via key #${keyIndex + 1}; meta: ${JSON.stringify(json.meta ?? null)?.slice(0, 300)}`);
-
-    // Safety filter: keep only articles from the last 24 hours
-    const cutoff = Date.now() - 24 * 60 * 60 * 1000;
-    const articles = allArticles.filter((a: any) => {
-      const t = new Date(a.published_at).getTime();
-      return !isNaN(t) && t >= cutoff;
-    });
-
-    if (articles.length === 0) {
-      return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    cache = { data: articles, timestamp: Date.now(), category };
-
-    return new Response(JSON.stringify({ data: articles, cached: false }), {
+    // END TEMP DIAGNOSTIC
+    return new Response(JSON.stringify({ data: FALLBACK_NEWS, fallback: true, diagnostic: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
