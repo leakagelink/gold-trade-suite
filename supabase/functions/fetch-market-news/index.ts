@@ -1,5 +1,72 @@
 // Marketaux news fetcher for Crypto, Forex, Commodities
 import { fetchJsonWithRotation } from "../_shared/apiKeyRotator.ts";
+
+// ============= Google News RSS fallback =============
+// The Marketaux free plan returns only old relevance-ranked articles, so when
+// nothing is fresh we pull real, current headlines from Google News RSS
+// (free, no API key, no quota).
+const RSS_QUERIES: Record<string, string> = {
+  crypto: 'cryptocurrency OR bitcoin OR ethereum when:7d',
+  forex: 'forex OR "currency market" OR "exchange rate" when:7d',
+  commodities: 'gold price OR crude oil OR commodities market when:7d',
+  all: 'stock market OR cryptocurrency OR forex OR commodities when:7d',
+};
+
+function decodeXmlEntities(s: string): string {
+  return s
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
+function extractTag(block: string, tag: string): string {
+  const m = block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i'));
+  return m ? decodeXmlEntities(m[1]).trim() : '';
+}
+
+async function fetchGoogleNews(query: string, limit: number) {
+  try {
+    const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NewsBot/1.0)' },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!res.ok) {
+      console.error(`[News] Google News RSS HTTP ${res.status}`);
+      return [];
+    }
+    const xml = await res.text();
+    const items = xml.match(/<item>[\s\S]*?<\/item>/g) ?? [];
+    return items.slice(0, Math.min(limit, 20)).map((item, i) => {
+      const title = extractTag(item, 'title');
+      const link = extractTag(item, 'link');
+      const pubDate = extractTag(item, 'pubDate');
+      const source = extractTag(item, 'source') || 'Google News';
+      const description = extractTag(item, 'description');
+      // Google News descriptions are HTML; strip tags for a clean snippet.
+      const snippet = description.replace(/<[^>]*>/g, '').slice(0, 300);
+      const t = pubDate ? new Date(pubDate).getTime() : NaN;
+      return {
+        uuid: `gn-${i}-${pubDate}`,
+        title,
+        description: snippet || title,
+        snippet,
+        url: link,
+        source,
+        published_at: !isNaN(t) ? new Date(t).toISOString() : new Date().toISOString(),
+        entities: [],
+      };
+    }).filter((a) => a.title && a.url);
+  } catch (err) {
+    console.error('[News] Google News RSS error:', String(err));
+    return [];
+  }
+}
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
