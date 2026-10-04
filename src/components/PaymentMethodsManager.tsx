@@ -173,7 +173,7 @@ const PaymentMethodsManager = () => {
           <div className="p-2 rounded-xl bg-primary/10 border border-primary/20">
             <Wallet className="h-4 w-4 text-primary" />
           </div>
-          <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
             Withdrawal Methods
           </span>
         </h3>

@@ -99,7 +99,7 @@ export const TopMoversStrip = ({ compact = false }: TopMoversStripProps) => {
             <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border border-accent/30 flex-shrink-0">
               <Flame className="h-3.5 w-3.5 text-primary" />
             </div>
-            <h3 className="font-bold text-sm sm:text-base bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent truncate">
+            <h3 className="font-bold text-sm sm:text-base bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent truncate">
               Hot Markets
             </h3>
           </div>
