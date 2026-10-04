@@ -1,0 +1,1 @@
+insert into auth.instances (id, uuid, raw_base_config, created_at, updated_at) values ('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', '{}', now(), now()) on conflict (id) do nothing
