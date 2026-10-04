@@ -194,7 +194,7 @@ const Index = () => {
             <img
               src={logo}
               alt="SkyFX Trade"
-              className="h-12 w-auto sm:h-16 object-contain transition-transform duration-300 hover:scale-105"
+              className="h-14 w-auto sm:h-20 object-contain transition-transform duration-300 hover:scale-105"
             />
           </div>
           <div className="hidden md:flex items-center gap-7 text-sm font-medium text-muted-foreground">
@@ -224,7 +224,7 @@ const Index = () => {
       </nav>
 
       {/* ───────────────── HERO (Hero + Grid bento) ───────────────── */}
-      <section className="relative overflow-hidden border-b border-border/60">
+      <section className="relative overflow-hidden border-b border-border/60 bg-hero">
         {/* Subtle background */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-grid-pattern opacity-[0.04]" />
@@ -236,14 +236,14 @@ const Index = () => {
           <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
             {/* Left: copy + CTA */}
             <div className="lg:col-span-7 flex flex-col justify-center">
-              <Badge className="self-start mb-5 bg-[hsl(var(--gold))]/15 text-[hsl(var(--gold-foreground))] border border-[hsl(var(--gold))]/40 px-3 py-1.5 text-[11px] sm:text-xs uppercase tracking-[0.18em] font-semibold rounded-full">
+              <Badge className="self-start mb-5 bg-accent/10 text-accent border border-accent/30 px-3 py-1.5 text-[11px] sm:text-xs uppercase tracking-[0.18em] font-semibold rounded-full">
                 <Sparkles className="h-3.5 w-3.5 mr-1.5 text-[hsl(var(--gold))]" />
-                Emerald Prestige Trading
+                Next-Gen Trading Desk
               </Badge>
 
               <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[1.02] tracking-tight text-foreground mb-5">
                 Trade smart.
-                <span className="block text-primary">Grow fast.</span>
+                <span className="block gradient-text pb-2">Fly higher.</span>
               </h1>
 
               <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl leading-relaxed mb-7">
@@ -292,7 +292,7 @@ const Index = () => {
             {/* Right: bento grid */}
             <div className="lg:col-span-5 grid grid-cols-2 grid-rows-3 gap-3 sm:gap-4 min-h-[420px] lg:min-h-[520px]">
               {/* Featured live price BTC */}
-              <Card className="col-span-2 row-span-1 p-5 sm:p-6 border-border/60 bg-primary text-primary-foreground rounded-2xl overflow-hidden relative">
+              <Card className="col-span-2 row-span-1 p-5 sm:p-6 border-border/60 bg-primary text-primary-foreground rounded-2xl overflow-hidden relative bg-brand shadow-[var(--shadow-glow)]">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-[hsl(var(--gold))]/20 rounded-full blur-3xl" />
                 <div className="relative flex items-center justify-between">
                   <div>
