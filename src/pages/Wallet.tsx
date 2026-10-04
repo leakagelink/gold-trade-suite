@@ -182,7 +182,7 @@ const Wallet = () => {
                 {wallet.icon}
               </div>
             </div>
-            <div className="relative text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-500 to-emerald-400 bg-clip-text text-transparent">
+            <div className="relative text-3xl sm:text-4xl font-bold bg-gradient-to-r from-accent to-accent bg-clip-text text-transparent">
               ${wallet.balance}
             </div>
             <p className="relative text-xs text-muted-foreground mt-2">Available for trading & withdrawal</p>
@@ -215,9 +215,9 @@ const Wallet = () => {
           className={`${glassCardClass} p-5 sm:p-6 cursor-pointer group hover:scale-[1.02] hover:shadow-2xl transition-all duration-500`}
           onClick={() => setDepositModalOpen(true)}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/0 to-emerald-500/5 group-hover:from-emerald-500/5 group-hover:to-emerald-500/15 transition-all duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/0 to-accent/5 group-hover:from-accent/5 group-hover:to-accent/15 transition-all duration-500" />
           <div className="relative flex items-center gap-4">
-            <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 border border-emerald-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/20 border border-emerald-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
               <ArrowDownLeft className="h-7 w-7 text-emerald-500" />
             </div>
             <div>
