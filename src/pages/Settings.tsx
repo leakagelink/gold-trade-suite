@@ -75,14 +75,14 @@ const Settings = () => {
 
         {appDownloadUrl && (
           <Card className={`${glassCardClass} p-5 sm:p-6 group hover:scale-[1.01] transition-all duration-300`}>
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-emerald-500/10" />
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-accent/5 to-accent/10" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
             <div className="relative">
               <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30">
+                <div className="p-2 rounded-xl bg-gradient-to-br from-accent/20 to-accent/20 border border-emerald-500/30">
                   <Smartphone className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-500" />
                 </div>
-                <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-emerald-500 to-teal-400 bg-clip-text text-transparent">
+                <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-accent to-accent bg-clip-text text-transparent">
                   Download App
                 </h2>
               </div>
@@ -91,7 +91,7 @@ const Settings = () => {
               </p>
               <Button
                 onClick={() => window.open(appDownloadUrl, '_blank')}
-                className="w-full h-11 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 hover:opacity-95 text-white font-semibold rounded-xl shadow-[0_4px_20px_-4px_hsl(160_70%_45%/0.5)] transition-all duration-300"
+                className="w-full h-11 bg-gradient-to-r from-accent via-accent to-accent hover:opacity-95 text-white font-semibold rounded-xl shadow-[0_4px_20px_-4px_hsl(160_70%_45%/0.5)] transition-all duration-300"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Download APK

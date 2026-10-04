@@ -446,7 +446,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
 
       {/* USD Conversion Preview */}
       {amount && parseFloat(amount) > 0 && (
-        <div className="p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
+        <div className="p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-accent/10 border border-green-500/20">
           <div className="text-center space-y-2">
             <p className="text-sm text-muted-foreground">You will receive</p>
             <div className="text-2xl font-bold text-green-600">
@@ -495,7 +495,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
         <div className="text-center">
           <p className="text-muted-foreground text-sm mb-1">Amount to Pay</p>
           <p className="text-3xl font-bold text-primary">₹{parseFloat(amount).toLocaleString()}</p>
-          <div className="mt-2 p-3 rounded-lg bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 inline-block">
+          <div className="mt-2 p-3 rounded-lg bg-gradient-to-r from-green-500/10 to-accent/10 border border-green-500/20 inline-block">
             <p className="text-xs text-muted-foreground mb-1">You will receive</p>
             <p className="text-lg font-bold text-green-600">
               ${calculateUsdPreview(parseFloat(amount)).totalAmount.toFixed(2)} USD
@@ -641,7 +641,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
 
       {/* USD Conversion Preview */}
       {amount && parseFloat(amount) > 0 && (
-        <div className="p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
+        <div className="p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-accent/10 border border-green-500/20">
           <div className="text-center space-y-2">
             <p className="text-sm text-muted-foreground">You will receive</p>
             <div className="text-2xl font-bold text-green-600">
