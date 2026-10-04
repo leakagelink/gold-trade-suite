@@ -129,7 +129,7 @@ const Wallet = () => {
       <Seo title="Wallet — SkyFX Trade" description="View balance, deposit funds, withdraw earnings and track every transaction on your SkyFX Trade wallet." path="/wallet" noindex />
       {/* Deposit Offer Banner */}
       {offerSettings.bonusEnabled && (
-        <Card className="mb-6 sm:mb-8 p-5 sm:p-6 bg-gradient-to-r from-primary via-secondary to-accent text-primary-foreground overflow-hidden relative border-0 shadow-[0_8px_32px_-8px_hsl(var(--primary)/0.5)] animate-fade-in">
+        <Card className="mb-6 sm:mb-8 p-5 sm:p-6 bg-gradient-to-r from-primary via-accent to-primary text-primary-foreground overflow-hidden relative border-0 shadow-[0_8px_32px_-8px_hsl(var(--primary)/0.5)] animate-fade-in">
           <div className="absolute inset-0 opacity-20 pointer-events-none">
             <div className="absolute top-2 left-10 text-4xl">🎁</div>
             <div className="absolute top-4 right-20 text-3xl">💰</div>
@@ -250,7 +250,7 @@ const Wallet = () => {
           <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border border-accent/30">
             <ArrowDownLeft className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           </div>
-          <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
             Recent Transactions
           </span>
         </h2>
@@ -285,7 +285,7 @@ const Wallet = () => {
           <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border border-accent/30">
             <History className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           </div>
-          <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
             Deposit History
           </span>
         </h2>

@@ -35,7 +35,7 @@ const Settings = () => {
         <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border border-accent/30">
           <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
         </div>
-        <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+        <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
           {title}
         </h2>
       </div>
@@ -102,7 +102,7 @@ const Settings = () => {
 
         <Button
           onClick={handleSave}
-          className="w-full h-12 bg-gradient-to-r from-primary via-secondary to-accent hover:opacity-95 text-primary-foreground font-semibold rounded-xl shadow-[0_4px_20px_-4px_hsl(var(--primary)/0.5)] hover:shadow-[0_8px_30px_-4px_hsl(var(--primary)/0.6)] transition-all duration-300 lg:col-span-2"
+          className="w-full h-12 bg-gradient-to-r from-primary via-accent to-primary hover:opacity-95 text-primary-foreground font-semibold rounded-xl shadow-[0_4px_20px_-4px_hsl(var(--primary)/0.5)] hover:shadow-[0_8px_30px_-4px_hsl(var(--primary)/0.6)] transition-all duration-300 lg:col-span-2"
         >
           Save All Settings
         </Button>

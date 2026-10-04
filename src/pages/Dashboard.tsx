@@ -388,7 +388,7 @@ const Dashboard = () => {
               <div className="relative inline-block">
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-accent/30 to-secondary/30 blur-2xl opacity-60" />
                 <h1 className="relative text-3xl sm:text-4xl md:text-5xl font-bold mb-2 tracking-tight">
-                  <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                     Trading Dashboard
                   </span>
                 </h1>
@@ -461,7 +461,7 @@ const Dashboard = () => {
                       <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border border-accent/30">
                         <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                       </div>
-                      <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                      <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                         Cryptocurrency Markets
                       </span>
                     </h2>
@@ -506,7 +506,7 @@ const Dashboard = () => {
                         <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border border-accent/30">
                           <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                         </div>
-                        <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                        <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                           Forex Markets
                         </span>
                       </h2>
@@ -552,7 +552,7 @@ const Dashboard = () => {
                         <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border border-accent/30">
                           <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                         </div>
-                        <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                        <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                           Commodities Markets
                         </span>
                       </h2>

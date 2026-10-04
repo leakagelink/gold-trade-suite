@@ -92,7 +92,7 @@ const PageShell = ({
                   <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                 </span>
               )}
-              <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                 {title}
               </span>
             </h1>
