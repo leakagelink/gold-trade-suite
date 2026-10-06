@@ -798,40 +798,28 @@ const Positions = () => {
       const closeBrokerage = +(closePrice * quantity * (brokeragePctRef.current / 100)).toFixed(4);
       const totalBrokerage = Number(position.brokerage || 0) + closeBrokerage;
 
-      // Close position in database - use status check to prevent double close
-      const { data: updateResult, error } = await supabase
-        .from('positions')
-        .update({
-          status: 'closed',
-          closed_at: closedAt,
-          close_price: closePrice,
-          pnl: pnl,
-          closed_by: user?.id,
-          brokerage: totalBrokerage,
-        } as any)
-        .eq('id', position.id)
-        .eq('status', 'open') // CRITICAL: Only update if still open
-        .select();
-
+      // Atomic server-side close + wallet credit
+      const { data: res, error } = await supabase.rpc('user_close_trade' as any, {
+        p_position_id: position.id,
+        p_close_price: closePrice,
+        p_close_brokerage: closeBrokerage,
+        p_force_loss: true,
+      });
       if (error) throw error;
 
-      // Check if update actually happened (position was still open)
-      if (!updateResult || updateResult.length === 0) {
-        console.log('Position was already closed in database:', position.id);
+      if ((res as any)?.already_closed) {
         toast.info('Position was already closed');
         setClosingPositionId(null);
         setClosePositionId(null);
         return;
       }
+      closePrice = Number((res as any)?.close_price ?? closePrice);
+      pnl = Number((res as any)?.pnl ?? pnl);
 
-      // Show success animation
       setClosingPositionId(null);
       setClosedSuccessId(position.id);
-
-      // Wait for animation to complete before moving to closed
       await new Promise(resolve => setTimeout(resolve, 800));
 
-      // Add to closed positions at the top
       const closedPosition: Position = {
         ...position,
         status: 'closed',
@@ -840,64 +828,11 @@ const Positions = () => {
         pnl: pnl,
         brokerage: totalBrokerage,
       };
-      
-      setClosedPositions(prev => {
-        // Avoid duplicates
-        if (prev.some(p => p.id === position.id)) {
-          return prev;
-        }
-        return [closedPosition, ...prev];
-      });
-      
-      // Clean up refs and animation state
+      setClosedPositions(prev => prev.some(p => p.id === position.id) ? prev : [closedPosition, ...prev]);
+
       setClosedSuccessId(null);
       delete previousPricesRef.current[position.id];
       delete basePnlRef.current[position.id];
-
-      // Get current wallet balance
-      const { data: wallet, error: walletError } = await supabase
-        .from('user_wallets')
-        .select('balance')
-        .eq('user_id', user?.id)
-        .eq('currency', 'USD')
-        .single();
-
-      if (walletError) {
-        console.error('Error fetching wallet:', walletError);
-      } else {
-        const currentBalance = wallet?.balance || 0;
-
-        // Return margin + PnL minus exit brokerage
-        const finalAmount = position.margin + pnl - closeBrokerage;
-        const newBalance = currentBalance + finalAmount;
-
-        await supabase
-          .from('user_wallets')
-          .update({ balance: newBalance })
-          .eq('user_id', user?.id)
-          .eq('currency', 'USD');
-
-        // Record settlement transaction (margin + PnL net of brokerage)
-        await supabase.from('wallet_transactions').insert({
-          user_id: user?.id,
-          type: 'trade',
-          amount: finalAmount,
-          currency: 'USD',
-          status: 'Completed',
-          reference_id: position.id
-        });
-        // Record exit brokerage separately
-        if (closeBrokerage > 0) {
-          await supabase.from('wallet_transactions').insert({
-            user_id: user?.id,
-            type: 'brokerage' as any,
-            amount: closeBrokerage,
-            currency: 'USD',
-            status: 'Completed',
-            reference_id: position.id
-          });
-        }
-      }
 
       toast.success(`Position closed: PnL ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} • Brokerage $${closeBrokerage.toFixed(2)}`);
       setClosePositionId(null);
