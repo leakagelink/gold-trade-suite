@@ -927,143 +927,35 @@ const Trading = () => {
         }
       }
 
-      // Check for existing open position on same symbol + same direction
-      const { data: existingPosition, error: existingError } = await supabase
+      // Check whether this will average into an existing position (for messaging)
+      const { data: existingPosition } = await supabase
         .from('positions')
-        .select('*')
+        .select('id')
         .eq('user_id', user?.id)
         .eq('symbol', symbol?.toUpperCase())
         .eq('position_type', type)
         .eq('status', 'open')
+        .limit(1)
         .maybeSingle();
 
-      if (existingError) {
-        console.error('Error checking existing position:', existingError);
-      }
-
-      // Deduct margin + brokerage from wallet
-      const { error: updateError } = await supabase
-        .from('user_wallets')
-        .update({ balance: currentBalance - totalRequired })
-        .eq('user_id', user?.id)
-        .eq('currency', 'USD');
-
-      if (updateError) throw updateError;
+      // Atomic server-side: debit wallet + open/average position + record transactions
+      const { error: openError } = await supabase.rpc('user_open_trade' as any, {
+        p_symbol: symbol?.toUpperCase(),
+        p_position_type: type,
+        p_quantity: assetQuantity,
+        p_entry_price: currentPrice,
+        p_current_price: currentPrice,
+        p_leverage: leverage,
+        p_margin: margin,
+        p_brokerage: openBrokerage,
+        p_stop_loss: stopLossValue,
+        p_take_profit: takeProfitValue,
+      });
+      if (openError) throw openError;
 
       if (existingPosition) {
-        // AVERAGE INTO EXISTING POSITION
-        const oldAmount = Number(existingPosition.amount);
-        const oldEntryPrice = Number(existingPosition.entry_price);
-        const oldMargin = Number(existingPosition.margin);
-        const oldLeverage = Number(existingPosition.leverage);
-
-        // New averaged values
-        const newTotalAmount = oldAmount + assetQuantity;
-        const newAvgEntryPrice = ((oldAmount * oldEntryPrice) + (assetQuantity * currentPrice)) / newTotalAmount;
-        const newTotalMargin = oldMargin + margin;
-        // Weighted average leverage: total_position_value / total_margin
-        const newLeverage = Math.round(((newTotalAmount * newAvgEntryPrice) / newTotalMargin));
-
-        // Use new SL/TP if provided, otherwise keep existing
-        const finalStopLoss = stopLossValue ?? (existingPosition.stop_loss ? Number(existingPosition.stop_loss) : null);
-        const finalTakeProfit = takeProfitValue ?? (existingPosition.take_profit ? Number(existingPosition.take_profit) : null);
-
-        const newBrokerage = Number(existingPosition.brokerage || 0) + openBrokerage;
-        const { error: avgError } = await supabase
-          .from('positions')
-          .update({
-            amount: newTotalAmount,
-            entry_price: newAvgEntryPrice,
-            current_price: currentPrice,
-            margin: newTotalMargin,
-            leverage: newLeverage,
-            stop_loss: finalStopLoss,
-            take_profit: finalTakeProfit,
-            brokerage: newBrokerage,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', existingPosition.id)
-          .eq('status', 'open');
-
-        if (avgError) {
-          // Rollback wallet deduction
-          await supabase
-            .from('user_wallets')
-            .update({ balance: currentBalance })
-            .eq('user_id', user?.id)
-            .eq('currency', 'USD');
-          throw avgError;
-        }
-
-        // Record margin transaction
-        await supabase.from('wallet_transactions').insert({
-          user_id: user?.id,
-          type: 'trade',
-          amount: margin,
-          currency: 'USD',
-          status: 'Completed',
-          reference_id: existingPosition.id
-        });
-        // Record brokerage charge
-        if (openBrokerage > 0) {
-          await supabase.from('wallet_transactions').insert({
-            user_id: user?.id,
-            type: 'brokerage' as any,
-            amount: openBrokerage,
-            currency: 'USD',
-            status: 'Completed',
-            reference_id: existingPosition.id
-          });
-        }
-
         toast.success(`Averaged into existing ${type === 'long' ? 'BUY' : 'SELL'} position: +${assetQuantity.toFixed(6)} ${symbol?.toUpperCase()} @ $${currentPrice.toFixed(2)}. Brokerage: $${openBrokerage.toFixed(2)}`);
       } else {
-        // CREATE NEW POSITION
-        const { data: newPos, error } = await supabase.from('positions').insert({
-          user_id: user?.id,
-          symbol: symbol?.toUpperCase(),
-          position_type: type,
-          amount: assetQuantity,
-          entry_price: currentPrice,
-          current_price: currentPrice,
-          leverage: leverage,
-          margin: margin,
-          status: 'open',
-          stop_loss: stopLossValue,
-          take_profit: takeProfitValue,
-          brokerage: openBrokerage,
-        } as any).select('id').maybeSingle();
-
-        if (error) {
-          await supabase
-            .from('user_wallets')
-            .update({ balance: currentBalance })
-            .eq('user_id', user?.id)
-            .eq('currency', 'USD');
-          throw error;
-        }
-
-        // Record margin transaction
-        await supabase.from('wallet_transactions').insert({
-          user_id: user?.id,
-          type: 'trade',
-          amount: margin,
-          currency: 'USD',
-          status: 'Completed',
-          reference_id: newPos?.id ?? null
-        });
-        // Record brokerage charge
-        if (openBrokerage > 0) {
-          await supabase.from('wallet_transactions').insert({
-            user_id: user?.id,
-            type: 'brokerage' as any,
-            amount: openBrokerage,
-            currency: 'USD',
-            status: 'Completed',
-            reference_id: newPos?.id ?? null
-          });
-        }
-
         const slMessage = stopLossValue ? ` | SL: $${stopLossValue.toFixed(2)}` : '';
         const tpMessage = takeProfitValue ? ` | TP: $${takeProfitValue.toFixed(2)}` : '';
         toast.success(`${type === 'long' ? 'BUY' : 'SELL'} opened: ${assetQuantity.toFixed(6)} ${symbol?.toUpperCase()} @ $${currentPrice.toFixed(2)}${slMessage}${tpMessage}. Margin $${margin.toFixed(2)} • Brokerage $${openBrokerage.toFixed(2)}`);
@@ -1078,9 +970,9 @@ const Trading = () => {
       setShowLongDialog(false);
       setShowShortDialog(false);
       fetchWalletBalance();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error opening position:', error);
-      toast.error('Failed to open position');
+      toast.error(error?.message ? `Failed to open position: ${error.message}` : 'Failed to open position');
     }
   };
 

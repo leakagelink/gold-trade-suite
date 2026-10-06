@@ -1023,6 +1023,31 @@ export type Database = {
           sample_violations: string[]
         }[]
       }
+      user_close_trade: {
+        Args: {
+          p_close_brokerage?: number
+          p_close_price: number
+          p_force_loss?: boolean
+          p_position_id: string
+        }
+        Returns: Json
+      }
+      user_open_trade: {
+        Args: {
+          p_brokerage: number
+          p_current_price: number
+          p_entry_price: number
+          p_leverage: number
+          p_limit_order_id?: string
+          p_margin: number
+          p_position_type: Database["public"]["Enums"]["position_type"]
+          p_quantity: number
+          p_stop_loss?: number
+          p_symbol: string
+          p_take_profit?: number
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

@@ -627,93 +627,21 @@ const Positions = () => {
         return;
       }
 
-      // Deduct margin + brokerage
-      await supabase
-        .from('user_wallets')
-        .update({ balance: currentBalance - totalRequired })
-        .eq('user_id', order.user_id)
-        .eq('currency', 'USD');
-
-      // Check for existing position to average into
-      const { data: existingPosition } = await supabase
-        .from('positions')
-        .select('*')
-        .eq('user_id', order.user_id)
-        .eq('symbol', order.symbol)
-        .eq('position_type', order.position_type)
-        .eq('status', 'open')
-        .maybeSingle();
-
-      let positionRefId: string | null = null;
-
-      if (existingPosition) {
-        const oldAmount = Number(existingPosition.amount);
-        const oldEntryPrice = Number(existingPosition.entry_price);
-        const oldMargin = Number(existingPosition.margin);
-        const newTotalAmount = oldAmount + assetQuantity;
-        const newAvgEntryPrice = ((oldAmount * oldEntryPrice) + (assetQuantity * entryPrice)) / newTotalAmount;
-        const newTotalMargin = oldMargin + margin;
-        const newLeverage = Math.round((newTotalAmount * newAvgEntryPrice) / newTotalMargin);
-        const newBrokerage = Number((existingPosition as any).brokerage || 0) + openBrokerage;
-
-        await supabase
-          .from('positions')
-          .update({
-            amount: newTotalAmount,
-            entry_price: newAvgEntryPrice,
-            current_price: marketPrice,
-            margin: newTotalMargin,
-            leverage: newLeverage,
-            stop_loss: order.stop_loss ?? existingPosition.stop_loss,
-            take_profit: order.take_profit ?? existingPosition.take_profit,
-            brokerage: newBrokerage,
-            updated_at: new Date().toISOString(),
-          } as any)
-          .eq('id', existingPosition.id);
-        positionRefId = existingPosition.id;
-      } else {
-        const { data: newPos } = await supabase.from('positions').insert({
-          user_id: order.user_id,
-          symbol: order.symbol,
-          position_type: order.position_type,
-          amount: assetQuantity,
-          entry_price: entryPrice,
-          current_price: marketPrice,
-          leverage: order.leverage,
-          margin: margin,
-          status: 'open',
-          stop_loss: order.stop_loss,
-          take_profit: order.take_profit,
-          brokerage: openBrokerage,
-        } as any).select('id').maybeSingle();
-        positionRefId = newPos?.id ?? null;
-      }
-
-      // Record margin transaction
-      await supabase.from('wallet_transactions').insert({
-        user_id: order.user_id,
-        type: 'trade',
-        amount: margin,
-        currency: 'USD',
-        status: 'Completed',
-        reference_id: positionRefId,
+      // Atomic server-side: debit wallet, open/average position, mark order executed
+      const { error: execError } = await supabase.rpc('user_open_trade' as any, {
+        p_symbol: order.symbol,
+        p_position_type: order.position_type,
+        p_quantity: assetQuantity,
+        p_entry_price: entryPrice,
+        p_current_price: marketPrice,
+        p_leverage: order.leverage,
+        p_margin: margin,
+        p_brokerage: openBrokerage,
+        p_stop_loss: order.stop_loss,
+        p_take_profit: order.take_profit,
+        p_limit_order_id: order.id,
       });
-      if (openBrokerage > 0) {
-        await supabase.from('wallet_transactions').insert({
-          user_id: order.user_id,
-          type: 'brokerage' as any,
-          amount: openBrokerage,
-          currency: 'USD',
-          status: 'Completed',
-          reference_id: positionRefId,
-        });
-      }
-
-      // Mark limit order as executed
-      await supabase
-        .from('limit_orders')
-        .update({ status: 'executed' as any, executed_at: new Date().toISOString() })
-        .eq('id', order.id);
+      if (execError) throw execError;
 
       toast.success(`Limit ${order.position_type === 'long' ? 'BUY' : 'SELL'} order executed! ${order.symbol} @ $${entryPrice.toFixed(2)}`);
       fetchPositions();
@@ -870,40 +798,28 @@ const Positions = () => {
       const closeBrokerage = +(closePrice * quantity * (brokeragePctRef.current / 100)).toFixed(4);
       const totalBrokerage = Number(position.brokerage || 0) + closeBrokerage;
 
-      // Close position in database - use status check to prevent double close
-      const { data: updateResult, error } = await supabase
-        .from('positions')
-        .update({
-          status: 'closed',
-          closed_at: closedAt,
-          close_price: closePrice,
-          pnl: pnl,
-          closed_by: user?.id,
-          brokerage: totalBrokerage,
-        } as any)
-        .eq('id', position.id)
-        .eq('status', 'open') // CRITICAL: Only update if still open
-        .select();
-
+      // Atomic server-side close + wallet credit
+      const { data: res, error } = await supabase.rpc('user_close_trade' as any, {
+        p_position_id: position.id,
+        p_close_price: closePrice,
+        p_close_brokerage: closeBrokerage,
+        p_force_loss: true,
+      });
       if (error) throw error;
 
-      // Check if update actually happened (position was still open)
-      if (!updateResult || updateResult.length === 0) {
-        console.log('Position was already closed in database:', position.id);
+      if ((res as any)?.already_closed) {
         toast.info('Position was already closed');
         setClosingPositionId(null);
         setClosePositionId(null);
         return;
       }
+      closePrice = Number((res as any)?.close_price ?? closePrice);
+      pnl = Number((res as any)?.pnl ?? pnl);
 
-      // Show success animation
       setClosingPositionId(null);
       setClosedSuccessId(position.id);
-
-      // Wait for animation to complete before moving to closed
       await new Promise(resolve => setTimeout(resolve, 800));
 
-      // Add to closed positions at the top
       const closedPosition: Position = {
         ...position,
         status: 'closed',
@@ -912,64 +828,11 @@ const Positions = () => {
         pnl: pnl,
         brokerage: totalBrokerage,
       };
-      
-      setClosedPositions(prev => {
-        // Avoid duplicates
-        if (prev.some(p => p.id === position.id)) {
-          return prev;
-        }
-        return [closedPosition, ...prev];
-      });
-      
-      // Clean up refs and animation state
+      setClosedPositions(prev => prev.some(p => p.id === position.id) ? prev : [closedPosition, ...prev]);
+
       setClosedSuccessId(null);
       delete previousPricesRef.current[position.id];
       delete basePnlRef.current[position.id];
-
-      // Get current wallet balance
-      const { data: wallet, error: walletError } = await supabase
-        .from('user_wallets')
-        .select('balance')
-        .eq('user_id', user?.id)
-        .eq('currency', 'USD')
-        .single();
-
-      if (walletError) {
-        console.error('Error fetching wallet:', walletError);
-      } else {
-        const currentBalance = wallet?.balance || 0;
-
-        // Return margin + PnL minus exit brokerage
-        const finalAmount = position.margin + pnl - closeBrokerage;
-        const newBalance = currentBalance + finalAmount;
-
-        await supabase
-          .from('user_wallets')
-          .update({ balance: newBalance })
-          .eq('user_id', user?.id)
-          .eq('currency', 'USD');
-
-        // Record settlement transaction (margin + PnL net of brokerage)
-        await supabase.from('wallet_transactions').insert({
-          user_id: user?.id,
-          type: 'trade',
-          amount: finalAmount,
-          currency: 'USD',
-          status: 'Completed',
-          reference_id: position.id
-        });
-        // Record exit brokerage separately
-        if (closeBrokerage > 0) {
-          await supabase.from('wallet_transactions').insert({
-            user_id: user?.id,
-            type: 'brokerage' as any,
-            amount: closeBrokerage,
-            currency: 'USD',
-            status: 'Completed',
-            reference_id: position.id
-          });
-        }
-      }
 
       toast.success(`Position closed: PnL ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} • Brokerage $${closeBrokerage.toFixed(2)}`);
       setClosePositionId(null);
@@ -1019,88 +882,29 @@ const Positions = () => {
         : +(closePrice * quantity * (brokeragePctRef.current / 100)).toFixed(4);
       const totalBrokerage = Number(position.brokerage || 0) + closeBrokerage;
 
-      // Close position in database - use status check to prevent double close
-      const { data: updateResult, error } = await supabase
-        .from('positions')
-        .update({
-          status: 'closed',
-          closed_at: closedAt,
-          close_price: closePrice,
-          pnl: pnl,
-          closed_by: user?.id,
-          brokerage: totalBrokerage,
-        } as any)
-        .eq('id', position.id)
-        .eq('status', 'open')
-        .select();
-
+      // Atomic server-side close + wallet credit
+      const { data: res, error } = await supabase.rpc('user_close_trade' as any, {
+        p_position_id: position.id,
+        p_close_price: closePrice,
+        p_close_brokerage: closeBrokerage,
+        p_force_loss: false,
+      });
       if (error) throw error;
+      if ((res as any)?.already_closed) return;
 
-      // Check if update actually happened
-      if (!updateResult || updateResult.length === 0) {
-        return;
-      }
-
-      // Add to closed positions
-      const closedPosition: Position = {
+      const finalClose = Number((res as any)?.close_price ?? closePrice);
+      const finalPnl = Number((res as any)?.pnl ?? pnl);
+      setClosedPositions(prev => prev.some(p => p.id === position.id) ? prev : [{
         ...position,
         status: 'closed',
         closed_at: closedAt,
-        close_price: closePrice,
-        pnl: pnl,
+        close_price: finalClose,
+        pnl: finalPnl,
         brokerage: totalBrokerage,
-      };
-      
-      setClosedPositions(prev => {
-        if (prev.some(p => p.id === position.id)) {
-          return prev;
-        }
-        return [closedPosition, ...prev];
-      });
-      
-      // Clean up refs
+      }, ...prev]);
+
       delete previousPricesRef.current[position.id];
       delete basePnlRef.current[position.id];
-
-      // Get current wallet balance and update
-      const { data: wallet, error: walletError } = await supabase
-        .from('user_wallets')
-        .select('balance')
-        .eq('user_id', user?.id)
-        .eq('currency', 'USD')
-        .single();
-
-      if (!walletError && wallet) {
-        const currentBalance = wallet.balance || 0;
-        const finalAmount = position.margin + pnl - closeBrokerage;
-        const newBalance = currentBalance + finalAmount;
-
-        await supabase
-          .from('user_wallets')
-          .update({ balance: newBalance })
-          .eq('user_id', user?.id)
-          .eq('currency', 'USD');
-
-        // Record settlement
-        await supabase.from('wallet_transactions').insert({
-          user_id: user?.id,
-          type: 'trade',
-          amount: finalAmount,
-          currency: 'USD',
-          status: 'Completed',
-          reference_id: position.id
-        });
-        if (closeBrokerage > 0) {
-          await supabase.from('wallet_transactions').insert({
-            user_id: user?.id,
-            type: 'brokerage' as any,
-            amount: closeBrokerage,
-            currency: 'USD',
-            status: 'Completed',
-            reference_id: position.id
-          });
-        }
-      }
 
       if (reason === 'stop_loss') {
         toast.warning(`⚠️ Stop Loss triggered for ${position.symbol}! Position closed at $${closePrice.toFixed(2)}. PnL: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`);
