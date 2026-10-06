@@ -947,88 +947,29 @@ const Positions = () => {
         : +(closePrice * quantity * (brokeragePctRef.current / 100)).toFixed(4);
       const totalBrokerage = Number(position.brokerage || 0) + closeBrokerage;
 
-      // Close position in database - use status check to prevent double close
-      const { data: updateResult, error } = await supabase
-        .from('positions')
-        .update({
-          status: 'closed',
-          closed_at: closedAt,
-          close_price: closePrice,
-          pnl: pnl,
-          closed_by: user?.id,
-          brokerage: totalBrokerage,
-        } as any)
-        .eq('id', position.id)
-        .eq('status', 'open')
-        .select();
-
+      // Atomic server-side close + wallet credit
+      const { data: res, error } = await supabase.rpc('user_close_trade' as any, {
+        p_position_id: position.id,
+        p_close_price: closePrice,
+        p_close_brokerage: closeBrokerage,
+        p_force_loss: false,
+      });
       if (error) throw error;
+      if ((res as any)?.already_closed) return;
 
-      // Check if update actually happened
-      if (!updateResult || updateResult.length === 0) {
-        return;
-      }
-
-      // Add to closed positions
-      const closedPosition: Position = {
+      const finalClose = Number((res as any)?.close_price ?? closePrice);
+      const finalPnl = Number((res as any)?.pnl ?? pnl);
+      setClosedPositions(prev => prev.some(p => p.id === position.id) ? prev : [{
         ...position,
         status: 'closed',
         closed_at: closedAt,
-        close_price: closePrice,
-        pnl: pnl,
+        close_price: finalClose,
+        pnl: finalPnl,
         brokerage: totalBrokerage,
-      };
-      
-      setClosedPositions(prev => {
-        if (prev.some(p => p.id === position.id)) {
-          return prev;
-        }
-        return [closedPosition, ...prev];
-      });
-      
-      // Clean up refs
+      }, ...prev]);
+
       delete previousPricesRef.current[position.id];
       delete basePnlRef.current[position.id];
-
-      // Get current wallet balance and update
-      const { data: wallet, error: walletError } = await supabase
-        .from('user_wallets')
-        .select('balance')
-        .eq('user_id', user?.id)
-        .eq('currency', 'USD')
-        .single();
-
-      if (!walletError && wallet) {
-        const currentBalance = wallet.balance || 0;
-        const finalAmount = position.margin + pnl - closeBrokerage;
-        const newBalance = currentBalance + finalAmount;
-
-        await supabase
-          .from('user_wallets')
-          .update({ balance: newBalance })
-          .eq('user_id', user?.id)
-          .eq('currency', 'USD');
-
-        // Record settlement
-        await supabase.from('wallet_transactions').insert({
-          user_id: user?.id,
-          type: 'trade',
-          amount: finalAmount,
-          currency: 'USD',
-          status: 'Completed',
-          reference_id: position.id
-        });
-        if (closeBrokerage > 0) {
-          await supabase.from('wallet_transactions').insert({
-            user_id: user?.id,
-            type: 'brokerage' as any,
-            amount: closeBrokerage,
-            currency: 'USD',
-            status: 'Completed',
-            reference_id: position.id
-          });
-        }
-      }
 
       if (reason === 'stop_loss') {
         toast.warning(`⚠️ Stop Loss triggered for ${position.symbol}! Position closed at $${closePrice.toFixed(2)}. PnL: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`);
