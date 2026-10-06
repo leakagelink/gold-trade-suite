@@ -627,93 +627,21 @@ const Positions = () => {
         return;
       }
 
-      // Deduct margin + brokerage
-      await supabase
-        .from('user_wallets')
-        .update({ balance: currentBalance - totalRequired })
-        .eq('user_id', order.user_id)
-        .eq('currency', 'USD');
-
-      // Check for existing position to average into
-      const { data: existingPosition } = await supabase
-        .from('positions')
-        .select('*')
-        .eq('user_id', order.user_id)
-        .eq('symbol', order.symbol)
-        .eq('position_type', order.position_type)
-        .eq('status', 'open')
-        .maybeSingle();
-
-      let positionRefId: string | null = null;
-
-      if (existingPosition) {
-        const oldAmount = Number(existingPosition.amount);
-        const oldEntryPrice = Number(existingPosition.entry_price);
-        const oldMargin = Number(existingPosition.margin);
-        const newTotalAmount = oldAmount + assetQuantity;
-        const newAvgEntryPrice = ((oldAmount * oldEntryPrice) + (assetQuantity * entryPrice)) / newTotalAmount;
-        const newTotalMargin = oldMargin + margin;
-        const newLeverage = Math.round((newTotalAmount * newAvgEntryPrice) / newTotalMargin);
-        const newBrokerage = Number((existingPosition as any).brokerage || 0) + openBrokerage;
-
-        await supabase
-          .from('positions')
-          .update({
-            amount: newTotalAmount,
-            entry_price: newAvgEntryPrice,
-            current_price: marketPrice,
-            margin: newTotalMargin,
-            leverage: newLeverage,
-            stop_loss: order.stop_loss ?? existingPosition.stop_loss,
-            take_profit: order.take_profit ?? existingPosition.take_profit,
-            brokerage: newBrokerage,
-            updated_at: new Date().toISOString(),
-          } as any)
-          .eq('id', existingPosition.id);
-        positionRefId = existingPosition.id;
-      } else {
-        const { data: newPos } = await supabase.from('positions').insert({
-          user_id: order.user_id,
-          symbol: order.symbol,
-          position_type: order.position_type,
-          amount: assetQuantity,
-          entry_price: entryPrice,
-          current_price: marketPrice,
-          leverage: order.leverage,
-          margin: margin,
-          status: 'open',
-          stop_loss: order.stop_loss,
-          take_profit: order.take_profit,
-          brokerage: openBrokerage,
-        } as any).select('id').maybeSingle();
-        positionRefId = newPos?.id ?? null;
-      }
-
-      // Record margin transaction
-      await supabase.from('wallet_transactions').insert({
-        user_id: order.user_id,
-        type: 'trade',
-        amount: margin,
-        currency: 'USD',
-        status: 'Completed',
-        reference_id: positionRefId,
+      // Atomic server-side: debit wallet, open/average position, mark order executed
+      const { error: execError } = await supabase.rpc('user_open_trade' as any, {
+        p_symbol: order.symbol,
+        p_position_type: order.position_type,
+        p_quantity: assetQuantity,
+        p_entry_price: entryPrice,
+        p_current_price: marketPrice,
+        p_leverage: order.leverage,
+        p_margin: margin,
+        p_brokerage: openBrokerage,
+        p_stop_loss: order.stop_loss,
+        p_take_profit: order.take_profit,
+        p_limit_order_id: order.id,
       });
-      if (openBrokerage > 0) {
-        await supabase.from('wallet_transactions').insert({
-          user_id: order.user_id,
-          type: 'brokerage' as any,
-          amount: openBrokerage,
-          currency: 'USD',
-          status: 'Completed',
-          reference_id: positionRefId,
-        });
-      }
-
-      // Mark limit order as executed
-      await supabase
-        .from('limit_orders')
-        .update({ status: 'executed' as any, executed_at: new Date().toISOString() })
-        .eq('id', order.id);
+      if (execError) throw execError;
 
       toast.success(`Limit ${order.position_type === 'long' ? 'BUY' : 'SELL'} order executed! ${order.symbol} @ $${entryPrice.toFixed(2)}`);
       fetchPositions();
