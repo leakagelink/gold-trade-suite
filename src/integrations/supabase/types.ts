@@ -1026,7 +1026,7 @@ export type Database = {
       user_close_trade: {
         Args: {
           p_close_brokerage?: number
-          p_close_price: number
+          p_close_price?: number
           p_force_loss?: boolean
           p_position_id: string
         }

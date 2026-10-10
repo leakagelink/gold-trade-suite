@@ -552,8 +552,8 @@ export const AdminTradeManagement = () => {
               }
               const basePnl = basePnlRef.current[position.id];
               const basePnlPercent = position.margin > 0 ? (basePnl / position.margin) * 100 : 0;
-              // Oscillating momentum: PnL swings between ±1% and ±5% around the broker-set base PnL
-              const momentumMagnitude = Math.random() * 4 + 1; // 1..5
+              // Oscillating momentum: PnL swings between ±0.10% and ±1% around the broker-set base PnL
+              const momentumMagnitude = Math.random() * 0.9 + 0.1; // 0.10..1.00
               const momentumSign = Math.random() < 0.5 ? -1 : 1;
               const adjustedPnlPercent = basePnlPercent + (momentumSign * momentumMagnitude);
               
@@ -1283,7 +1283,7 @@ export const AdminTradeManagement = () => {
 
       // Auto-activate edited PnL momentum around the broker-set PnL anchor.
       const isEdited = newPriceMode === 'edited';
-      const driftPct = Math.random() * 4 + 1; // 1..5 PnL percentage points
+      const driftPct = Math.random() * 0.9 + 0.1; // 0.10..1.00 PnL percentage points
       const direction: 'up' | 'down' = Math.random() < 0.5 ? 'up' : 'down';
       const newPnlPercent = newMargin > 0 ? (newPnl / newMargin) * 100 : 0;
       const momentumTargetPnlPercent = isEdited
@@ -1539,7 +1539,7 @@ export const AdminTradeManagement = () => {
       ));
 
       // Update database in background - mark as 'edited' and reset the broker-set PnL anchor.
-      const driftPct = Math.random() * 4 + 1; // 1..5 PnL percentage points
+      const driftPct = Math.random() * 0.9 + 0.1; // 0.10..1.00 PnL percentage points
       const direction: 'up' | 'down' = Math.random() < 0.5 ? 'up' : 'down';
       const momentumTargetPnlPercent = pnlPercent + (direction === 'up' ? driftPct : -driftPct);
 
