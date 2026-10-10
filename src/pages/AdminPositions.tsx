@@ -277,25 +277,24 @@ const AdminPositions = () => {
   const handleClosePosition = async (position: Position) => {
     try {
       const closePrice = position.current_price;
-      const quantity = getEffectivePositionAmount(position);
-      const pnl = position.position_type === 'long' 
-        ? (closePrice - position.entry_price) * quantity
-        : (position.entry_price - closePrice) * quantity;
-
-      const { error } = await supabase
-        .from('positions')
-        .update({
-          status: 'closed',
-          closed_at: new Date().toISOString(),
-          close_price: closePrice,
-          pnl: pnl,
-          closed_by: user?.id
-        })
-        .eq('id', position.id);
+      // Settle through the server-side RPC so the user's wallet is credited
+      // (margin + PnL) atomically along with the position status change.
+      const { data, error } = await supabase.rpc('user_close_trade' as any, {
+        p_position_id: position.id,
+        p_close_price: closePrice,
+        p_close_brokerage: 0,
+        p_force_loss: false
+      });
 
       if (error) throw error;
 
-      toast.success(`Position closed by broker: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} PnL`);
+      const res = (data ?? {}) as { already_closed?: boolean; pnl?: number; close_price?: number };
+      if (res.already_closed) {
+        toast.info('Position was already closed');
+      } else {
+        const pnl = Number(res.pnl ?? 0);
+        toast.success(`Position closed by broker: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} PnL`);
+      }
       setClosePositionId(null);
       fetchPositions();
     } catch (error) {
