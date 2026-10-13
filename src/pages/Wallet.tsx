@@ -155,11 +155,15 @@ const Wallet = () => {
               <div className="text-center">
                 <p className="text-2xl sm:text-3xl font-bold mb-1">{offerSettings.bonusPercentage}% DEPOSIT BONUS</p>
                 <p className="text-white/90 text-xs sm:text-sm">
-                  Deposit between <span className="font-bold">${offerSettings.minAmount} - ${offerSettings.maxAmount}</span> and get <span className="font-bold">{offerSettings.bonusPercentage}% extra</span>!
+                  {Number(offerSettings.maxAmount) > 0
+                    ? <>Deposit between <span className="font-bold">${offerSettings.minAmount} - ${offerSettings.maxAmount}</span></>
+                    : <>Deposit <span className="font-bold">${offerSettings.minAmount}+</span></>} and get <span className="font-bold">{offerSettings.bonusPercentage}% extra</span>!
                 </p>
                 <div className="flex items-center justify-center gap-2 sm:gap-4 mt-3 text-xs sm:text-sm flex-wrap">
                   <span className="bg-white/20 px-3 py-1 rounded-full">Min: ${offerSettings.minAmount}</span>
-                  <span className="bg-white/20 px-3 py-1 rounded-full">Max Bonus: ${offerSettings.bonusMax}</span>
+                  {Number(offerSettings.bonusMax) > 0 && (
+                    <span className="bg-white/20 px-3 py-1 rounded-full">Max Bonus: ${offerSettings.bonusMax}</span>
+                  )}
                 </div>
               </div>
             </div>

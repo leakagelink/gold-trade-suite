@@ -168,8 +168,8 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
           enabled: settings.deposit_bonus_enabled === 'true',
           percentage: parseFloat(settings.deposit_bonus_percentage || "0"),
           minAmount: parseFloat(settings.deposit_min_amount || "0"),
-          maxAmount: parseFloat(settings.deposit_max_amount || "999999"),
-          bonusMax: parseFloat(settings.deposit_bonus_max || "0"),
+          maxAmount: settings.deposit_max_amount ? parseFloat(settings.deposit_max_amount) : Infinity,
+          bonusMax: settings.deposit_bonus_max ? parseFloat(settings.deposit_bonus_max) : Infinity,
         });
       }
     } catch (error) {
