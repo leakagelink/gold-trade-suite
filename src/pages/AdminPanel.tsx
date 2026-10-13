@@ -328,11 +328,11 @@ const AdminPanel = () => {
         // Set deposit offer settings
         setDepositOfferSettings({
           bonusEnabled: settings.depositBonusEnabled === 'true',
-          bonusPercentage: settings.depositBonusPercentage || "30",
-          minAmount: settings.depositMinAmount || "200",
-          maxAmount: settings.depositMaxAmount || "2000",
-          bonusMax: settings.depositBonusMax || "600",
-          offerTitle: settings.depositOfferTitle || "Christmas Bonus",
+          bonusPercentage: settings.depositBonusPercentage ?? "30",
+          minAmount: settings.depositMinAmount ?? "200",
+          maxAmount: settings.depositMaxAmount ?? "2000",
+          bonusMax: settings.depositBonusMax ?? "600",
+          offerTitle: settings.depositOfferTitle ?? "Christmas Bonus",
         });
         
         // Set market settings
