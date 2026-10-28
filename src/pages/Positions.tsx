@@ -1269,8 +1269,10 @@ const Positions = () => {
         {activeTab === "open" && (
           <div>
             {openPositions.length === 0 ? (
-              <div className="p-10 text-center">
-                <p className="text-muted-foreground text-sm">No open positions</p>
+              <div className="mx-auto my-10 max-w-sm rounded-2xl border border-dashed border-border bg-card p-8 text-center shadow-[var(--shadow-card)]">
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-brand font-display text-lg font-bold text-primary-foreground">0</div>
+                <p className="font-display font-semibold text-foreground">No open positions</p>
+                <p className="mt-1 text-xs text-muted-foreground">Pick a market and place your first Buy or Sell order.</p>
                 <Button className="mt-4" onClick={() => navigate("/dashboard")}>
                   Start Trading
                 </Button>

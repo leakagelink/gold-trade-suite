@@ -10,6 +10,7 @@ import { Wallet, User, Settings, FileCheck, Menu, LogOut, Bitcoin, DollarSign, E
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import TradingList from "@/components/TradingList";
+import TickerTape from "@/components/TickerTape";
 import BottomNav from "@/components/BottomNav";
 import logo from "@/assets/logo.png";
 import { MarketNewsFeed } from "@/components/MarketNewsFeed";
@@ -273,39 +274,8 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-muted/40 to-background">
       <Seo title="Dashboard — SkyFX Trade" description="Your live trading dashboard: real-time crypto, forex and commodities markets with one-click execution." path="/dashboard" noindex />
-      {/* Animated Background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute top-1/3 -right-40 w-[600px] h-[600px] bg-accent/20 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: "1s" }} />
-        <div className="absolute bottom-0 left-1/3 w-[450px] h-[450px] bg-secondary/15 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: "2s" }} />
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.03]" />
-      </div>
-
-      {/* Header — Magnetic Dock style: asymmetric, h-20, navy filled profile */}
-      <header className="sticky top-0 z-50 h-20 backdrop-blur-md bg-background/80 border-b border-border/60">
-        <div className="relative h-full flex items-center justify-between px-4 sm:px-5">
-          {/* Left: menu + brand */}
-          <div className="flex items-center gap-3 sm:gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 rounded-full hover:bg-primary/10 active:scale-90 transition-all duration-300 text-primary"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              aria-label="Menu"
-            >
-              <Menu className={`h-5 w-5 transition-transform duration-300 ${sidebarOpen ? "rotate-90" : ""}`} strokeWidth={2.5} />
-            </Button>
-            <div
-              className="flex items-center gap-2 cursor-pointer group"
-              onClick={() => navigate("/dashboard")}
-            >
-              <img
-                src={logo}
-                alt="SkyFX Trade"
-                className="h-10 w-auto sm:h-12 object-contain transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-          </div>
+      <div className="pointer-events-none fixed inset-0 bg-hero" />
+      <div className="pointer-events-none fixed inset-0 bg-grid-pattern opacity-[0.35] [mask-image:linear-gradient(to_bottom,black,transparent_60%)]" />
 
           {/* Right: wallet pill, shield, profile, sign out */}
           <div className="flex items-center gap-2">
@@ -385,18 +355,12 @@ const Dashboard = () => {
           <div className="max-w-7xl xl:max-w-[1700px] 2xl:max-w-[1900px] mx-auto w-full overflow-hidden">
             {/* Hero Header */}
             <div className="mb-6 sm:mb-8 animate-fade-in">
-              <div className="relative inline-block">
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-accent/30 to-secondary/30 blur-2xl opacity-60" />
-                <h1 className="relative text-3xl sm:text-4xl md:text-5xl font-bold mb-2 tracking-tight">
-                  <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-                    Trading Dashboard
-                  </span>
-                </h1>
+              <div className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-accent">
+                <span className="relative flex h-1.5 w-1.5"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" /><span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" /></span>
+                Markets live
               </div>
-              <div className="flex items-center gap-2 mt-2">
-                <div className="h-1 w-12 rounded-full bg-gradient-to-r from-primary to-accent" />
-                <p className="text-sm sm:text-base text-muted-foreground">Monitor and trade across multiple markets in real-time</p>
-              </div>
+              <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-foreground">Trading Dashboard</h1>
+              <p className="mt-1 text-sm sm:text-base text-muted-foreground">Monitor and trade across multiple markets in real-time</p>
             </div>
 
             {/* Search Bar */}
