@@ -556,15 +556,15 @@ export default function Charts() {
               </>
             )}
           </div>
-          <div className="ml-auto flex items-center gap-2">
-            <div className="relative">
+          <div className="ml-auto flex min-w-0 items-center gap-1.5 overflow-x-auto scrollbar-hide sm:gap-2">
+            <div className="relative shrink-0">
               <button
                 onClick={() => setChartTypeOpen((v) => !v)}
                 className="flex items-center gap-1.5 rounded-lg border border-border/50 bg-card/60 px-3 py-1.5 text-xs font-semibold hover:bg-muted/40"
                 title="Chart type"
               >
                 <CandlestickChart className="h-3.5 w-3.5" />
-                {CHART_TYPES.find((t) => t.value === chartType)?.label}
+                <span className="hidden sm:inline">{CHART_TYPES.find((t) => t.value === chartType)?.label}</span>
                 <ChevronDown className="h-3 w-3 opacity-60" />
               </button>
               {chartTypeOpen && (
@@ -651,7 +651,7 @@ export default function Charts() {
       )}
 
       {/* Chart */}
-      <div className="relative w-full min-w-0 flex-1 overflow-hidden">
+      <div className="relative w-full min-w-0 min-h-0 flex-1 overflow-hidden">
         <TradingChart symbol={symbol} candles={candles} mode={mode} color={color} magnet={magnet} indicators={indicators} chartType={chartType} alerts={alerts} />
 
         {/* Loading overlay (only when no data yet) */}
@@ -700,7 +700,7 @@ export default function Charts() {
         {/* Bottom tool dock */}
         <div
           className="absolute left-1/2 z-20 max-w-[calc(100vw-16px)] -translate-x-1/2 snap-x snap-mandatory overflow-x-auto scroll-smooth rounded-2xl border border-border/50 bg-background/80 p-1.5 shadow-2xl backdrop-blur-xl scrollbar-hide [-webkit-overflow-scrolling:touch]"
-          style={{ bottom: `calc(${fullscreen ? "12px" : "76px"} + env(safe-area-inset-bottom))` }}
+          style={{ bottom: `calc(${"12px"} + env(safe-area-inset-bottom))` }}
         >
           <div className="flex items-center gap-0.5 w-max">
             {TOOLS.map((t) => {
@@ -759,6 +759,7 @@ export default function Charts() {
         </div>
       </div>
 
+      {!fullscreen && <div aria-hidden className="shrink-0" style={{ height: "calc(84px + env(safe-area-inset-bottom))" }} />}
       {!fullscreen && <BottomNav />}
     </div>
   );
