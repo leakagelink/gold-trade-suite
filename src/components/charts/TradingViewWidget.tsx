@@ -19,7 +19,9 @@ function TradingViewWidget({ tvSymbol, interval = "60", height = 520 }: Props) {
     script.type = "text/javascript";
     script.async = true;
     script.innerHTML = JSON.stringify({
-      autosize: true,
+      autosize: false,
+      width: "100%",
+      height,
       symbol: tvSymbol,
       interval,
       timezone: "Asia/Kolkata",
@@ -33,7 +35,7 @@ function TradingViewWidget({ tvSymbol, interval = "60", height = 520 }: Props) {
     });
     el.appendChild(script);
     return () => { el.innerHTML = ""; };
-  }, [tvSymbol, interval]);
+  }, [tvSymbol, interval, height]);
 
   return <div ref={ref} className="tradingview-widget-container w-full" style={{ height }} />;
 }
