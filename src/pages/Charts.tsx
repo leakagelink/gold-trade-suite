@@ -556,7 +556,7 @@ export default function Charts() {
               </>
             )}
           </div>
-          <div className="ml-auto flex min-w-0 items-center gap-1.5 overflow-x-auto scrollbar-hide sm:gap-2">
+          <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
             <div className="relative shrink-0">
               <button
                 onClick={() => setChartTypeOpen((v) => !v)}
