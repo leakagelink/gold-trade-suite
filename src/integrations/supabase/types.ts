@@ -911,6 +911,10 @@ export type Database = {
       }
     }
     Functions: {
+      admin_cancel_trade: {
+        Args: { p_position_id: string }
+        Returns: undefined
+      }
       admin_clear_user_trade_history: {
         Args: { p_user_id: string }
         Returns: number
@@ -918,6 +922,18 @@ export type Database = {
       admin_delete_position: {
         Args: { p_position_id: string }
         Returns: undefined
+      }
+      admin_open_trade: {
+        Args: {
+          p_leverage: number
+          p_margin: number
+          p_position_type: Database["public"]["Enums"]["position_type"]
+          p_price: number
+          p_price_mode?: string
+          p_symbol: string
+          p_user_id: string
+        }
+        Returns: string
       }
       admin_submit_kyc:
         | {

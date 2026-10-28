@@ -15,6 +15,13 @@
       "when": 1791869856814,
       "tag": "0001_deposit_bonus_blank_cap_unlimited",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793207511844,
+      "tag": "0002_admin_bulk_trade_rpcs",
+      "breakpoints": true
     }
   ]
 }
