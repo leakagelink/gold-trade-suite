@@ -60,7 +60,7 @@ export default function AlertsMenu({ symbol, currentPrice, alerts, setAlerts }: 
               <button
                 onClick={() => setDir("above")}
                 className={`flex items-center gap-1 rounded-md border border-border/40 px-2 py-1 text-xs ${
-                  dir === "above" ? "bg-emerald-500/20 text-emerald-300" : "bg-card/40"
+                  dir === "above" ? "bg-success/20 text-success" : "bg-card/40"
                 }`}
               >
                 <ArrowUp className="h-3 w-3" /> Above
@@ -68,7 +68,7 @@ export default function AlertsMenu({ symbol, currentPrice, alerts, setAlerts }: 
               <button
                 onClick={() => setDir("below")}
                 className={`flex items-center gap-1 rounded-md border border-border/40 px-2 py-1 text-xs ${
-                  dir === "below" ? "bg-red-500/20 text-red-300" : "bg-card/40"
+                  dir === "below" ? "bg-destructive/20 text-destructive" : "bg-card/40"
                 }`}
               >
                 <ArrowDown className="h-3 w-3" /> Below
@@ -98,9 +98,9 @@ export default function AlertsMenu({ symbol, currentPrice, alerts, setAlerts }: 
                     }`}
                   >
                     {a.direction === "above" ? (
-                      <ArrowUp className="h-3.5 w-3.5 text-emerald-400" />
+                      <ArrowUp className="h-3.5 w-3.5 text-success" />
                     ) : (
-                      <ArrowDown className="h-3.5 w-3.5 text-red-400" />
+                      <ArrowDown className="h-3.5 w-3.5 text-destructive" />
                     )}
                     <span className="font-semibold">{a.price.toFixed(2)}</span>
                     {a.triggered && (
@@ -119,7 +119,7 @@ export default function AlertsMenu({ symbol, currentPrice, alerts, setAlerts }: 
                       )}
                       <button
                         onClick={() => remove(a.id)}
-                        className="rounded p-1 text-muted-foreground hover:bg-red-500/10 hover:text-red-400"
+                        className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                       >
                         <X className="h-3 w-3" />
                       </button>

@@ -20,9 +20,9 @@ const features = [
 const renderCell = (val: any, isUs: boolean) => {
   if (typeof val === "boolean") {
     return val ? (
-      <Check className={`h-5 w-5 mx-auto ${isUs ? "text-green-300" : "text-green-300/70"}`} />
+      <Check className={`h-5 w-5 mx-auto ${isUs ? "text-success" : "text-success/70"}`} />
     ) : (
-      <X className={`h-5 w-5 mx-auto ${isUs ? "text-red-300" : "text-red-300/70"}`} />
+      <X className={`h-5 w-5 mx-auto ${isUs ? "text-destructive" : "text-destructive/70"}`} />
     );
   }
   return (

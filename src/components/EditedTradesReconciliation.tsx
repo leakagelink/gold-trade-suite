@@ -34,7 +34,7 @@ const issueLabel: Record<string, string> = {
 };
 
 const issueColor: Record<string, string> = {
-  pnl_mismatch: "bg-red-500/15 text-red-400 border-red-500/30",
+  pnl_mismatch: "bg-destructive/15 text-destructive border-destructive/30",
   stale_no_drift: "bg-amber-500/15 text-amber-400 border-amber-500/30",
   momentum_inactive: "bg-orange-500/15 text-orange-400 border-orange-500/30",
   missing_direction: "bg-purple-500/15 text-purple-400 border-purple-500/30",
@@ -125,13 +125,13 @@ export function EditedTradesReconciliation() {
           </div>
           <div className="rounded-md border p-3">
             <div className="text-[11px] uppercase text-muted-foreground">Healthy</div>
-            <div className="text-2xl font-bold text-emerald-400">
+            <div className="text-2xl font-bold text-success">
               {Math.max(0, editedCount - rows.length)}
             </div>
           </div>
           <div className="rounded-md border p-3">
             <div className="text-[11px] uppercase text-muted-foreground">Issues</div>
-            <div className={`text-2xl font-bold ${rows.length > 0 ? "text-red-400" : "text-muted-foreground"}`}>
+            <div className={`text-2xl font-bold ${rows.length > 0 ? "text-destructive" : "text-muted-foreground"}`}>
               {rows.length}
             </div>
           </div>
@@ -142,7 +142,7 @@ export function EditedTradesReconciliation() {
             <CheckCircle2 className="h-4 w-4" /> No edited trades currently open — nothing to check.
           </div>
         ) : healthy ? (
-          <div className="flex items-center gap-2 text-sm text-emerald-400 py-3">
+          <div className="flex items-center gap-2 text-sm text-success py-3">
             <CheckCircle2 className="h-4 w-4" /> All {editedCount} edited trade(s) consistent. Cron drift + realtime in sync.
           </div>
         ) : (
@@ -166,7 +166,7 @@ export function EditedTradesReconciliation() {
                         <span>{r.symbol}</span>
                         <span
                           className={`text-[10px] uppercase ${
-                            r.position_type === "long" ? "text-emerald-400" : "text-red-400"
+                            r.position_type === "long" ? "text-success" : "text-destructive"
                           }`}
                         >
                           {r.position_type}
@@ -179,7 +179,7 @@ export function EditedTradesReconciliation() {
                     <TableCell className="font-mono text-sm">
                       {Number(r.expected_pnl).toFixed(2)}
                     </TableCell>
-                    <TableCell className="font-mono text-sm text-red-400">
+                    <TableCell className="font-mono text-sm text-destructive">
                       {Number(r.pnl_drift).toFixed(4)}
                     </TableCell>
                     <TableCell className="text-xs">

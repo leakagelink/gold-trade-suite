@@ -384,7 +384,7 @@ export const AdminKYCManagement = () => {
                               size="sm"
                               onClick={() => handleApprove(row)}
                               disabled={actioning}
-                              className="bg-green-600 hover:bg-green-700"
+                              className="bg-success hover:bg-success"
                             >
                               <Check className="h-3.5 w-3.5" />
                             </Button>
@@ -488,7 +488,7 @@ export const AdminKYCManagement = () => {
                 <Button
                   onClick={() => viewing && handleApprove(viewing)}
                   disabled={actioning}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-success hover:bg-success"
                 >
                   {actioning ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Check className="h-4 w-4 mr-1" />}
                   Approve

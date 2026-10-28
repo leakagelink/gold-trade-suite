@@ -77,7 +77,7 @@ const PendingApproval = () => {
 
           <div className="bg-muted/50 rounded-lg p-4 space-y-2">
             <div className="flex items-center gap-2 text-sm">
-              <CheckCircle className="h-4 w-4 text-green-500" />
+              <CheckCircle className="h-4 w-4 text-success" />
               <span>Account created</span>
             </div>
             <div className="flex items-center gap-2 text-sm">

@@ -639,10 +639,10 @@ export default function Charts() {
           ))}
           {loading && <span className="ml-2 shrink-0 text-xs text-muted-foreground">loading…</span>}
           {isCrypto && live && !loading && (
-            <span className="ml-2 flex shrink-0 items-center gap-1 text-[10px] font-semibold uppercase text-emerald-400">
+            <span className="ml-2 flex shrink-0 items-center gap-1 text-[10px] font-semibold uppercase text-success">
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
               </span>
               Live
             </span>
@@ -751,7 +751,7 @@ export default function Charts() {
               onClick={clearAll}
               title="Delete all"
               disabled={!drawings.length}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-red-500/10 hover:text-red-400 disabled:opacity-30"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-30"
             >
               <Trash2 className="h-4 w-4" />
             </button>

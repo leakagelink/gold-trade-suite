@@ -184,7 +184,7 @@ const ResetPassword = () => {
             <img src={logo} alt="SkyFX Trade" className="h-16 w-auto object-contain" />
           </div>
           <div className="flex flex-col items-center gap-4">
-            <CheckCircle className="h-16 w-16 text-green-500" />
+            <CheckCircle className="h-16 w-16 text-success" />
             <h2 className="text-xl font-semibold">Password Reset Successful!</h2>
             <p className="text-muted-foreground">
               Your password has been updated. Redirecting to login...

@@ -1255,7 +1255,7 @@ const AdminPanel = () => {
                                   <Button
                                     size="sm"
                                     onClick={() => handleApproveUser(user.id)}
-                                    className="bg-green-600 hover:bg-green-700"
+                                    className="bg-success hover:bg-success"
                                   >
                                     <Check className="h-4 w-4 mr-1" />
                                     Activate
@@ -1271,7 +1271,7 @@ const AdminPanel = () => {
                     
                     {/* Active Users */}
                     <div>
-                      <h3 className="text-sm font-semibold mb-3 text-green-600">Active Users ({users.filter(u => u.is_approved).length})</h3>
+                      <h3 className="text-sm font-semibold mb-3 text-success">Active Users ({users.filter(u => u.is_approved).length})</h3>
                       <div className="overflow-x-auto -mx-2 px-2">
                       <Table>
                         <TableHeader>
@@ -1333,10 +1333,10 @@ const AdminPanel = () => {
                     </CardTitle>
                     <CardDescription className="flex items-center gap-2">
                       View and manage all registered users
-                      <span className="inline-flex items-center gap-1 text-xs font-medium text-green-600">
+                      <span className="inline-flex items-center gap-1 text-xs font-medium text-success">
                         <span className="relative flex h-2 w-2">
-                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
-                          <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75"></span>
+                          <span className="relative inline-flex h-2 w-2 rounded-full bg-success"></span>
                         </span>
                         {onlineUserIds.size} online now
                       </span>
@@ -1424,14 +1424,14 @@ const AdminPanel = () => {
                                     variant="outline"
                                     className={
                                       isOnline
-                                        ? "border-green-500/40 bg-green-500/10 text-green-700 dark:text-green-400 gap-1.5"
+                                        ? "border-success/40 bg-success/10 text-success dark:text-success gap-1.5"
                                         : "border-muted-foreground/30 bg-muted text-muted-foreground gap-1.5"
                                     }
                                   >
                                     <span
                                       className={
                                         "h-1.5 w-1.5 rounded-full " +
-                                        (isOnline ? "bg-green-500 animate-pulse" : "bg-muted-foreground/60")
+                                        (isOnline ? "bg-success animate-pulse" : "bg-muted-foreground/60")
                                       }
                                     />
                                     {isOnline ? "Online" : "Offline"}
@@ -1457,7 +1457,7 @@ const AdminPanel = () => {
                                   <div className="flex gap-2 flex-wrap">
                                     <Button
                                       size="sm"
-                                      className="bg-green-600 hover:bg-green-700"
+                                      className="bg-success hover:bg-success"
                                       onClick={() => {
                                         setAddFundUser(user);
                                         setAddFundAmount("");
@@ -1702,7 +1702,7 @@ const AdminPanel = () => {
                                   <Button
                                     size="sm"
                                     onClick={() => handleApproveDeposit(request.id)}
-                                    className="bg-green-600 hover:bg-green-700"
+                                    className="bg-success hover:bg-success"
                                   >
                                     <Check className="h-4 w-4 mr-1" />
                                     {request.status === "locked" ? "Verify & Approve" : "Approve"}
@@ -1890,7 +1890,7 @@ const AdminPanel = () => {
                                       setSelectedWithdrawal(request);
                                       setApproveWithdrawalOpen(true);
                                     }}
-                                    className="bg-green-600 hover:bg-green-700"
+                                    className="bg-success hover:bg-success"
                                   >
                                     <Check className="h-4 w-4 mr-1" />
                                     Approve
@@ -2316,7 +2316,7 @@ const AdminPanel = () => {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                       <div className="flex items-center gap-3">
-                        <DollarSign className="h-5 w-5 text-green-500" />
+                        <DollarSign className="h-5 w-5 text-success" />
                         <div>
                           <Label className="text-base font-medium">Forex Market</Label>
                           <p className="text-sm text-muted-foreground">EUR/USD, GBP/USD, JPY/USD, etc.</p>
@@ -2374,7 +2374,7 @@ const AdminPanel = () => {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                       <div className="flex items-center gap-3">
-                        <DollarSign className="h-5 w-5 text-green-500" />
+                        <DollarSign className="h-5 w-5 text-success" />
                         <div>
                           <Label className="text-base font-medium">Freeze Forex</Label>
                           <p className="text-sm text-muted-foreground">Stop Forex price momentum & block new Forex trades</p>
@@ -2432,7 +2432,7 @@ const AdminPanel = () => {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                       <div className="flex items-center gap-3">
-                        <DollarSign className="h-5 w-5 text-green-500" />
+                        <DollarSign className="h-5 w-5 text-success" />
                         <div>
                           <Label className="text-base font-medium">Forex Momentum</Label>
                           <p className="text-sm text-muted-foreground">Enable/disable price animations for Forex pairs</p>
@@ -2480,7 +2480,7 @@ const AdminPanel = () => {
                 {/* Deposit Offer Settings */}
                 <div className="space-y-4 border-t pt-6">
                   <h3 className="text-lg font-semibold flex items-center gap-2">
-                    <Gift className="h-5 w-5 text-green-500" />
+                    <Gift className="h-5 w-5 text-success" />
                     Deposit Offer Settings
                   </h3>
                   <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
@@ -2567,8 +2567,8 @@ const AdminPanel = () => {
                   )}
                   
                   {depositOfferSettings.bonusEnabled && (
-                    <div className="p-4 bg-green-600/10 border border-green-600/20 rounded-lg">
-                      <p className="text-sm font-medium text-green-600">
+                    <div className="p-4 bg-success/10 border border-success/20 rounded-lg">
+                      <p className="text-sm font-medium text-success">
                         Current Offer: {depositOfferSettings.offerTitle} - {depositOfferSettings.bonusPercentage}% bonus
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
@@ -2583,7 +2583,7 @@ const AdminPanel = () => {
                 {false && (
                 <div className="space-y-4 border-t pt-6">
                   <h3 className="text-lg font-semibold flex items-center gap-2">
-                    <Lock className="h-5 w-5 text-red-500" />
+                    <Lock className="h-5 w-5 text-destructive" />
                     Broker Panel API Password
                   </h3>
                   <p className="text-sm text-muted-foreground">
@@ -2753,7 +2753,7 @@ const AdminPanel = () => {
             <Button variant="outline" onClick={() => setApproveWithdrawalOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleApproveWithdrawal} className="bg-green-600 hover:bg-green-700">
+            <Button onClick={handleApproveWithdrawal} className="bg-success hover:bg-success">
               Approve Withdrawal
             </Button>
           </DialogFooter>
@@ -2853,7 +2853,7 @@ const AdminPanel = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-green-600" />
+              <DollarSign className="h-5 w-5 text-success" />
               Add Fund to User Wallet
             </DialogTitle>
             <DialogDescription>
@@ -2878,9 +2878,9 @@ const AdminPanel = () => {
               />
             </div>
             {addFundAmount && parseFloat(addFundAmount) > 0 && (
-              <div className="p-3 bg-green-600/10 border border-green-600/20 rounded-lg">
+              <div className="p-3 bg-success/10 border border-success/20 rounded-lg">
                 <p className="text-sm text-muted-foreground">New Balance</p>
-                <p className="text-xl font-bold text-green-600">
+                <p className="text-xl font-bold text-success">
                   ${(parseFloat(getUserBalance(addFundUser?.id || "")) + parseFloat(addFundAmount || "0")).toFixed(2)}
                 </p>
               </div>
@@ -2897,7 +2897,7 @@ const AdminPanel = () => {
             <Button 
               onClick={handleAddFund} 
               disabled={addingFund || !addFundAmount || parseFloat(addFundAmount) <= 0}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-success hover:bg-success"
             >
               {addingFund ? (
                 <>

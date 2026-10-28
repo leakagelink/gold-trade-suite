@@ -221,8 +221,8 @@ const Wallet = () => {
         >
           <div className="absolute inset-0 bg-gradient-to-br from-accent/0 to-accent/5 group-hover:from-accent/5 group-hover:to-accent/15 transition-all duration-500" />
           <div className="relative flex items-center gap-4">
-            <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/20 border border-emerald-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <ArrowDownLeft className="h-7 w-7 text-emerald-500" />
+            <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/20 border border-success/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <ArrowDownLeft className="h-7 w-7 text-success" />
             </div>
             <div>
               <h3 className="font-bold text-base sm:text-lg">Deposit Funds</h3>
@@ -271,7 +271,7 @@ const Wallet = () => {
                   <div className="text-xs text-muted-foreground">{transaction.date}</div>
                 </div>
                 <div className="text-right">
-                  <div className={`font-bold ${transaction.type === "Deposit" ? "text-emerald-500" : "text-red-500"}`}>{transaction.amount}</div>
+                  <div className={`font-bold ${transaction.type === "Deposit" ? "text-success" : "text-destructive"}`}>{transaction.amount}</div>
                   <div className="text-xs text-muted-foreground capitalize">{transaction.status}</div>
                 </div>
               </div>
@@ -303,9 +303,9 @@ const Wallet = () => {
               const inrAmount = Number(deposit.amount);
               const usdAmount = deposit.currency === "INR" ? inrAmount * exchangeRate : inrAmount;
               const statusIcon = deposit.status === "approved" ? (
-                <CheckCircle className="h-4 w-4 text-emerald-500" />
+                <CheckCircle className="h-4 w-4 text-success" />
               ) : deposit.status === "rejected" ? (
-                <XCircle className="h-4 w-4 text-red-500" />
+                <XCircle className="h-4 w-4 text-destructive" />
               ) : (
                 <Clock className="h-4 w-4 text-amber-500" />
               );
@@ -314,8 +314,8 @@ const Wallet = () => {
                 <div key={index} className="flex items-center justify-between p-4 rounded-xl bg-muted/40 hover:bg-muted/60 border border-border/40 transition-all duration-300 hover:scale-[1.01]">
                   <div className="flex items-center gap-3">
                     <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${
-                      deposit.status === "approved" ? "bg-emerald-500/15 border border-emerald-500/30" :
-                      deposit.status === "rejected" ? "bg-red-500/15 border border-red-500/30" :
+                      deposit.status === "approved" ? "bg-success/15 border border-success/30" :
+                      deposit.status === "rejected" ? "bg-destructive/15 border border-destructive/30" :
                       "bg-amber-500/15 border border-amber-500/30"
                     }`}>
                       {statusIcon}
@@ -324,8 +324,8 @@ const Wallet = () => {
                       <div className="font-semibold flex items-center gap-2 text-sm sm:text-base">
                         Deposit
                         <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full capitalize font-semibold ${
-                          deposit.status === "approved" ? "bg-emerald-500/15 text-emerald-500" :
-                          deposit.status === "rejected" ? "bg-red-500/15 text-red-500" :
+                          deposit.status === "approved" ? "bg-success/15 text-success" :
+                          deposit.status === "rejected" ? "bg-destructive/15 text-destructive" :
                           deposit.status === "locked" ? "bg-amber-500/15 text-amber-500" :
                           "bg-muted text-muted-foreground"
                         }`}>
@@ -342,7 +342,7 @@ const Wallet = () => {
                       {deposit.currency === "INR" ? "₹" : "$"}{inrAmount.toLocaleString()}
                     </div>
                     {deposit.currency === "INR" && (
-                      <div className="text-xs text-emerald-500">
+                      <div className="text-xs text-success">
                         ≈ ${usdAmount.toFixed(2)} USD
                       </div>
                     )}

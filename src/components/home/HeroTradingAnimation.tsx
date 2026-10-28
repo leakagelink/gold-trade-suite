@@ -201,7 +201,7 @@ const HeroTradingAnimation = () => {
         >
           <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
           <span className="text-foreground/85">{t.sym}</span>
-          <span className={t.up ? "text-emerald-500" : "text-red-500"}>
+          <span className={t.up ? "text-success" : "text-destructive"}>
             {t.up ? "▲" : "▼"} {t.val}
           </span>
         </div>
@@ -215,10 +215,10 @@ const HeroTradingAnimation = () => {
           style={{ top: p.top, left: p.left, animationDelay: p.delay }}
         >
           <span
-            className={`absolute inset-0 rounded-full ${p.up ? "bg-emerald-500" : "bg-red-500"} animate-ping opacity-75`}
+            className={`absolute inset-0 rounded-full ${p.up ? "bg-success" : "bg-destructive"} animate-ping opacity-75`}
           />
           <span
-            className={`absolute inset-0 rounded-full ${p.up ? "bg-emerald-500" : "bg-red-500"}`}
+            className={`absolute inset-0 rounded-full ${p.up ? "bg-success" : "bg-destructive"}`}
           />
         </div>
       ))}

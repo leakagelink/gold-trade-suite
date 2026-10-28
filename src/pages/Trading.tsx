@@ -212,8 +212,8 @@ const CustomCandlestick = memo(({ data, currencySymbol }: CustomCandlestickProps
                     <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{d?.time ?? 'N/A'}</span>
                     {d?.isLive && (
                       <div className="flex items-center gap-1.5">
-                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                        <span className="text-[10px] text-emerald-500 font-bold tracking-wider">LIVE</span>
+                        <div className="h-1.5 w-1.5 rounded-full bg-success" />
+                        <span className="text-[10px] text-success font-bold tracking-wider">LIVE</span>
                       </div>
                     )}
                   </div>
@@ -221,13 +221,13 @@ const CustomCandlestick = memo(({ data, currencySymbol }: CustomCandlestickProps
                     <span className="text-muted-foreground">O</span>
                     <span className="text-right font-semibold">{formatPrice(o)}</span>
                     <span className="text-muted-foreground">H</span>
-                    <span className="text-right font-semibold text-emerald-500">{formatPrice(h)}</span>
+                    <span className="text-right font-semibold text-success">{formatPrice(h)}</span>
                     <span className="text-muted-foreground">L</span>
-                    <span className="text-right font-semibold text-red-500">{formatPrice(l)}</span>
+                    <span className="text-right font-semibold text-destructive">{formatPrice(l)}</span>
                     <span className="text-muted-foreground">C</span>
-                    <span className={`text-right font-bold ${isGreen ? 'text-emerald-500' : 'text-red-500'}`}>{formatPrice(c)}</span>
+                    <span className={`text-right font-bold ${isGreen ? 'text-success' : 'text-destructive'}`}>{formatPrice(c)}</span>
                   </div>
-                  <div className={`mt-2 pt-2 border-t border-border/50 text-xs font-semibold text-right ${isGreen ? 'text-emerald-500' : 'text-red-500'}`}>
+                  <div className={`mt-2 pt-2 border-t border-border/50 text-xs font-semibold text-right ${isGreen ? 'text-success' : 'text-destructive'}`}>
                     {change >= 0 ? '+' : ''}{change.toFixed(2)}%
                   </div>
                 </div>
@@ -1017,8 +1017,8 @@ const Trading = () => {
             )}
             <h1 className="text-xl font-bold">{tradingName}</h1>
             <div className="flex items-center gap-1">
-              <Activity className="h-4 w-4 text-green-500 animate-pulse" />
-              <span className="text-xs text-green-500 font-semibold">LIVE</span>
+              <Activity className="h-4 w-4 text-success animate-pulse" />
+              <span className="text-xs text-success font-semibold">LIVE</span>
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={fetchRealTimeData} disabled={loading}>
@@ -1035,15 +1035,15 @@ const Trading = () => {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <p className="text-sm text-muted-foreground">Current Price</p>
-                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+                <div className="h-2 w-2 rounded-full bg-success animate-pulse"></div>
               </div>
               {loading || currentPrice === 0 ? (
                 <div className="h-10 w-32 bg-muted animate-pulse rounded-md"></div>
               ) : (
                 <h2 
                   className={`text-2xl sm:text-3xl md:text-4xl font-bold transition-all duration-300 ${
-                    priceDirection === 'up' ? 'text-green-500 scale-110' : 
-                    priceDirection === 'down' ? 'text-red-500 scale-110' : ''
+                    priceDirection === 'up' ? 'text-success scale-110' : 
+                    priceDirection === 'down' ? 'text-destructive scale-110' : ''
                   }`}
                 >
                   {currencySymbol}{currentPrice.toFixed(2)}
@@ -1058,7 +1058,7 @@ const Trading = () => {
               </div>
             ) : (
               <div className={`flex flex-col items-end gap-1 transition-all duration-300 ${
-                priceChange >= 0 ? "text-green-500" : "text-red-500"
+                priceChange >= 0 ? "text-success" : "text-destructive"
               }`}>
                 <div className="flex items-center gap-2">
                   {priceChange >= 0 ? <TrendingUp className="h-8 w-8" /> : <TrendingDown className="h-8 w-8" />}
@@ -1139,12 +1139,12 @@ const Trading = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 shadow-lg shadow-emerald-500/10">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-success/10 border border-success/30 shadow-lg shadow-emerald-500/10">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
                 </span>
-                <span className="text-[11px] text-emerald-500 font-bold tracking-wider">LIVE</span>
+                <span className="text-[11px] text-success font-bold tracking-wider">LIVE</span>
               </div>
             </div>
 
@@ -1212,7 +1212,7 @@ const Trading = () => {
         <div className="container mx-auto flex gap-2 sm:gap-3 max-w-screen-lg">
           <Button
             onClick={() => setShowLongDialog(true)}
-            className="flex-1 h-12 sm:h-14 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold text-sm sm:text-base md:text-lg shadow-lg touch-manipulation active:scale-95 transition-transform"
+            className="flex-1 h-12 sm:h-14 bg-success hover:bg-success active:bg-success text-white font-bold text-sm sm:text-base md:text-lg shadow-lg touch-manipulation active:scale-95 transition-transform"
             size="lg"
           >
             <TrendingUp className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5" />
@@ -1220,7 +1220,7 @@ const Trading = () => {
           </Button>
           <Button
             onClick={() => setShowShortDialog(true)}
-            className="flex-1 h-12 sm:h-14 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white font-bold text-sm sm:text-base md:text-lg shadow-lg touch-manipulation active:scale-95 transition-transform"
+            className="flex-1 h-12 sm:h-14 bg-destructive hover:bg-destructive active:bg-destructive text-white font-bold text-sm sm:text-base md:text-lg shadow-lg touch-manipulation active:scale-95 transition-transform"
             size="lg"
           >
             <TrendingDown className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5" />
@@ -1233,7 +1233,7 @@ const Trading = () => {
       <Dialog open={showLongDialog} onOpenChange={setShowLongDialog}>
         <DialogContent className="w-[calc(100vw-1rem)] max-w-md max-h-[calc(100dvh-1rem)] overflow-y-auto overscroll-contain touch-pan-y p-4 sm:p-6 sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-green-500">
+            <DialogTitle className="flex items-center gap-2 text-success">
               <TrendingUp className="h-5 w-5" />
               Open BUY Position
             </DialogTitle>
@@ -1346,14 +1346,14 @@ const Trading = () => {
             <div>
               <Label htmlFor="long-stoploss">Stop Loss Price (Optional)</Label>
               <div className="relative mt-2">
-                <TrendingDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-red-500" />
+                <TrendingDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-destructive" />
                 <Input
                   id="long-stoploss"
                   type="number"
                   placeholder="Enter stop loss price (below entry)"
                   value={stopLoss}
                   onChange={(e) => setStopLoss(e.target.value)}
-                  className="pl-9 border-red-500/30 focus:border-red-500"
+                  className="pl-9 border-destructive/30 focus:border-destructive"
                   step="0.01"
                 />
               </div>
@@ -1364,14 +1364,14 @@ const Trading = () => {
             <div>
               <Label htmlFor="long-takeprofit">Take Profit Price (Optional)</Label>
               <div className="relative mt-2">
-                <TrendingUp className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
+                <TrendingUp className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-success" />
                 <Input
                   id="long-takeprofit"
                   type="number"
                   placeholder="Enter take profit price (above entry)"
                   value={takeProfit}
                   onChange={(e) => setTakeProfit(e.target.value)}
-                  className="pl-9 border-green-500/30 focus:border-green-500"
+                  className="pl-9 border-success/30 focus:border-success"
                   step="0.01"
                 />
               </div>
@@ -1419,7 +1419,7 @@ const Trading = () => {
               </div>
               <div className="flex justify-between text-sm border-t border-border pt-2 mt-2">
                 <span className="text-muted-foreground">Position Value:</span>
-                <span className="font-semibold text-lg text-green-500">
+                <span className="font-semibold text-lg text-success">
                   ${orderCalc.positionValue.toFixed(2)}
                 </span>
               </div>
@@ -1427,7 +1427,7 @@ const Trading = () => {
             <div className="sticky bottom-0 -mx-4 -mb-4 border-t border-border bg-background/95 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur sm:static sm:m-0 sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
               <Button
                 onClick={() => setPendingOrder('long')}
-                className={`w-full text-white h-12 ${orderType === 'limit' ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-green-500 hover:bg-green-600'}`}
+                className={`w-full text-white h-12 ${orderType === 'limit' ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-success hover:bg-success'}`}
                 size="lg"
                 disabled={
                   !lotSpec.known ||
@@ -1449,7 +1449,7 @@ const Trading = () => {
       <Dialog open={showShortDialog} onOpenChange={setShowShortDialog}>
         <DialogContent className="w-[calc(100vw-1rem)] max-w-md max-h-[calc(100dvh-1rem)] overflow-y-auto overscroll-contain touch-pan-y p-4 sm:p-6 sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-red-500">
+            <DialogTitle className="flex items-center gap-2 text-destructive">
               <TrendingDown className="h-5 w-5" />
               Open SELL Position
             </DialogTitle>
@@ -1562,14 +1562,14 @@ const Trading = () => {
             <div>
               <Label htmlFor="short-stoploss">Stop Loss Price (Optional)</Label>
               <div className="relative mt-2">
-                <TrendingUp className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-red-500" />
+                <TrendingUp className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-destructive" />
                 <Input
                   id="short-stoploss"
                   type="number"
                   placeholder="Enter stop loss price (above entry)"
                   value={stopLoss}
                   onChange={(e) => setStopLoss(e.target.value)}
-                  className="pl-9 border-red-500/30 focus:border-red-500"
+                  className="pl-9 border-destructive/30 focus:border-destructive"
                   step="0.01"
                 />
               </div>
@@ -1580,14 +1580,14 @@ const Trading = () => {
             <div>
               <Label htmlFor="short-takeprofit">Take Profit Price (Optional)</Label>
               <div className="relative mt-2">
-                <TrendingDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
+                <TrendingDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-success" />
                 <Input
                   id="short-takeprofit"
                   type="number"
                   placeholder="Enter take profit price (below entry)"
                   value={takeProfit}
                   onChange={(e) => setTakeProfit(e.target.value)}
-                  className="pl-9 border-green-500/30 focus:border-green-500"
+                  className="pl-9 border-success/30 focus:border-success"
                   step="0.01"
                 />
               </div>
@@ -1635,7 +1635,7 @@ const Trading = () => {
               </div>
               <div className="flex justify-between text-sm border-t border-border pt-2 mt-2">
                 <span className="text-muted-foreground">Position Value:</span>
-                <span className="font-semibold text-lg text-red-500">
+                <span className="font-semibold text-lg text-destructive">
                   ${orderCalc.positionValue.toFixed(2)}
                 </span>
               </div>
@@ -1643,7 +1643,7 @@ const Trading = () => {
             <div className="sticky bottom-0 -mx-4 -mb-4 border-t border-border bg-background/95 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur sm:static sm:m-0 sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
               <Button
                 onClick={() => setPendingOrder('short')}
-                className={`w-full text-white h-12 ${orderType === 'limit' ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-red-500 hover:bg-red-600'}`}
+                className={`w-full text-white h-12 ${orderType === 'limit' ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-destructive hover:bg-destructive'}`}
                 size="lg"
                 disabled={
                   !lotSpec.known ||
@@ -1665,7 +1665,7 @@ const Trading = () => {
       <Dialog open={!!pendingOrder} onOpenChange={(open) => { if (!open) setPendingOrder(null); }}>
         <DialogContent className="w-[calc(100vw-1rem)] max-w-sm p-4 sm:p-6">
           <DialogHeader>
-            <DialogTitle className={`flex items-center gap-2 ${pendingOrder === 'long' ? 'text-green-500' : 'text-red-500'}`}>
+            <DialogTitle className={`flex items-center gap-2 ${pendingOrder === 'long' ? 'text-success' : 'text-destructive'}`}>
               {pendingOrder === 'long' ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
               Confirm {pendingOrder === 'long' ? 'BUY' : 'SELL'} Order
             </DialogTitle>
@@ -1680,7 +1680,7 @@ const Trading = () => {
             return (
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between"><span className="text-muted-foreground">Symbol</span><span className="font-semibold">{symbol?.toUpperCase()}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Side</span><span className={`font-semibold ${pendingOrder === 'long' ? 'text-green-500' : 'text-red-500'}`}>{pendingOrder === 'long' ? 'BUY' : 'SELL'}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Side</span><span className={`font-semibold ${pendingOrder === 'long' ? 'text-success' : 'text-destructive'}`}>{pendingOrder === 'long' ? 'BUY' : 'SELL'}</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">Order Type</span><span className="font-semibold uppercase">{orderType}</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">Leverage</span><span className="font-semibold">{lev}x</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">{isLimit ? 'Limit Price' : 'Market Price'}</span><span className="font-semibold">${execPrice.toFixed(2)}</span></div>
@@ -1695,7 +1695,7 @@ const Trading = () => {
           <div className="flex gap-2 pt-2">
             <Button variant="outline" className="flex-1" onClick={() => setPendingOrder(null)} disabled={submittingOrder}>Cancel</Button>
             <Button
-              className={`flex-1 text-white ${pendingOrder === 'long' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}
+              className={`flex-1 text-white ${pendingOrder === 'long' ? 'bg-success hover:bg-success' : 'bg-destructive hover:bg-destructive'}`}
               disabled={submittingOrder}
               onClick={async () => {
                 if (!pendingOrder) return;

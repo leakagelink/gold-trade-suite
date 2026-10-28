@@ -206,7 +206,7 @@ const Profile = () => {
                 <div className="w-14 h-14 rounded-2xl overflow-hidden border border-border bg-card flex items-center justify-center">
                   <User className="w-7 h-7 text-primary" />
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-background rounded-full" />
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-success border-2 border-background rounded-full" />
               </div>
               <div>
                 <h3 className="font-bold text-primary leading-tight">
@@ -305,7 +305,7 @@ const Profile = () => {
                         {trade.symbol}{" "}
                         <span
                           className={`ml-1 text-[10px] font-bold ${
-                            trade.side === "BUY" ? "text-emerald-600" : "text-red-500"
+                            trade.side === "BUY" ? "text-success" : "text-destructive"
                           }`}
                         >
                           {trade.side}
@@ -315,7 +315,7 @@ const Profile = () => {
                     </div>
                     <div
                       className={`font-bold text-sm ${
-                        trade.isProfit ? "text-emerald-600" : "text-red-500"
+                        trade.isProfit ? "text-success" : "text-destructive"
                       }`}
                     >
                       {trade.amount}
@@ -337,7 +337,7 @@ const Profile = () => {
             <div
               className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                 kycStatus?.status === "approved"
-                  ? "bg-emerald-500/10 text-emerald-600"
+                  ? "bg-success/10 text-success"
                   : kycStatus?.status === "rejected"
                   ? "bg-destructive/10 text-destructive"
                   : kycStatus?.status === "pending"
@@ -408,7 +408,7 @@ const Profile = () => {
                 <span className="text-[11px] text-muted-foreground font-medium">Email Verified</span>
                 <span
                   className={`text-[11px] font-bold ${
-                    user?.email_confirmed_at ? "text-emerald-600" : "text-gold"
+                    user?.email_confirmed_at ? "text-success" : "text-gold"
                   }`}
                 >
                   {user?.email_confirmed_at ? "YES" : "NO"}
