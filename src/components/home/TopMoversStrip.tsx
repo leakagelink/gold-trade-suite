@@ -161,8 +161,8 @@ export const TopMoversStrip = ({ compact = false }: TopMoversStripProps) => {
           <p className="text-sm text-muted-foreground">Live gainers & losers updated every minute</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-          <Card className="p-4 sm:p-6 bg-card/60 backdrop-blur border-success/20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-6xl mx-auto">
+          <Card className="min-w-0 overflow-hidden p-4 sm:p-6 bg-card/60 backdrop-blur border-success/20">
             <div className="flex items-center gap-2 mb-4">
               <div className="h-8 w-8 rounded-lg bg-success/10 flex items-center justify-center">
                 <TrendingUp className="h-4 w-4 text-success" />
@@ -178,7 +178,7 @@ export const TopMoversStrip = ({ compact = false }: TopMoversStripProps) => {
             </div>
           </Card>
 
-          <Card className="p-4 sm:p-6 bg-card/60 backdrop-blur border-destructive/20">
+          <Card className="min-w-0 overflow-hidden p-4 sm:p-6 bg-card/60 backdrop-blur border-destructive/20">
             <div className="flex items-center gap-2 mb-4">
               <div className="h-8 w-8 rounded-lg bg-destructive/10 flex items-center justify-center">
                 <TrendingDown className="h-4 w-4 text-destructive" />
