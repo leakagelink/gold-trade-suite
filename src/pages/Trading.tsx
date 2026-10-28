@@ -10,6 +10,7 @@ import { ArrowLeft, TrendingUp, TrendingDown, RefreshCcw, Activity, ChevronLeft,
 import { Tabs as InputTabs, TabsList as InputTabsList, TabsTrigger as InputTabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import TradingViewWidget from "@/components/charts/TradingViewWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { invokeForexData, invokeForexChartData } from "@/lib/forexCache";
 import { getContractSize, getLotLabel, getLotSpec, validateLotInput } from "@/lib/contractSize";
@@ -540,6 +541,20 @@ const Trading = () => {
       return `https://www.tradingview.com/chart/?symbol=BINANCE%3A${sym}USDT`;
     }
   };
+
+
+  const getTvSymbol = () => {
+    const raw = (symbol || 'BTC').toUpperCase();
+    const commodityMap: Record<string, string> = {
+      XAU: 'TVC:GOLD', XAG: 'TVC:SILVER', WTI: 'TVC:USOIL', BRENT: 'TVC:UKOIL',
+      NG: 'TVC:NATURALGAS', XCU: 'TVC:COPPER', HG: 'TVC:COPPER', XPT: 'TVC:PLATINUM', XPD: 'TVC:PALLADIUM',
+    };
+    if (commodityMap[raw]) return commodityMap[raw];
+    if (isForexSymbol(raw)) return `FX:${raw.includes('/') ? raw.replace('/', '') : `${raw}USD`}`;
+    return `BINANCE:${raw}USDT`;
+  };
+  const tvInterval = ({ '1m': '1', '5m': '5', '15m': '15', '1h': '60', '4h': '240', '1d': 'D' } as Record<string, string>)[String(timeframe).toLowerCase()] || '60';
+  const [chartView, setChartView] = useState<'tv' | 'live'>('tv');
 
   const fetchRealTimeData = async () => {
     if (!symbol) return;
@@ -1133,6 +1148,20 @@ const Trading = () => {
               </div>
             </div>
 
+            <div className="mb-3 inline-flex rounded-lg border border-border p-1 bg-muted/40">
+              {(['tv', 'live'] as const).map((v) => (
+                <button key={v} type="button" onClick={() => setChartView(v)}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition ${chartView === v ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+                  {v === 'tv' ? 'TradingView' : 'Live Chart'}
+                </button>
+              ))}
+            </div>
+
+            {chartView === 'tv' ? (
+              <div className="rounded-xl overflow-hidden border border-border/30">
+                <TradingViewWidget tvSymbol={getTvSymbol()} interval={tvInterval} />
+              </div>
+            ) : (
             <div
               ref={chartContainerRef}
               onTouchStart={handleTouchStart}
@@ -1161,30 +1190,15 @@ const Trading = () => {
                 </div>
               )}
             </div>
+            )}
 
             <div className="mt-4 flex justify-center">
               <button
                 type="button"
-                onClick={() => {
-                  const raw = (symbol || 'BTC').toUpperCase();
-                  const commodityMap: Record<string, string> = {
-                    XAU: 'TVC:GOLD', XAG: 'TVC:SILVER', WTI: 'TVC:USOIL', BRENT: 'TVC:UKOIL',
-                    NG: 'TVC:NATURALGAS', XCU: 'TVC:COPPER', XPT: 'TVC:PLATINUM', XPD: 'TVC:PALLADIUM',
-                  };
-                  let tvSymbol: string;
-                  if (commodityMap[raw]) {
-                    tvSymbol = commodityMap[raw];
-                  } else if (isForexSymbol(raw)) {
-                    const pair = raw.includes('/') ? raw.replace('/', '') : `${raw}USD`;
-                    tvSymbol = `FX:${pair}`;
-                  } else {
-                    tvSymbol = `BINANCE:${raw}USDT`;
-                  }
-                  window.open(`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(tvSymbol)}`, '_blank', 'noopener,noreferrer');
-                }}
-                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary/15 via-accent/10 to-primary/15 hover:from-primary/25 hover:via-accent/20 hover:to-primary/25 border border-primary/30 text-primary font-semibold text-sm transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
+                onClick={() => window.open(`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(getTvSymbol())}`, '_blank', 'noopener,noreferrer')}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-primary/30 text-primary font-semibold text-sm hover:bg-primary/10 transition"
               >
-                <Maximize2 className="h-4 w-4 transition-transform group-hover:rotate-12" />
+                <Maximize2 className="h-4 w-4" />
                 Open in TradingView
               </button>
             </div>
