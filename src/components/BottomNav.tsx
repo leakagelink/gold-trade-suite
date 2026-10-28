@@ -13,6 +13,7 @@ const navItems: NavItem[] = [
   { icon: Wallet, label: "Wallet", shortLabel: "Wallet", path: "/wallet" },
   { icon: Zap, label: "Signals", shortLabel: "Signals", path: "/signals" },
   { icon: TrendingUp, label: "Trade", shortLabel: "Trade", path: "/dashboard" },
+  { icon: BarChart3, label: "Charts", shortLabel: "Charts", path: "/charts" },
   { icon: Layers, label: "Positions", shortLabel: "Pos", path: "/positions" },
   { icon: User, label: "Profile", shortLabel: "Me", path: "/profile" },
 ];
