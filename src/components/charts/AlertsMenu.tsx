@@ -41,12 +41,12 @@ export default function AlertsMenu({ symbol, currentPrice, alerts, setAlerts }: 
     <div className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 rounded-lg border border-border/50 bg-card/60 px-3 py-1.5 text-xs font-semibold hover:bg-muted/40"
+        className="flex items-center gap-1.5 rounded-lg border border-border/50 bg-card/60 px-2.5 py-1.5 text-xs font-semibold hover:bg-muted/40 sm:px-3"
       >
         <Bell className="h-3.5 w-3.5" />
-        Alerts
+        <span className="hidden sm:inline">Alerts</span>
         {active > 0 && (
-          <span className="rounded-md bg-amber-500/20 px-1.5 text-[10px] text-amber-400">{active}</span>
+          <span className="rounded-md bg-accent/20 px-1.5 text-[10px] text-accent">{active}</span>
         )}
       </button>
       {open && (
