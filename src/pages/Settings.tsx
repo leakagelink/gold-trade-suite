@@ -79,8 +79,8 @@ const Settings = () => {
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
             <div className="relative">
               <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-accent/20 to-accent/20 border border-emerald-500/30">
-                  <Smartphone className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-500" />
+                <div className="p-2 rounded-xl bg-gradient-to-br from-accent/20 to-accent/20 border border-success/30">
+                  <Smartphone className="h-4 w-4 sm:h-5 sm:w-5 text-success" />
                 </div>
                 <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-accent to-accent bg-clip-text text-transparent">
                   Download App

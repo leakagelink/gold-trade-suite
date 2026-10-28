@@ -60,7 +60,7 @@ export const TopMoversStrip = ({ compact = false }: TopMoversStripProps) => {
     <div
       key={m.symbol}
       className={`flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg bg-card/60 hover:bg-card/90 transition-all border min-w-[150px] sm:min-w-[180px] flex-shrink-0 ${
-        isGainer ? "border-green-500/20 hover:border-green-500/40" : "border-red-500/20 hover:border-red-500/40"
+        isGainer ? "border-success/20 hover:border-success/40" : "border-destructive/20 hover:border-destructive/40"
       }`}
     >
       <div className="min-w-0 flex-1">
@@ -73,7 +73,7 @@ export const TopMoversStrip = ({ compact = false }: TopMoversStripProps) => {
         </div>
         <div
           className={`text-[10px] sm:text-xs font-bold flex items-center gap-0.5 justify-end ${
-            isGainer ? "text-green-500" : "text-red-500"
+            isGainer ? "text-success" : "text-destructive"
           }`}
         >
           {isGainer ? <TrendingUp className="h-2.5 w-2.5" /> : <TrendingDown className="h-2.5 w-2.5" />}
@@ -110,7 +110,7 @@ export const TopMoversStrip = ({ compact = false }: TopMoversStripProps) => {
               onClick={() => setActiveTab("gainers")}
               className={`px-2.5 py-1 rounded-md text-[10px] sm:text-xs font-semibold transition-all flex items-center gap-1 ${
                 activeTab === "gainers"
-                  ? "bg-green-500/15 text-green-500 shadow-sm"
+                  ? "bg-success/15 text-success shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -121,7 +121,7 @@ export const TopMoversStrip = ({ compact = false }: TopMoversStripProps) => {
               onClick={() => setActiveTab("losers")}
               className={`px-2.5 py-1 rounded-md text-[10px] sm:text-xs font-semibold transition-all flex items-center gap-1 ${
                 activeTab === "losers"
-                  ? "bg-red-500/15 text-red-500 shadow-sm"
+                  ? "bg-destructive/15 text-destructive shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -162,10 +162,10 @@ export const TopMoversStrip = ({ compact = false }: TopMoversStripProps) => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-          <Card className="p-4 sm:p-6 bg-card/60 backdrop-blur border-green-500/20">
+          <Card className="p-4 sm:p-6 bg-card/60 backdrop-blur border-success/20">
             <div className="flex items-center gap-2 mb-4">
-              <div className="h-8 w-8 rounded-lg bg-green-500/10 flex items-center justify-center">
-                <TrendingUp className="h-4 w-4 text-green-500" />
+              <div className="h-8 w-8 rounded-lg bg-success/10 flex items-center justify-center">
+                <TrendingUp className="h-4 w-4 text-success" />
               </div>
               <h3 className="font-bold">Top Gainers</h3>
             </div>
@@ -178,10 +178,10 @@ export const TopMoversStrip = ({ compact = false }: TopMoversStripProps) => {
             </div>
           </Card>
 
-          <Card className="p-4 sm:p-6 bg-card/60 backdrop-blur border-red-500/20">
+          <Card className="p-4 sm:p-6 bg-card/60 backdrop-blur border-destructive/20">
             <div className="flex items-center gap-2 mb-4">
-              <div className="h-8 w-8 rounded-lg bg-red-500/10 flex items-center justify-center">
-                <TrendingDown className="h-4 w-4 text-red-500" />
+              <div className="h-8 w-8 rounded-lg bg-destructive/10 flex items-center justify-center">
+                <TrendingDown className="h-4 w-4 text-destructive" />
               </div>
               <h3 className="font-bold">Top Losers</h3>
             </div>

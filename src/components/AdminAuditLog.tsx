@@ -39,8 +39,8 @@ const typeColor: Record<string, string> = {
   current_price: "bg-blue-500/15 text-blue-400 border-blue-500/30",
   pnl: "bg-purple-500/15 text-purple-400 border-purple-500/30",
   entry_price: "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
-  stop_loss: "bg-red-500/15 text-red-400 border-red-500/30",
-  take_profit: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+  stop_loss: "bg-destructive/15 text-destructive border-destructive/30",
+  take_profit: "bg-success/15 text-success border-success/30",
   status: "bg-pink-500/15 text-pink-400 border-pink-500/30",
   close_price: "bg-orange-500/15 text-orange-400 border-orange-500/30",
 };
@@ -232,7 +232,7 @@ export function AdminAuditLog() {
                           {e.position_type && (
                             <span
                               className={`text-[10px] uppercase ${
-                                e.position_type === "long" ? "text-emerald-400" : "text-red-400"
+                                e.position_type === "long" ? "text-success" : "text-destructive"
                               }`}
                             >
                               {e.position_type}

@@ -201,16 +201,16 @@ export const AdminSignalsManagement = () => {
                       <Badge
                         variant="outline"
                         className={s.signal_type === "long"
-                          ? "text-green-500 border-green-500/40"
-                          : "text-red-500 border-red-500/40"}
+                          ? "text-success border-success/40"
+                          : "text-destructive border-destructive/40"}
                       >
                         {s.signal_type === "long" ? <TrendingUp className="h-3 w-3 mr-1" /> : <TrendingDown className="h-3 w-3 mr-1" />}
                         {s.signal_type === "long" ? "BUY" : "SELL"}
                       </Badge>
                     </TableCell>
                     <TableCell className="font-mono">{s.entry_price}</TableCell>
-                    <TableCell className="font-mono text-green-500">{s.take_profit}</TableCell>
-                    <TableCell className="font-mono text-red-500">{s.stop_loss}</TableCell>
+                    <TableCell className="font-mono text-success">{s.take_profit}</TableCell>
+                    <TableCell className="font-mono text-destructive">{s.stop_loss}</TableCell>
                     <TableCell>{s.confidence}%</TableCell>
                     <TableCell>
                       <Switch checked={s.is_active} onCheckedChange={() => handleToggle(s)} />

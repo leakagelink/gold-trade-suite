@@ -446,10 +446,10 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
 
       {/* USD Conversion Preview */}
       {amount && parseFloat(amount) > 0 && (
-        <div className="p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-accent/10 border border-green-500/20">
+        <div className="p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-accent/10 border border-success/20">
           <div className="text-center space-y-2">
             <p className="text-sm text-muted-foreground">You will receive</p>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-success">
               ${calculateUsdPreview(parseFloat(amount)).totalAmount.toFixed(2)} USD
             </div>
             <div className="text-xs text-muted-foreground space-y-1">
@@ -459,7 +459,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
                 <span>${calculateUsdPreview(parseFloat(amount)).usdAmount.toFixed(2)}</span>
               </div>
               {bonusSettings.enabled && calculateUsdPreview(parseFloat(amount)).bonusAmount > 0 && (
-                <div className="text-green-600 font-medium">
+                <div className="text-success font-medium">
                   + ${calculateUsdPreview(parseFloat(amount)).bonusAmount.toFixed(2)} bonus ({bonusSettings.percentage}%)
                 </div>
               )}
@@ -495,13 +495,13 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
         <div className="text-center">
           <p className="text-muted-foreground text-sm mb-1">Amount to Pay</p>
           <p className="text-3xl font-bold text-primary">₹{parseFloat(amount).toLocaleString()}</p>
-          <div className="mt-2 p-3 rounded-lg bg-gradient-to-r from-green-500/10 to-accent/10 border border-green-500/20 inline-block">
+          <div className="mt-2 p-3 rounded-lg bg-gradient-to-r from-green-500/10 to-accent/10 border border-success/20 inline-block">
             <p className="text-xs text-muted-foreground mb-1">You will receive</p>
-            <p className="text-lg font-bold text-green-600">
+            <p className="text-lg font-bold text-success">
               ${calculateUsdPreview(parseFloat(amount)).totalAmount.toFixed(2)} USD
             </p>
             {bonusSettings.enabled && calculateUsdPreview(parseFloat(amount)).bonusAmount > 0 && (
-              <p className="text-xs text-green-600">
+              <p className="text-xs text-success">
                 (incl. ${calculateUsdPreview(parseFloat(amount)).bonusAmount.toFixed(2)} bonus)
               </p>
             )}
@@ -512,7 +512,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
         <div className={`text-center p-4 rounded-xl ${isLowTime ? 'bg-destructive/10' : 'bg-muted/50'}`}>
           <div className="flex items-center justify-center gap-2 mb-2">
             {isAutoLocked ? (
-              <Lock className="h-5 w-5 text-green-500" />
+              <Lock className="h-5 w-5 text-success" />
             ) : (
               <Clock className={`h-5 w-5 ${isLowTime ? 'text-destructive' : 'text-muted-foreground'}`} />
             )}
@@ -521,7 +521,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
             </span>
           </div>
           {isAutoLocked ? (
-            <p className="text-sm text-green-600 font-medium">
+            <p className="text-sm text-success font-medium">
               ✓ Payment Credit
             </p>
           ) : (
@@ -595,7 +595,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
               }}
               className="flex flex-col items-center gap-1 p-2 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
             >
-              <div className="h-11 w-11 rounded-full bg-green-600 flex items-center justify-center">
+              <div className="h-11 w-11 rounded-full bg-success flex items-center justify-center">
                 <span className="text-white font-bold text-xs">UPI</span>
               </div>
               <span className="text-xs text-muted-foreground">Other</span>
@@ -641,10 +641,10 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
 
       {/* USD Conversion Preview */}
       {amount && parseFloat(amount) > 0 && (
-        <div className="p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-accent/10 border border-green-500/20">
+        <div className="p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-accent/10 border border-success/20">
           <div className="text-center space-y-2">
             <p className="text-sm text-muted-foreground">You will receive</p>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-success">
               ${calculateUsdPreview(parseFloat(amount)).totalAmount.toFixed(2)} USD
             </div>
             <div className="text-xs text-muted-foreground space-y-1">
@@ -654,7 +654,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
                 <span>${calculateUsdPreview(parseFloat(amount)).usdAmount.toFixed(2)}</span>
               </div>
               {bonusSettings.enabled && calculateUsdPreview(parseFloat(amount)).bonusAmount > 0 && (
-                <div className="text-green-600 font-medium">
+                <div className="text-success font-medium">
                   + ${calculateUsdPreview(parseFloat(amount)).bonusAmount.toFixed(2)} bonus ({bonusSettings.percentage}%)
                 </div>
               )}
@@ -703,7 +703,7 @@ const DepositModal = ({ open, onOpenChange, onSuccess }: DepositModalProps) => {
                 size="icon"
                 onClick={() => handleCopy(upiId)}
               >
-                {copied ? <CheckCircle className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                {copied ? <CheckCircle className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
           </div>

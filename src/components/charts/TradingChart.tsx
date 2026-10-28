@@ -562,7 +562,7 @@ function TradingChart({
   // Color the "ms since" badge so a freeze is obvious at a glance.
   const stale = debugStats.msSinceTick;
   const staleClass =
-    stale > 5000 ? "text-red-500" : stale > 2000 ? "text-amber-500" : "text-emerald-500";
+    stale > 5000 ? "text-destructive" : stale > 2000 ? "text-amber-500" : "text-success";
 
   return (
     <div className="relative h-full w-full" style={{ overscrollBehavior: "contain" }}>
@@ -585,7 +585,7 @@ function TradingChart({
           <span className="text-muted-foreground">H <span className="text-foreground">{last.high.toFixed(2)}</span></span>
           <span className="text-muted-foreground">L <span className="text-foreground">{last.low.toFixed(2)}</span></span>
           <span className="text-muted-foreground">C <span className="text-foreground">{last.close.toFixed(2)}</span></span>
-          <span className={`font-semibold ${change >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+          <span className={`font-semibold ${change >= 0 ? "text-success" : "text-destructive"}`}>
             {change >= 0 ? "+" : ""}
             {change.toFixed(2)}%
           </span>
@@ -640,7 +640,7 @@ function TradingChart({
             <span className="font-bold tracking-wider text-primary">PERF</span>
             <span
               className={`font-bold ${
-                perfStats.fps >= 55 ? "text-emerald-500" : perfStats.fps >= 30 ? "text-amber-500" : "text-red-500"
+                perfStats.fps >= 55 ? "text-success" : perfStats.fps >= 30 ? "text-amber-500" : "text-destructive"
               }`}
             >
               {perfStats.fps} fps
@@ -654,10 +654,10 @@ function TradingChart({
             <span
               className={
                 perfStats.lastLatencyMs > 2000
-                  ? "text-red-500"
+                  ? "text-destructive"
                   : perfStats.lastLatencyMs > 800
                   ? "text-amber-500"
-                  : "text-emerald-500"
+                  : "text-success"
               }
             >
               {perfStats.lastLatencyMs}ms

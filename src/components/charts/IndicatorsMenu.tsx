@@ -116,7 +116,7 @@ export default function IndicatorsMenu({ indicators, setIndicators }: Props) {
                       )}
                       <button
                         onClick={() => remove(ind.id)}
-                        className="rounded p-1 text-muted-foreground hover:bg-red-500/10 hover:text-red-400"
+                        className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                       >
                         <X className="h-3.5 w-3.5" />
                       </button>

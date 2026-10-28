@@ -111,15 +111,15 @@ export function PriceModeStressTest() {
               <div
                 key={idx}
                 className={`rounded-md border p-3 ${
-                  r.failed === 0 ? "border-emerald-500/30 bg-emerald-500/5" : "border-red-500/40 bg-red-500/5"
+                  r.failed === 0 ? "border-success/30 bg-success/5" : "border-destructive/40 bg-destructive/5"
                 }`}
               >
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div className="flex items-center gap-2">
                     {r.failed === 0 ? (
-                      <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                      <CheckCircle2 className="h-4 w-4 text-success" />
                     ) : (
-                      <XCircle className="h-4 w-4 text-red-400" />
+                      <XCircle className="h-4 w-4 text-destructive" />
                     )}
                     <span className="font-semibold">
                       {r.iterations} iterations
@@ -129,11 +129,11 @@ export function PriceModeStressTest() {
                     </span>
                   </div>
                   <div className="flex gap-1 text-xs flex-wrap">
-                    <Badge variant="outline" className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
+                    <Badge variant="outline" className="bg-success/15 text-success border-success/30">
                       {r.passed} passed
                     </Badge>
                     {r.failed > 0 && (
-                      <Badge variant="outline" className="bg-red-500/15 text-red-400 border-red-500/30">
+                      <Badge variant="outline" className="bg-destructive/15 text-destructive border-destructive/30">
                         {r.failed} failed
                       </Badge>
                     )}
@@ -155,7 +155,7 @@ export function PriceModeStressTest() {
                   </div>
                 </div>
                 {r.sample_violations && r.sample_violations.length > 0 && (
-                  <ul className="mt-2 text-xs font-mono text-red-300 space-y-1">
+                  <ul className="mt-2 text-xs font-mono text-destructive space-y-1">
                     {r.sample_violations.map((v, i) => (
                       <li key={i}>• {v}</li>
                     ))}

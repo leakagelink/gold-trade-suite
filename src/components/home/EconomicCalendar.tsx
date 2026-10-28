@@ -129,7 +129,7 @@ export const EconomicCalendar = () => {
                       </td>
                       <td className="p-3 text-xs sm:text-sm font-medium">{e.event}</td>
                       <td className="p-3 text-center">
-                        <Badge variant="outline" className="bg-red-500/10 text-red-500 border-red-500/30 text-[10px] uppercase">
+                        <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/30 text-[10px] uppercase">
                           <AlertTriangle className="h-2.5 w-2.5 mr-1" />
                           High
                         </Badge>

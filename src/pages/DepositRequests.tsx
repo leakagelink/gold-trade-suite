@@ -381,7 +381,7 @@ const DepositRequests = () => {
                           <Button
                             size="sm"
                             onClick={() => handleApprove(request.id)}
-                            className="bg-green-600 hover:bg-green-700"
+                            className="bg-success hover:bg-success"
                           >
                             <Check className="h-4 w-4 mr-1" />
                             {request.status === "locked" ? "Verify & Approve" : "Approve"}

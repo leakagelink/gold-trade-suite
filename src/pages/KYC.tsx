@@ -236,7 +236,7 @@ const KYC = () => {
             <CardHeader>
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  {existing.status === "approved" && <CheckCircle2 className="h-8 w-8 text-green-500" />}
+                  {existing.status === "approved" && <CheckCircle2 className="h-8 w-8 text-success" />}
                   {existing.status === "pending" && <Clock className="h-8 w-8 text-yellow-500" />}
                   {existing.status === "rejected" && <XCircle className="h-8 w-8 text-destructive" />}
                   <div>

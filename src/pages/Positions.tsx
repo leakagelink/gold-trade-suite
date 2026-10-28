@@ -949,7 +949,7 @@ const Positions = () => {
     const isClosedSuccess = closedSuccessId === position.id;
     const isSelected = selectedIds.has(position.id);
     const sideLabel = isLong ? 'BUY' : 'SELL';
-    const sideColor = isLong ? 'text-emerald-600 border-emerald-500/40 bg-emerald-500/10' : 'text-red-500 border-red-500/40 bg-red-500/10';
+    const sideColor = isLong ? 'text-success border-success/40 bg-success/10' : 'text-destructive border-destructive/40 bg-destructive/10';
     const entry = formatMarketPrice(position.entry_price);
     const exit = formatMarketPrice(position.status === 'closed' ? (position.close_price ?? position.current_price) : position.current_price);
     const lot = (position.amount ?? 0) >= 1 ? Number(position.amount).toFixed(2) : Number(position.amount).toFixed(4);
@@ -961,10 +961,10 @@ const Positions = () => {
         } ${isClosing ? 'opacity-60' : ''} ${isSelected ? 'bg-primary/[0.04]' : 'bg-card hover:bg-muted/30'}`}
       >
         {isClosedSuccess && (
-          <div className="absolute inset-0 flex items-center justify-center bg-emerald-500/10 z-10 animate-fade-in rounded-lg">
-            <div className="flex items-center gap-2 px-3 py-2 bg-card rounded-xl border border-emerald-500/40 shadow-sm">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600 animate-scale-in" />
-              <span className="text-emerald-600 font-bold text-sm">Closed!</span>
+          <div className="absolute inset-0 flex items-center justify-center bg-success/10 z-10 animate-fade-in rounded-lg">
+            <div className="flex items-center gap-2 px-3 py-2 bg-card rounded-xl border border-success/40 shadow-sm">
+              <CheckCircle2 className="h-5 w-5 text-success animate-scale-in" />
+              <span className="text-success font-bold text-sm">Closed!</span>
             </div>
           </div>
         )}
@@ -1006,16 +1006,16 @@ const Positions = () => {
             <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] text-muted-foreground font-mono min-w-0">
               <span className="truncate">{entry}</span>
               {isLong ? (
-                <ArrowUp className="h-3 w-3 text-emerald-500 shrink-0" strokeWidth={2.5} />
+                <ArrowUp className="h-3 w-3 text-success shrink-0" strokeWidth={2.5} />
               ) : (
-                <ArrowDown className="h-3 w-3 text-red-500 shrink-0" strokeWidth={2.5} />
+                <ArrowDown className="h-3 w-3 text-destructive shrink-0" strokeWidth={2.5} />
               )}
               <span
                 className={`transition-all px-1 rounded truncate ${
                   position.status !== 'closed' && priceChange?.flash
                     ? priceChange.direction === 'up'
-                      ? 'bg-emerald-500/15 text-emerald-600'
-                      : 'bg-red-500/15 text-red-500'
+                      ? 'bg-success/15 text-success'
+                      : 'bg-destructive/15 text-destructive'
                     : ''
                 }`}
               >
@@ -1032,7 +1032,7 @@ const Positions = () => {
 
           {/* PnL */}
           <div className="text-right shrink-0 min-w-[64px] sm:min-w-[80px]">
-            <p className={`text-sm sm:text-lg font-bold tabular-nums leading-tight ${isProfit ? 'text-emerald-600' : 'text-red-500'}`}>
+            <p className={`text-sm sm:text-lg font-bold tabular-nums leading-tight ${isProfit ? 'text-success' : 'text-destructive'}`}>
               {isProfit ? '+' : ''}{formatLivePnl(pnl)}
             </p>
             <p className="text-[9px] uppercase tracking-wide text-muted-foreground font-semibold truncate">
@@ -1047,14 +1047,14 @@ const Positions = () => {
         {(position.stop_loss || position.take_profit) && (
           <div className="flex items-center gap-3 mt-2 pl-7 sm:pl-9 text-[10px] font-medium flex-wrap">
             {position.stop_loss && (
-              <span className="flex items-center gap-1 text-red-500">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+              <span className="flex items-center gap-1 text-destructive">
+                <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
                 SL ${formatMarketPrice(position.stop_loss)}
               </span>
             )}
             {position.take_profit && (
-              <span className="flex items-center gap-1 text-emerald-600">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span className="flex items-center gap-1 text-success">
+                <span className="w-1.5 h-1.5 rounded-full bg-success" />
                 TP ${formatMarketPrice(position.take_profit)}
               </span>
             )}
@@ -1075,7 +1075,7 @@ const Positions = () => {
   const PendingOrderRow = ({ order }: { order: any }) => {
     const isLong = order.position_type === 'long';
     const sideLabel = isLong ? 'BUY' : 'SELL';
-    const sideColor = isLong ? 'text-emerald-600 border-emerald-500/40 bg-emerald-500/10' : 'text-red-500 border-red-500/40 bg-red-500/10';
+    const sideColor = isLong ? 'text-success border-success/40 bg-success/10' : 'text-destructive border-destructive/40 bg-destructive/10';
     return (
       <div className="px-2.5 py-2.5 sm:px-4 sm:py-3 border-b border-border/60 bg-card hover:bg-muted/30 transition-colors">
         <div className="flex items-center gap-2 sm:gap-3">
@@ -1205,7 +1205,7 @@ const Positions = () => {
           <div className="px-3 sm:px-4 py-2.5 sm:py-3 bg-card border-b border-border flex items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="text-[9px] uppercase tracking-widest text-muted-foreground font-bold">Floating P&L</p>
-              <p className={`text-lg sm:text-xl font-bold tabular-nums truncate ${totalIsProfit ? "text-emerald-600" : "text-red-500"}`}>
+              <p className={`text-lg sm:text-xl font-bold tabular-nums truncate ${totalIsProfit ? "text-success" : "text-destructive"}`}>
                 {totalIsProfit ? "+" : ""}${totalPnL.toFixed(2)}
                 <span className="ml-1.5 text-[11px] sm:text-xs font-semibold">
                   ({totalIsProfit ? "+" : ""}{pnlPct.toFixed(2)}%)
@@ -1309,7 +1309,7 @@ const Positions = () => {
               <span className="font-semibold text-muted-foreground uppercase tracking-wide">
                 {filteredClosed.length} trade{filteredClosed.length !== 1 ? "s" : ""}
                 {filteredClosed.length > 0 && (
-                  <span className={`ml-2 ${netClosedPnl >= 0 ? "text-emerald-600" : "text-red-500"}`}>
+                  <span className={`ml-2 ${netClosedPnl >= 0 ? "text-success" : "text-destructive"}`}>
                     Net {netClosedPnl >= 0 ? "+" : ""}${netClosedPnl.toFixed(2)}
                   </span>
                 )}
@@ -1410,7 +1410,7 @@ const Positions = () => {
                 const position = openPositions.find(p => p.id === closePositionId);
                 if (position) handleClosePosition(position);
               }}
-              className="bg-red-500 hover:bg-red-600"
+              className="bg-destructive hover:bg-destructive"
             >
               Close Position
             </AlertDialogAction>

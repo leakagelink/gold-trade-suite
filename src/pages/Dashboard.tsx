@@ -314,7 +314,7 @@ const Dashboard = () => {
               className="flex items-center gap-2 bg-primary/5 hover:bg-primary/10 active:scale-95 transition-all duration-300 px-3 py-1.5 rounded-full"
               title="Wallet Balance"
             >
-              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" />
               <span className="text-xs font-bold text-primary font-mono tabular-nums">
                 ${walletBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>

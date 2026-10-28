@@ -138,7 +138,7 @@ const TradingList = ({ data, momentumEnabled = true }: TradingListProps) => {
                 {/* Live momentum indicator */}
                 {itemMomentum[index] && itemMomentum[index] !== 'neutral' && (
                   <div className={`absolute -top-0.5 -right-0.5 h-2 w-2 sm:h-3 sm:w-3 rounded-full animate-pulse ${
-                    itemMomentum[index] === 'up' ? 'bg-green-500' : 'bg-red-500'
+                    itemMomentum[index] === 'up' ? 'bg-success' : 'bg-destructive'
                   }`} />
                 )}
               </div>
@@ -146,21 +146,21 @@ const TradingList = ({ data, momentumEnabled = true }: TradingListProps) => {
                 <div className="font-bold text-xs sm:text-base truncate flex items-center gap-1">
                   <span className="truncate max-w-[80px] sm:max-w-none">{item.name}</span>
                   <Activity className={`h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0 transition-all duration-300 ${
-                    itemMomentum[index] === 'up' ? 'text-green-500 animate-pulse' :
-                    itemMomentum[index] === 'down' ? 'text-red-500 animate-pulse' :
+                    itemMomentum[index] === 'up' ? 'text-success animate-pulse' :
+                    itemMomentum[index] === 'down' ? 'text-destructive animate-pulse' :
                     'text-muted-foreground opacity-50'
                   }`} />
                 </div>
                 <div className={`text-[10px] sm:text-sm font-medium flex items-center gap-1 ${
                   item.isPositive 
-                    ? 'text-green-600 dark:text-green-400' 
-                    : 'text-red-600 dark:text-red-400'
+                    ? 'text-success dark:text-success' 
+                    : 'text-destructive dark:text-destructive'
                 }`}>
                   {item.change}
                   {itemMomentum[index] && (
                     <span className={`text-[10px] sm:text-xs transition-all duration-300 ${
-                      itemMomentum[index] === 'up' ? 'text-green-500' :
-                      itemMomentum[index] === 'down' ? 'text-red-500' :
+                      itemMomentum[index] === 'up' ? 'text-success' :
+                      itemMomentum[index] === 'down' ? 'text-destructive' :
                       'text-muted-foreground'
                     }`}>
                       {itemMomentum[index] === 'up' ? '↗' : itemMomentum[index] === 'down' ? '↘' : '→'}
@@ -169,8 +169,8 @@ const TradingList = ({ data, momentumEnabled = true }: TradingListProps) => {
                 </div>
                 {item.high24h && item.low24h && (
                   <div className="text-[9px] sm:text-xs text-muted-foreground mt-0.5 flex gap-1 sm:gap-2">
-                    <span className="text-green-600 dark:text-green-400">H: {item.currencySymbol || '$'}{item.high24h}</span>
-                    <span className="text-red-600 dark:text-red-400">L: {item.currencySymbol || '$'}{item.low24h}</span>
+                    <span className="text-success dark:text-success">H: {item.currencySymbol || '$'}{item.high24h}</span>
+                    <span className="text-destructive dark:text-destructive">L: {item.currencySymbol || '$'}{item.low24h}</span>
                   </div>
                 )}
               </div>
@@ -179,16 +179,16 @@ const TradingList = ({ data, momentumEnabled = true }: TradingListProps) => {
             {/* Right: Price and Percentage */}
             <div className="text-right flex-shrink-0 ml-2 max-w-[100px] sm:max-w-none">
               <div className={`font-bold text-xs sm:text-lg mb-0.5 transition-all duration-300 truncate ${
-                itemMomentum[index] === 'up' ? 'text-green-500 scale-105' :
-                itemMomentum[index] === 'down' ? 'text-red-500 scale-95' :
+                itemMomentum[index] === 'up' ? 'text-success scale-105' :
+                itemMomentum[index] === 'down' ? 'text-destructive scale-95' :
                 ''
               }`}>
                 {item.currencySymbol || '$'}{displayPrice}
               </div>
               <div className={`text-[10px] sm:text-sm font-semibold flex items-center justify-end gap-0.5 ${
                 item.isPositive 
-                  ? 'text-green-600 dark:text-green-400' 
-                  : 'text-red-600 dark:text-red-400'
+                  ? 'text-success dark:text-success' 
+                  : 'text-destructive dark:text-destructive'
               }`}>
                 {item.isPositive ? (
                   <TrendingUp className="h-2.5 w-2.5 sm:h-4 sm:w-4" />

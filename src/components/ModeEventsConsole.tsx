@@ -26,7 +26,7 @@ const KINDS: ModeEventKind[] = [
 
 const levelStyle: Record<ModeEventLevel, string> = {
   debug: "bg-muted text-muted-foreground border-border",
-  info: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+  info: "bg-success/15 text-success border-success/30",
   warn: "bg-amber-500/15 text-amber-400 border-amber-500/30",
   error: "bg-destructive/15 text-destructive border-destructive/30",
 };
@@ -37,7 +37,7 @@ const kindStyle: Record<string, string> = {
   db_guard_block: "bg-rose-500/15 text-rose-400 border-rose-500/30",
   realtime_in: "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
   mode_transition: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-  reset_to_live: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+  reset_to_live: "bg-success/15 text-success border-success/30",
   manual_close: "bg-purple-500/15 text-purple-400 border-purple-500/30",
   error: "bg-destructive/15 text-destructive border-destructive/30",
 };
@@ -112,7 +112,7 @@ export function ModeEventsConsole() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <div className="flex items-center gap-2 text-xs">
-              {alertsOn ? <Bell className="h-3.5 w-3.5 text-emerald-400" /> : <BellOff className="h-3.5 w-3.5 text-muted-foreground" />}
+              {alertsOn ? <Bell className="h-3.5 w-3.5 text-success" /> : <BellOff className="h-3.5 w-3.5 text-muted-foreground" />}
               <span className="text-muted-foreground">Alerts</span>
               <Switch checked={alertsOn} onCheckedChange={setAlertsOn} />
             </div>
@@ -202,7 +202,7 @@ function Stat({ label, value, tone }: { label: string; value: number; tone?: "in
   const cls =
     tone === "error" ? "text-destructive" :
     tone === "warn" ? "text-amber-400" :
-    tone === "info" ? "text-emerald-400" : "text-foreground";
+    tone === "info" ? "text-success" : "text-foreground";
   return (
     <div className="rounded-md border border-border/50 bg-background/40 px-3 py-2">
       <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>

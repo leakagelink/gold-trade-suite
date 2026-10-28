@@ -357,17 +357,17 @@ const AdminPositions = () => {
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2 flex-1">
             <div className={`h-10 w-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-              isLong ? 'bg-green-500/20' : 'bg-red-500/20'
+              isLong ? 'bg-success/20' : 'bg-destructive/20'
             }`}>
               {isLong ? (
-                <TrendingUp className="h-5 w-5 text-green-500" />
+                <TrendingUp className="h-5 w-5 text-success" />
               ) : (
-                <TrendingDown className="h-5 w-5 text-red-500" />
+                <TrendingDown className="h-5 w-5 text-destructive" />
               )}
             </div>
             <div className="min-w-0">
               <h3 className="font-bold text-lg">{position.symbol}/USDT</h3>
-              <span className={`text-sm font-semibold ${isLong ? 'text-green-500' : 'text-red-500'}`}>
+              <span className={`text-sm font-semibold ${isLong ? 'text-success' : 'text-destructive'}`}>
                 {position.position_type === 'long' ? 'BUY' : 'SELL'} {position.leverage}x
               </span>
               <p className="text-xs text-muted-foreground truncate">
@@ -380,7 +380,7 @@ const AdminPositions = () => {
               variant="ghost"
               size="icon"
               onClick={() => setClosePositionId(position.id)}
-              className="text-red-500 hover:text-red-600 hover:bg-red-500/10 flex-shrink-0"
+              className="text-destructive hover:text-destructive hover:bg-destructive/10 flex-shrink-0"
             >
               <X className="h-5 w-5" />
             </Button>
@@ -401,24 +401,24 @@ const AdminPositions = () => {
             <div className={`flex items-center gap-1 font-semibold transition-all duration-300 ${
               priceChange?.flash 
                 ? priceChange.direction === 'up' 
-                  ? 'text-green-500 animate-pulse' 
-                  : 'text-red-500 animate-pulse'
+                  ? 'text-success animate-pulse' 
+                  : 'text-destructive animate-pulse'
                 : ''
             }`}>
               <span className={`px-2 py-1 rounded transition-all duration-300 ${
                 priceChange?.flash
                   ? priceChange.direction === 'up'
-                    ? 'bg-green-500/20'
-                    : 'bg-red-500/20'
+                    ? 'bg-success/20'
+                    : 'bg-destructive/20'
                   : ''
               }`}>
                 ${position.current_price.toFixed(2)}
               </span>
               {priceChange?.direction === 'up' && (
-                <ArrowUp className="h-4 w-4 text-green-500" />
+                <ArrowUp className="h-4 w-4 text-success" />
               )}
               {priceChange?.direction === 'down' && (
-                <ArrowDown className="h-4 w-4 text-red-500" />
+                <ArrowDown className="h-4 w-4 text-destructive" />
               )}
             </div>
           </div>
@@ -431,21 +431,21 @@ const AdminPositions = () => {
         <div className={`mt-4 p-3 rounded-lg transition-all duration-300 ${
           priceChange?.flash
             ? priceChange.direction === 'up'
-              ? 'bg-green-500/20 animate-pulse'
-              : 'bg-red-500/20 animate-pulse'
-            : isProfit ? 'bg-green-500/10' : 'bg-red-500/10'
+              ? 'bg-success/20 animate-pulse'
+              : 'bg-destructive/20 animate-pulse'
+            : isProfit ? 'bg-success/10' : 'bg-destructive/10'
         }`}>
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium">PnL</span>
             <div className="flex items-center gap-1">
-              <span className={`text-lg font-bold ${isProfit ? 'text-green-500' : 'text-red-500'}`}>
+              <span className={`text-lg font-bold ${isProfit ? 'text-success' : 'text-destructive'}`}>
                 {isProfit ? '+' : ''}${pnl.toFixed(2)}
               </span>
               {priceChange?.direction === 'up' && (
-                <ArrowUp className="h-4 w-4 text-green-500" />
+                <ArrowUp className="h-4 w-4 text-success" />
               )}
               {priceChange?.direction === 'down' && (
-                <ArrowDown className="h-4 w-4 text-red-500" />
+                <ArrowDown className="h-4 w-4 text-destructive" />
               )}
             </div>
           </div>
@@ -553,7 +553,7 @@ const AdminPositions = () => {
                 const position = openPositions.find(p => p.id === closePositionId);
                 if (position) handleClosePosition(position);
               }}
-              className="bg-red-500 hover:bg-red-600"
+              className="bg-destructive hover:bg-destructive"
             >
               Close Position
             </AlertDialogAction>

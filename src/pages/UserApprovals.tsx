@@ -211,7 +211,7 @@ const UserApprovals = () => {
               </div>
             ) : pendingUsers.length === 0 ? (
               <div className="text-center py-8">
-                <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-500" />
+                <CheckCircle className="h-12 w-12 mx-auto mb-4 text-success" />
                 <p className="text-muted-foreground">No pending approvals</p>
               </div>
             ) : (
@@ -239,7 +239,7 @@ const UserApprovals = () => {
                             <Clock className="h-4 w-4 text-yellow-500 animate-pulse" />
                             <span className={`font-mono font-semibold ${
                               timeLeft[pendingUser.id] === "Expired" 
-                                ? "text-red-500" 
+                                ? "text-destructive" 
                                 : "text-yellow-500"
                             }`}>
                               {timeLeft[pendingUser.id] || "24h 0m 0s"}
@@ -250,7 +250,7 @@ const UserApprovals = () => {
                           <Button
                             onClick={() => handleApprove(pendingUser.id)}
                             size="sm"
-                            className="bg-green-500 hover:bg-green-600"
+                            className="bg-success hover:bg-success"
                           >
                             <CheckCircle className="h-4 w-4 mr-2" />
                             Approve

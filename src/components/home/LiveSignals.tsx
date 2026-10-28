@@ -85,8 +85,8 @@ export const LiveSignals = ({ authenticated = false }: { authenticated?: boolean
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <div className={`h-9 w-9 rounded-lg flex items-center justify-center ${s.signal_type === "long" ? "bg-green-500/10" : "bg-red-500/10"}`}>
-                        {s.signal_type === "long" ? <TrendingUp className="h-4 w-4 text-green-500" /> : <TrendingDown className="h-4 w-4 text-red-500" />}
+                      <div className={`h-9 w-9 rounded-lg flex items-center justify-center ${s.signal_type === "long" ? "bg-success/10" : "bg-destructive/10"}`}>
+                        {s.signal_type === "long" ? <TrendingUp className="h-4 w-4 text-success" /> : <TrendingDown className="h-4 w-4 text-destructive" />}
                       </div>
                       <div>
                         <div className="font-bold">{s.pair}</div>
@@ -95,7 +95,7 @@ export const LiveSignals = ({ authenticated = false }: { authenticated?: boolean
                         </div>
                       </div>
                     </div>
-                    <Badge variant="outline" className={s.signal_type === "long" ? "text-green-500 border-green-500/40" : "text-red-500 border-red-500/40"}>
+                    <Badge variant="outline" className={s.signal_type === "long" ? "text-success border-success/40" : "text-destructive border-destructive/40"}>
                       {s.signal_type === "long" ? "BUY" : "SELL"}
                     </Badge>
                   </div>
@@ -107,13 +107,13 @@ export const LiveSignals = ({ authenticated = false }: { authenticated?: boolean
                     </div>
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground flex items-center gap-1">
-                        <Target className="h-3 w-3 text-green-500" /> TP
+                        <Target className="h-3 w-3 text-success" /> TP
                       </span>
-                      <span className="font-mono font-bold text-green-500">{s.take_profit}</span>
+                      <span className="font-mono font-bold text-success">{s.take_profit}</span>
                     </div>
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">SL</span>
-                      <span className="font-mono font-bold text-red-500">{s.stop_loss}</span>
+                      <span className="font-mono font-bold text-destructive">{s.stop_loss}</span>
                     </div>
                   </div>
 

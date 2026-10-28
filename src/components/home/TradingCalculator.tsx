@@ -48,10 +48,10 @@ export const TradingCalculator = () => {
         <Card className="max-w-4xl mx-auto p-6 sm:p-8 bg-card/60 backdrop-blur border-border/40">
           <Tabs value={direction} onValueChange={(v) => setDirection(v as "long" | "short")}>
             <TabsList className="grid grid-cols-2 w-full max-w-xs mx-auto mb-6">
-              <TabsTrigger value="long" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-500">
+              <TabsTrigger value="long" className="data-[state=active]:bg-success/20 data-[state=active]:text-success">
                 <TrendingUp className="h-4 w-4 mr-1" /> BUY
               </TabsTrigger>
-              <TabsTrigger value="short" className="data-[state=active]:bg-red-500/20 data-[state=active]:text-red-500">
+              <TabsTrigger value="short" className="data-[state=active]:bg-destructive/20 data-[state=active]:text-destructive">
                 <TrendingUp className="h-4 w-4 mr-1 rotate-180" /> SELL
               </TabsTrigger>
             </TabsList>
@@ -79,7 +79,7 @@ export const TradingCalculator = () => {
               <div className="space-y-3">
                 <div className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20">
                   <div className="text-xs text-muted-foreground mb-1">Estimated Profit/Loss</div>
-                  <div className={`text-3xl font-black ${result.profit >= 0 ? "text-green-500" : "text-red-500"}`}>
+                  <div className={`text-3xl font-black ${result.profit >= 0 ? "text-success" : "text-destructive"}`}>
                     {result.profit >= 0 ? "+" : ""}${result.profit.toFixed(2)}
                   </div>
                 </div>
@@ -90,7 +90,7 @@ export const TradingCalculator = () => {
                   </div>
                   <div className="p-3 rounded-lg bg-muted/40 border border-border/40">
                     <div className="text-xs text-muted-foreground">ROI</div>
-                    <div className={`text-lg font-bold font-mono ${result.roi >= 0 ? "text-green-500" : "text-red-500"}`}>
+                    <div className={`text-lg font-bold font-mono ${result.roi >= 0 ? "text-success" : "text-destructive"}`}>
                       {result.roi >= 0 ? "+" : ""}{result.roi.toFixed(2)}%
                     </div>
                   </div>

@@ -1652,7 +1652,7 @@ export const AdminTradeManagement = () => {
                       <div className="text-xs text-muted-foreground">Closed</div>
                     </div>
                     <div className="text-center min-w-[100px]">
-                      <div className={`text-lg font-semibold ${user.totalPnL >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      <div className={`text-lg font-semibold ${user.totalPnL >= 0 ? 'text-success' : 'text-destructive'}`}>
                         {user.totalPnL >= 0 ? '+' : ''}${user.totalPnL.toFixed(2)}
                       </div>
                       <div className="text-xs text-muted-foreground">Open PnL</div>
@@ -1741,7 +1741,7 @@ export const AdminTradeManagement = () => {
                                       ? 'bg-orange-500/20 text-orange-500 border-orange-500/30' 
                                       : position.price_mode === 'manual' 
                                         ? 'bg-purple-500/20 text-purple-500 border-purple-500/30' 
-                                        : 'bg-green-500/20 text-green-500 border-green-500/30'
+                                        : 'bg-success/20 text-success border-success/30'
                                   }`}
                                 >
                                   {position.price_mode === 'edited' ? 'Edited' : position.price_mode === 'manual' ? 'Manual' : 'Live'}
@@ -1749,7 +1749,7 @@ export const AdminTradeManagement = () => {
                               </div>
                             </TableCell>
                             <TableCell>
-                              <div className={`flex items-center gap-1 ${position.position_type === 'long' ? 'text-green-500' : 'text-red-500'}`}>
+                              <div className={`flex items-center gap-1 ${position.position_type === 'long' ? 'text-success' : 'text-destructive'}`}>
                                 {position.position_type === 'long' ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
                                 {position.position_type.toUpperCase()}
                               </div>
@@ -1760,24 +1760,24 @@ export const AdminTradeManagement = () => {
                               <div className={`flex items-center gap-1 transition-all duration-300 ${
                                 priceChanges[position.id]?.flash 
                                   ? priceChanges[position.id].direction === 'up' 
-                                    ? 'text-green-500 animate-pulse' 
-                                    : 'text-red-500 animate-pulse'
+                                    ? 'text-success animate-pulse' 
+                                    : 'text-destructive animate-pulse'
                                   : ''
                               }`}>
                                 <span className={`px-2 py-1 rounded transition-all duration-300 ${
                                   priceChanges[position.id]?.flash
                                     ? priceChanges[position.id].direction === 'up'
-                                      ? 'bg-green-500/20'
-                                      : 'bg-red-500/20'
+                                      ? 'bg-success/20'
+                                      : 'bg-destructive/20'
                                     : ''
                                 }`}>
                                   ${position.current_price.toFixed(2)}
                                 </span>
                                 {priceChanges[position.id]?.direction === 'up' && (
-                                  <ArrowUp className="h-4 w-4 text-green-500" />
+                                  <ArrowUp className="h-4 w-4 text-success" />
                                 )}
                                 {priceChanges[position.id]?.direction === 'down' && (
-                                  <ArrowDown className="h-4 w-4 text-red-500" />
+                                  <ArrowDown className="h-4 w-4 text-destructive" />
                                 )}
                               </div>
                             </TableCell>
@@ -1787,12 +1787,12 @@ export const AdminTradeManagement = () => {
                                 priceChanges[position.id]?.flash 
                                   ? 'animate-pulse'
                                   : ''
-                              } ${isProfit ? 'text-green-500' : 'text-red-500'}`}>
+                              } ${isProfit ? 'text-success' : 'text-destructive'}`}>
                                 <span className={`px-2 py-1 rounded ${
                                   priceChanges[position.id]?.flash
                                     ? isProfit
-                                      ? 'bg-green-500/20'
-                                      : 'bg-red-500/20'
+                                      ? 'bg-success/20'
+                                      : 'bg-destructive/20'
                                     : ''
                                 }`}>
                                   {isProfit ? '+' : ''}${pnl.toFixed(2)}
@@ -1828,7 +1828,7 @@ export const AdminTradeManagement = () => {
                                       setAdjustPnlPositionId(position.id);
                                       setTargetPnlPercent(pnlPercent.toFixed(2));
                                     }}
-                                    className={`font-semibold min-w-[60px] text-center ${isProfit ? 'text-green-500' : 'text-red-500'}`}
+                                    className={`font-semibold min-w-[60px] text-center ${isProfit ? 'text-success' : 'text-destructive'}`}
                                   >
                                     {isProfit ? '+' : ''}{pnlPercent.toFixed(2)}%
                                   </button>
@@ -1964,7 +1964,7 @@ export const AdminTradeManagement = () => {
                                       ? 'bg-orange-500/20 text-orange-500 border-orange-500/30' 
                                       : position.price_mode === 'manual' 
                                         ? 'bg-purple-500/20 text-purple-500 border-purple-500/30' 
-                                        : 'bg-green-500/20 text-green-500 border-green-500/30'
+                                        : 'bg-success/20 text-success border-success/30'
                                   }`}
                                 >
                                   {position.price_mode === 'edited' ? 'Edited' : position.price_mode === 'manual' ? 'Manual' : 'Live'}
@@ -1972,7 +1972,7 @@ export const AdminTradeManagement = () => {
                               </div>
                             </TableCell>
                             <TableCell>
-                              <div className={`flex items-center gap-1 ${position.position_type === 'long' ? 'text-green-500' : 'text-red-500'}`}>
+                              <div className={`flex items-center gap-1 ${position.position_type === 'long' ? 'text-success' : 'text-destructive'}`}>
                                 {position.position_type === 'long' ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
                                 {position.position_type.toUpperCase()}
                               </div>
@@ -1983,10 +1983,10 @@ export const AdminTradeManagement = () => {
                             <TableCell>{position.leverage}x</TableCell>
                             <TableCell>
                               <div className="flex flex-col">
-                                <span className={`font-semibold ${isProfit ? 'text-green-500' : 'text-red-500'}`}>
+                                <span className={`font-semibold ${isProfit ? 'text-success' : 'text-destructive'}`}>
                                   {isProfit ? '+' : ''}${pnl.toFixed(2)}
                                 </span>
-                                <span className={`text-xs ${isProfit ? 'text-green-500/70' : 'text-red-500/70'}`}>
+                                <span className={`text-xs ${isProfit ? 'text-success/70' : 'text-destructive/70'}`}>
                                   {isProfit ? '+' : ''}{pnlPercent.toFixed(2)}%
                                 </span>
                               </div>
@@ -2018,7 +2018,7 @@ export const AdminTradeManagement = () => {
                                   variant="ghost"
                                   size="icon"
                                   onClick={() => handleDeleteClosedTrade(position.id)}
-                                  className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
                                   title="Delete trade"
                                 >
                                   <Trash2 className="h-4 w-4" />
@@ -2159,7 +2159,7 @@ export const AdminTradeManagement = () => {
               </Select>
               {selectedUser && selectedUserBalance !== null && (
                 <p className="text-sm text-muted-foreground mt-1">
-                  Available Balance: <span className="font-semibold text-green-500">${selectedUserBalance.toFixed(2)}</span>
+                  Available Balance: <span className="font-semibold text-success">${selectedUserBalance.toFixed(2)}</span>
                 </p>
               )}
             </div>
@@ -2351,7 +2351,7 @@ export const AdminTradeManagement = () => {
                 <Badge className="bg-purple-500/20 text-purple-500 border-purple-500/30">Manual</Badge>
               )}
               {selectedPosition?.price_mode === 'live' && (
-                <Badge className="bg-green-500/20 text-green-500 border-green-500/30">Live</Badge>
+                <Badge className="bg-success/20 text-success border-success/30">Live</Badge>
               )}
             </DialogTitle>
           </DialogHeader>
