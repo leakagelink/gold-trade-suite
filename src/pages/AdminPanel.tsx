@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { AdminTradeManagement } from "@/components/AdminTradeManagement";
+import { AdminBulkTrades } from "@/components/AdminBulkTrades";
 import { AdminAPIManagement } from "@/components/AdminAPIManagement";
 import { AdminKYCManagement } from "@/components/AdminKYCManagement";
 import { AdminSignalsManagement } from "@/components/AdminSignalsManagement";
@@ -1560,6 +1561,7 @@ const AdminPanel = () => {
 
           {/* Trades Tab */}
           <TabsContent value="trades">
+            <AdminBulkTrades />
             <AdminTradeManagement />
           </TabsContent>
 
