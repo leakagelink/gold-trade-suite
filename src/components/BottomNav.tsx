@@ -1,4 +1,4 @@
-import { TrendingUp, Wallet, User, Layers, Zap, type LucideIcon } from "lucide-react";
+import { TrendingUp, Wallet, User, Layers, Zap, BarChart3, type LucideIcon } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
