@@ -223,270 +223,154 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* ───────────────── HERO (Hero + Grid bento) ───────────────── */}
+      {/* ───────────────── HERO: TRADING TERMINAL ───────────────── */}
       <section className="relative overflow-hidden border-b border-border/60 bg-hero">
-        {/* Subtle background */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-grid-pattern opacity-[0.04]" />
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[140px]" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[hsl(var(--gold))]/10 rounded-full blur-[140px]" />
+          <div className="absolute inset-0 bg-grid-pattern opacity-[0.05]" />
+          <div className="absolute -top-40 right-0 w-[700px] h-[700px] bg-accent/10 rounded-full blur-[160px]" />
         </div>
+        <div className="container mx-auto px-3 sm:px-6 pt-8 sm:pt-14 pb-12 sm:pb-20 relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
+            <Badge className="mb-4 bg-accent/10 text-accent border border-accent/30 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] font-semibold rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse mr-2" />
+              Markets live · 24/7 execution
+            </Badge>
+            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight text-foreground mb-4">
+              The pro trading desk for <span className="gradient-text">Crypto, Forex & Gold</span>
+            </h1>
+            <p className="text-base sm:text-lg text-muted-foreground mb-7">
+              Live charts, one-tap Buy/Sell, up to 100x leverage and a unified wallet — in one fast, secure terminal.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button size="lg" className="bg-brand text-primary-foreground px-8 py-6 text-base rounded-xl font-semibold shadow-[var(--shadow-glow)] group" onClick={() => navigate("/auth")}>
+                Open Trading Account
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-0.5 transition-transform" />
+              </Button>
+              <Button size="lg" variant="outline" className="border-2 px-8 py-6 text-base rounded-xl font-semibold bg-card" onClick={() => navigate("/auth")}>
+                <LineChart className="mr-2 h-5 w-5 text-accent" /> Explore Markets
+              </Button>
+            </div>
+          </div>
 
-        <div className="container mx-auto px-3 sm:px-6 py-10 sm:py-20 relative z-10">
-          <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-            {/* Left: copy + CTA */}
-            <div className="lg:col-span-7 flex flex-col justify-center">
-              <Badge className="self-start mb-5 bg-accent/10 text-accent border border-accent/30 px-3 py-1.5 text-[11px] sm:text-xs uppercase tracking-[0.18em] font-semibold rounded-full">
-                <Sparkles className="h-3.5 w-3.5 mr-1.5 text-[hsl(var(--gold))]" />
-                Next-Gen Trading Desk
-              </Badge>
-
-              <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[1.02] tracking-tight text-foreground mb-5">
-                Trade smart.
-                <span className="block gradient-text pb-2">Fly higher.</span>
-              </h1>
-
-              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl leading-relaxed mb-7">
-                A professional desk for <span className="text-foreground font-semibold">Crypto, Forex & Commodities</span> — built with MT5-class execution, institutional security and a clean, focused interface.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-3 mb-8">
-                <Button
-                  size="lg"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-7 py-6 text-base rounded-xl font-semibold shadow-[var(--shadow-elevated)] group"
-                  onClick={() => navigate("/auth")}
-                >
-                  Start Trading Free
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-0.5 transition-transform" />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-2 px-7 py-6 text-base rounded-xl font-semibold"
-                  onClick={() => navigate("/auth")}
-                >
-                  <LineChart className="mr-2 h-5 w-5 text-primary" />
-                  Explore Markets
-                </Button>
+          {/* Terminal mockup */}
+          <div className="rounded-2xl border border-border bg-card shadow-[var(--shadow-elevated)] overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-secondary/60">
+              <div className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-destructive/70" />
+                <span className="h-2.5 w-2.5 rounded-full bg-accent/50" />
+                <span className="h-2.5 w-2.5 rounded-full bg-success/70" />
+                <span className="ml-3 text-xs font-semibold text-muted-foreground tracking-wide">SkyFX Terminal</span>
               </div>
-
-              {/* Trust pills */}
-              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                {[
-                  { icon: Shield, label: "SSL Secured" },
-                  { icon: Award, label: "ISO Certified" },
-                  { icon: Users, label: "50K+ Traders" },
-                  { icon: Clock3, label: "24/7 Markets" },
-                ].map((p) => (
-                  <div
-                    key={p.label}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary border border-border text-xs sm:text-sm font-medium text-secondary-foreground"
-                  >
-                    <p.icon className="h-3.5 w-3.5 text-primary" />
-                    {p.label}
-                  </div>
+              <div className="hidden sm:flex gap-1 text-[11px] font-semibold">
+                {["1M", "5M", "15M", "1H", "4H", "1D"].map((t) => (
+                  <span key={t} className={`px-2 py-0.5 rounded ${t === "15M" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>{t}</span>
                 ))}
               </div>
             </div>
+            <div className="grid lg:grid-cols-12">
+              {/* Watchlist */}
+              <div className="lg:col-span-3 border-b lg:border-b-0 lg:border-r border-border">
+                <p className="px-4 pt-3 pb-2 text-[11px] uppercase tracking-[0.18em] font-semibold text-muted-foreground">Watchlist</p>
+                {Object.entries(cryptoPrices).map(([symbol, data]) => {
+                  const name = symbol.replace("USDT", "");
+                  const up = data.change >= 0;
+                  return (
+                    <button key={symbol} onClick={() => navigate("/auth")} className={`w-full flex items-center justify-between px-4 py-3 text-left hover:bg-secondary/70 transition-colors ${name === "BTC" ? "bg-accent/5 border-l-2 border-accent" : "border-l-2 border-transparent"}`}>
+                      <div className="flex items-center gap-2.5">
+                        <span className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold">{coinIcons[name]}</span>
+                        <div>
+                          <p className="text-sm font-bold text-foreground">{name}/USDT</p>
+                          <p className="text-[11px] text-muted-foreground">Crypto</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold tabular-nums text-foreground">{data.price > 0 ? data.price.toLocaleString("en-US", { maximumFractionDigits: 2 }) : "—"}</p>
+                        <p className={`text-[11px] font-semibold tabular-nums ${up ? "text-success" : "text-destructive"}`}>{up ? "▲" : "▼"} {Math.abs(data.change).toFixed(2)}</p>
+                      </div>
+                    </button>
+                  );
+                })}
+                {[{ s: "XAU/USD", t: "Gold" }, { s: "EUR/USD", t: "Forex" }].map((m) => (
+                  <button key={m.s} onClick={() => navigate("/auth")} className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-secondary/70 border-l-2 border-transparent">
+                    <div className="flex items-center gap-2.5">
+                      <span className="h-8 w-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center"><Globe className="h-4 w-4" /></span>
+                      <div><p className="text-sm font-bold text-foreground">{m.s}</p><p className="text-[11px] text-muted-foreground">{m.t}</p></div>
+                    </div>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  </button>
+                ))}
+              </div>
 
-            {/* Right: bento grid */}
-            <div className="lg:col-span-5 grid grid-cols-2 grid-rows-3 gap-3 sm:gap-4 min-h-[420px] lg:min-h-[520px]">
-              {/* Featured live price BTC */}
-              <Card className="col-span-2 row-span-1 p-5 sm:p-6 border-border/60 bg-primary text-primary-foreground rounded-2xl overflow-hidden relative bg-brand shadow-[var(--shadow-glow)]">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-[hsl(var(--gold))]/20 rounded-full blur-3xl" />
-                <div className="relative flex items-center justify-between">
+              {/* Chart */}
+              <div className="lg:col-span-6 p-4 sm:p-5 border-b lg:border-b-0 lg:border-r border-border">
+                <div className="flex items-end justify-between mb-3">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-primary-foreground/70 mb-1">
-                      Live · BTC / USDT
-                    </p>
-                    <p className="font-display text-3xl sm:text-4xl font-bold tabular-nums">
-                      ${cryptoPrices.BTCUSDT.price > 0
-                        ? cryptoPrices.BTCUSDT.price.toLocaleString("en-US", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })
-                        : "—"}
-                    </p>
-                    <p
-                      className={`text-sm font-medium mt-1 flex items-center gap-1 ${
-                        cryptoPrices.BTCUSDT.change >= 0
-                          ? "text-[hsl(var(--gold))]"
-                          : "text-red-300"
-                      }`}
-                    >
-                      {cryptoPrices.BTCUSDT.change >= 0 ? (
-                        <ArrowUp className="h-3.5 w-3.5" />
-                      ) : (
-                        <ArrowDown className="h-3.5 w-3.5" />
-                      )}
-                      {cryptoPrices.BTCUSDT.change >= 0 ? "+" : ""}
-                      {cryptoPrices.BTCUSDT.change.toFixed(2)} USD
+                    <p className="text-xs text-muted-foreground font-semibold">BTC / USDT · Perpetual</p>
+                    <p className="font-display text-3xl font-bold tabular-nums text-foreground">
+                      ${cryptoPrices.BTCUSDT.price > 0 ? cryptoPrices.BTCUSDT.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—"}
                     </p>
                   </div>
-                  <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-[hsl(var(--gold))] text-[hsl(var(--gold-foreground))] flex items-center justify-center font-black text-3xl shadow-lg">
-                    ₿
+                  <span className={`text-sm font-semibold px-2 py-1 rounded-md ${cryptoPrices.BTCUSDT.change >= 0 ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"}`}>
+                    {cryptoPrices.BTCUSDT.change >= 0 ? "+" : ""}{cryptoPrices.BTCUSDT.change.toFixed(2)}
+                  </span>
+                </div>
+                <svg viewBox="0 0 300 140" className="w-full h-48 sm:h-60" preserveAspectRatio="none">
+                  {[28, 56, 84, 112].map((y) => (<line key={y} x1="0" x2="300" y1={y} y2={y} className="stroke-border" strokeDasharray="3 4" />))}
+                  {[38, 52, 46, 64, 58, 74, 66, 82, 72, 90, 84, 98, 92, 104, 96, 112, 106, 118, 110, 122].map((h, i, arr) => {
+                    const x = 8 + i * 14.6;
+                    const prev = i ? arr[i - 1] : h - 6;
+                    const up = h >= prev;
+                    const top = 140 - Math.max(h, prev) - 6;
+                    const bot = 140 - Math.min(h, prev) + 2;
+                    return (
+                      <g key={i} className={up ? "text-success" : "text-destructive"}>
+                        <line x1={x} x2={x} y1={top - 6} y2={bot + 6} stroke="currentColor" strokeWidth="1" />
+                        <rect x={x - 4} y={top} width="8" height={Math.max(bot - top, 3)} fill="currentColor" rx="1" />
+                      </g>
+                    );
+                  })}
+                </svg>
+              </div>
+
+              {/* Order ticket */}
+              <div className="lg:col-span-3 p-4 sm:p-5 flex flex-col gap-3">
+                <p className="text-[11px] uppercase tracking-[0.18em] font-semibold text-muted-foreground">Order Ticket</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <button onClick={() => navigate("/auth")} className="rounded-lg py-3 font-bold bg-success text-primary-foreground hover:opacity-90">BUY</button>
+                  <button onClick={() => navigate("/auth")} className="rounded-lg py-3 font-bold bg-destructive text-destructive-foreground hover:opacity-90">SELL</button>
+                </div>
+                {[["Amount", "$1,000.00"], ["Leverage", "20x"], ["Margin", "$50.00"], ["Stop Loss", "Optional"], ["Take Profit", "Optional"]].map(([k, v]) => (
+                  <div key={k} className="flex justify-between text-sm border-b border-border/60 pb-2">
+                    <span className="text-muted-foreground">{k}</span>
+                    <span className="font-semibold tabular-nums text-foreground">{v}</span>
                   </div>
-                </div>
-              </Card>
-
-              {/* Stat 1 */}
-              <Card className="p-4 sm:p-5 border-border/60 rounded-2xl flex flex-col justify-between bg-card">
-                <BarChart3 className="h-6 w-6 text-primary" />
-                <div>
-                  <p className="font-display text-2xl sm:text-3xl font-bold text-foreground">$2.4B+</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Monthly volume</p>
-                </div>
-              </Card>
-
-              {/* Stat 2 - gold */}
-              <Card className="p-4 sm:p-5 border-[hsl(var(--gold))]/40 rounded-2xl flex flex-col justify-between bg-[hsl(var(--gold))]/10">
-                <Zap className="h-6 w-6 text-[hsl(var(--gold-foreground))]" />
-                <div>
-                  <p className="font-display text-2xl sm:text-3xl font-bold text-foreground">12ms</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Avg execution</p>
-                </div>
-              </Card>
-
-              {/* ETH price small */}
-              <Card className="p-4 sm:p-5 border-border/60 rounded-2xl flex flex-col justify-between bg-card">
-                <div className="flex items-center gap-2">
-                  <span className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
-                    Ξ
-                  </span>
-                  <span className="text-sm font-semibold">ETH</span>
-                </div>
-                <div>
-                  <p className="font-display text-lg sm:text-xl font-bold tabular-nums">
-                    ${cryptoPrices.ETHUSDT.price > 0
-                      ? cryptoPrices.ETHUSDT.price.toLocaleString("en-US", {
-                          maximumFractionDigits: 2,
-                        })
-                      : "—"}
-                  </p>
-                  <p
-                    className={`text-xs font-medium ${
-                      cryptoPrices.ETHUSDT.change >= 0 ? "text-emerald-700" : "text-red-600"
-                    }`}
-                  >
-                    {cryptoPrices.ETHUSDT.change >= 0 ? "▲" : "▼"}{" "}
-                    {Math.abs(cryptoPrices.ETHUSDT.change).toFixed(2)}
-                  </p>
-                </div>
-              </Card>
-
-              {/* BNB price small */}
-              <Card className="p-4 sm:p-5 border-border/60 rounded-2xl flex flex-col justify-between bg-card">
-                <div className="flex items-center gap-2">
-                  <span className="h-8 w-8 rounded-lg bg-[hsl(var(--gold))]/15 text-[hsl(var(--gold-foreground))] flex items-center justify-center font-bold">
-                    B
-                  </span>
-                  <span className="text-sm font-semibold">BNB</span>
-                </div>
-                <div>
-                  <p className="font-display text-lg sm:text-xl font-bold tabular-nums">
-                    ${cryptoPrices.BNBUSDT.price > 0
-                      ? cryptoPrices.BNBUSDT.price.toLocaleString("en-US", {
-                          maximumFractionDigits: 2,
-                        })
-                      : "—"}
-                  </p>
-                  <p
-                    className={`text-xs font-medium ${
-                      cryptoPrices.BNBUSDT.change >= 0 ? "text-emerald-700" : "text-red-600"
-                    }`}
-                  >
-                    {cryptoPrices.BNBUSDT.change >= 0 ? "▲" : "▼"}{" "}
-                    {Math.abs(cryptoPrices.BNBUSDT.change).toFixed(2)}
-                  </p>
-                </div>
-              </Card>
+                ))}
+                <Button className="mt-auto bg-primary text-primary-foreground font-semibold" onClick={() => navigate("/auth")}>
+                  Start trading <ArrowRight className="ml-1.5 h-4 w-4" />
+                </Button>
+              </div>
             </div>
+          </div>
+
+          {/* Stats bar */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
+            {[
+              { icon: BarChart3, v: "$2.4B+", l: "Monthly volume" },
+              { icon: Zap, v: "12ms", l: "Avg execution" },
+              { icon: Users, v: "50K+", l: "Active traders" },
+              { icon: Shield, v: "100x", l: "Max leverage" },
+            ].map((s) => (
+              <div key={s.l} className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3">
+                <span className="h-10 w-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center"><s.icon className="h-5 w-5" /></span>
+                <div><p className="font-display text-xl font-bold text-foreground">{s.v}</p><p className="text-xs text-muted-foreground">{s.l}</p></div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ───────────────── TOP MOVERS STRIP ───────────────── */}
-      <TopMoversStrip />
-
-      {/* ───────────────── LIVE CRYPTO MARKETS ───────────────── */}
-      <section id="markets" className="py-14 sm:py-20 bg-secondary/40 border-y border-border/60">
-        <div className="container mx-auto px-3 sm:px-4">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-8 sm:mb-12">
-            <div>
-              <p className="text-xs uppercase tracking-[0.22em] text-primary font-semibold mb-2 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Live markets
-              </p>
-              <h2 className="font-display text-3xl sm:text-5xl font-bold text-foreground">
-                Real-time crypto prices
-              </h2>
-            </div>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-md">
-              Streaming directly from major exchanges with sub-second updates.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
-            {Object.entries(cryptoPrices).map(([symbol, data]) => {
-              const displayName = symbol.replace("USDT", "");
-              const isUp = data.change > 0;
-              const isDown = data.change < 0;
-              return (
-                <Card
-                  key={symbol}
-                  className="group p-6 border-border/60 rounded-2xl bg-card hover:shadow-[var(--shadow-elevated)] transition-all"
-                >
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-2xl">
-                        {coinIcons[displayName] || displayName.substring(0, 2)}
-                      </div>
-                      <div>
-                        <p className="font-display text-xl font-bold">{displayName}</p>
-                        <p className="text-xs text-muted-foreground">/ USDT</p>
-                      </div>
-                    </div>
-                    <div
-                      className={`p-2 rounded-lg ${
-                        isUp ? "bg-emerald-100" : isDown ? "bg-red-100" : "bg-muted"
-                      }`}
-                    >
-                      {isUp && <ArrowUp className="h-5 w-5 text-emerald-700" />}
-                      {isDown && <ArrowDown className="h-5 w-5 text-red-700" />}
-                      {!isUp && !isDown && <TrendingUp className="h-5 w-5 text-muted-foreground" />}
-                    </div>
-                  </div>
-                  <p className="font-display text-3xl font-bold tabular-nums">
-                    ${data.price > 0
-                      ? data.price.toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })
-                      : "—"}
-                  </p>
-                  <p
-                    className={`text-sm font-medium mt-1 ${
-                      isUp ? "text-emerald-700" : isDown ? "text-red-700" : "text-muted-foreground"
-                    }`}
-                  >
-                    {isUp && "+"}
-                    {data.change.toFixed(2)} USD
-                  </p>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="w-full mt-5 border-2 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
-                    onClick={() => navigate("/auth")}
-                  >
-                    Trade {displayName}
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      <div id="markets"><TopMoversStrip /></div>
 
       {/* ───────────────── LIVE SIGNALS ───────────────── */}
       <div id="signals">
