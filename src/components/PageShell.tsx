@@ -35,9 +35,27 @@ const PageShell = ({
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-muted/40 to-background">
+    <div className="min-h-screen relative overflow-hidden bg-background">
       <div className="pointer-events-none fixed inset-0 bg-hero" />
       <div className="pointer-events-none fixed inset-0 bg-grid-pattern opacity-[0.35] [mask-image:linear-gradient(to_bottom,black,transparent_60%)]" />
+
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-background/85 border-b border-border/60 shadow-sm">
+        <TickerTape />
+        <div className="relative h-16 flex items-center justify-between px-4 sm:px-5">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 rounded-full hover:bg-primary/10 text-primary active:scale-90 transition-all duration-300"
+              onClick={() => navigate("/dashboard")}
+              aria-label="Back to Dashboard"
+            >
+              <ArrowLeft className="h-5 w-5" strokeWidth={2.5} />
+            </Button>
+            <div className="flex items-center gap-2 cursor-pointer group" onClick={() => navigate("/dashboard")}>
+              <img src={logo} alt="SkyFX Trade" className="h-9 w-auto sm:h-11 object-contain transition-transform duration-500 group-hover:scale-105" />
+            </div>
+          </div>
           {headerAction && (
             <div className="flex items-center gap-2">{headerAction}</div>
           )}
