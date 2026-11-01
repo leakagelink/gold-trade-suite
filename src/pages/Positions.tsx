@@ -21,9 +21,11 @@ import {
 import BottomNav from "@/components/BottomNav";
 import { isCommoditySymbol, isForexSymbol } from "@/lib/marketSymbols";
 import { modeLogger } from "@/lib/modeEventLogger";
+import { canCloseOwnTrade, userTradeCloseParams } from "@/lib/userTradeClose";
 
 interface Position {
   id: string;
+  user_id: string;
   symbol: string;
   position_type: 'long' | 'short';
   amount: number;
@@ -761,6 +763,7 @@ const Positions = () => {
   };
 
   const handleClosePosition = async (position: Position) => {
+    if (!canCloseOwnTrade(position, user?.id) || closingIdRef.current) return;
     // Check if already permanently closed - prevent double close
     if (permanentlyClosedIdsRef.current.has(position.id)) {
       console.log('Position already closed, ignoring duplicate close request:', position.id);
@@ -774,10 +777,8 @@ const Positions = () => {
       permanentlyClosedIdsRef.current.add(position.id);
       
       // Start closing animation
+      closingIdRef.current = position.id;
       setClosingPositionId(position.id);
-      
-      // IMMEDIATELY remove from open positions state to prevent re-showing
-      setOpenPositions(prev => prev.filter(p => p.id !== position.id));
       
       const quantity = getEffectivePositionAmount(position);
       let closePrice = position.current_price;
@@ -785,32 +786,20 @@ const Positions = () => {
         ? (closePrice - position.entry_price) * quantity
         : (position.entry_price - closePrice) * quantity;
 
-      // Broker rule: user-initiated closes must always settle as a loss.
-      // If the live price gives a profit, force the PnL negative and back-calc close price.
-      if (pnl > 0 && quantity > 0) {
-        pnl = -pnl;
-        closePrice = position.position_type === 'long'
-          ? position.entry_price + pnl / quantity
-          : position.entry_price - pnl / quantity;
-      }
-
       const closedAt = new Date().toISOString();
       const closeBrokerage = +(closePrice * quantity * (brokeragePctRef.current / 100)).toFixed(4);
       const totalBrokerage = Number(position.brokerage || 0) + closeBrokerage;
 
       // Atomic server-side close + wallet credit
-      const { data: res, error } = await supabase.rpc('user_close_trade' as any, {
-        p_position_id: position.id,
-        p_close_price: closePrice,
-        p_close_brokerage: closeBrokerage,
-        p_force_loss: true,
-      });
+      const { data: res, error } = await supabase.rpc('user_close_trade' as any,
+        userTradeCloseParams(position.id, closePrice, closeBrokerage));
       if (error) throw error;
 
       if ((res as any)?.already_closed) {
         toast.info('Position was already closed');
         setClosingPositionId(null);
         setClosePositionId(null);
+        await fetchPositions();
         return;
       }
       closePrice = Number((res as any)?.close_price ?? closePrice);
@@ -819,6 +808,7 @@ const Positions = () => {
       setClosingPositionId(null);
       setClosedSuccessId(position.id);
       await new Promise(resolve => setTimeout(resolve, 800));
+      setOpenPositions(prev => prev.filter(p => p.id !== position.id));
 
       const closedPosition: Position = {
         ...position,
@@ -843,6 +833,8 @@ const Positions = () => {
       permanentlyClosedIdsRef.current.delete(position.id);
       setClosingPositionId(null);
       setClosedSuccessId(null);
+    } finally {
+      closingIdRef.current = null;
     }
   };
 
@@ -1040,7 +1032,19 @@ const Positions = () => {
             </p>
           </div>
 
-          {/* Close button disabled — only Broker can close trades from admin panel */}
+          {showCloseButton && canCloseOwnTrade(position, user?.id) && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive"
+              aria-label={`Close ${position.symbol} position`}
+              title="Close position"
+              disabled={closingPositionId !== null || isClosedSuccess}
+              onClick={() => setClosePositionId(position.id)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
         {/* SL/TP strip */}
@@ -1393,8 +1397,6 @@ const Positions = () => {
           </div>
         )}
       </main>
-
-      {/* Bulk close bar removed — only Broker can close trades from admin panel */}
 
       {/* Close Position Confirmation Dialog */}
       <AlertDialog open={!!closePositionId} onOpenChange={() => setClosePositionId(null)}>
