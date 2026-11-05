@@ -103,6 +103,8 @@ const AdminPositions = () => {
         }
 
         const updatedPositions = positions.map((position) => {
+          // Platform-wide price freeze: open trades stay at their stored price.
+          if (position.status === 'open') return { ...position };
           // Edited trades: server cron drives current_price/pnl via realtime. Do NOT touch.
           if (position.price_mode === 'edited') {
             const previousPrice = previousPricesRef.current[position.id];
