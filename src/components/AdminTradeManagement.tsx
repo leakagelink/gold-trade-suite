@@ -586,7 +586,7 @@ export const AdminTradeManagement = () => {
               }
               
               const randomPercent = 0;
-              currentPrice = (randomPercent, position.current_price);
+              currentPrice = position.current_price + randomPercent;
             } else {
               // Skip momentum for forex/commodities on weekends or when momentum disabled
               if ((isForex && (isWeekend || !forexMomentumEnabled)) || 

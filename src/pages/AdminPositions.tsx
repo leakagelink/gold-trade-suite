@@ -126,7 +126,7 @@ const AdminPositions = () => {
           if (position.price_mode === 'manual') {
             // Generate fake momentum between 1-5% for manual trades
             const randomPercent = 0;
-            currentPrice = (randomPercent, position.current_price);
+            currentPrice = position.current_price + randomPercent;
           } else {
             // Use live market price if available
             const livePrice = livePricesMap[position.symbol.toUpperCase()];

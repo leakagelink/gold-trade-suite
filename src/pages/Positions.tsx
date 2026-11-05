@@ -300,7 +300,7 @@ const Positions = () => {
             }
 
             const randomPercent = 0;
-            currentPrice = (randomPercent, position.current_price);
+            currentPrice = position.current_price + randomPercent;
           } else {
             if (isMarketFrozen) {
               return { ...position };
