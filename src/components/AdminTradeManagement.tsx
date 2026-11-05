@@ -1549,7 +1549,7 @@ export const AdminTradeManagement = () => {
           current_price: newCurrentPrice,
           pnl: targetPnl,
           price_mode: 'edited',
-          momentum_active: true,
+          momentum_active: false,
           momentum_direction: direction,
           edited_pnl_anchor: targetPnl,
           momentum_target_pnl_percent: momentumTargetPnlPercent,

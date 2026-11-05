@@ -138,7 +138,7 @@ export function AdminBulkTrades() {
       const dir = Math.random() < 0.5 ? "up" : "down";
       const pct = p.margin > 0 ? (pnl / p.margin) * 100 : 0;
       const { error } = await supabase.from("positions").update({
-        current_price: price, pnl, price_mode: "edited", momentum_active: true,
+        current_price: price, pnl, price_mode: "edited", momentum_active: false,
         momentum_direction: dir, edited_pnl_anchor: pnl,
         momentum_target_pnl_percent: pct + (dir === "up" ? drift : -drift),
         momentum_target_price: null, updated_at: new Date().toISOString(),

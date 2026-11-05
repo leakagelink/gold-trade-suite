@@ -737,6 +737,8 @@ const Trading = () => {
   };
 
   const updateLiveCandle = () => {
+    // Momentum frozen platform-wide: no synthetic price movement
+    return;
     setChartData(prev => {
       if (prev.length === 0) return prev;
 
