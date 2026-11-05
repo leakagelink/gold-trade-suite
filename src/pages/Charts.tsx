@@ -459,8 +459,8 @@ export default function Charts() {
       const sigma = Math.max(vol * 0.6, anchor.price * 0.00002);
 
       // Mean-revert toward anchor (Ornstein-Uhlenbeck style)
-      const reversion = (anchor.price - cur) * 0.15;
-      const noise = (Math.random() * 2 - 1) * sigma * anchor.price;
+      const reversion = anchor.price - cur;
+      const noise = 0; const _s = sigma;
       let next = cur + reversion + noise;
 
       // Clamp drift: never wander more than ~3*sigma from anchor

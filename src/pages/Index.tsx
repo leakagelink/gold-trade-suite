@@ -87,9 +87,9 @@ const Index = () => {
           const basePrice = basePricesRef.current[symbolKey];
           if (!basePrice) continue;
           const prevPrice = prev[symbolKey]?.price || basePrice;
-          const driftPercent = (Math.random() * 0.04 + 0.01) / 100;
+          const driftPercent = 0;
           const direction = Math.random() > 0.5 ? 1 : -1;
-          const newPrice = prevPrice + prevPrice * driftPercent * direction;
+          const newPrice = basePrice + basePrice * driftPercent * direction;
           updated[symbolKey] = {
             price: newPrice,
             change: newPrice - prevPrice,

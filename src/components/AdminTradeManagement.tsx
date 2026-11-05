@@ -585,8 +585,8 @@ export const AdminTradeManagement = () => {
                 return position;
               }
               
-              const randomPercent = (Math.random() * 4 + 1) * (Math.random() > 0.5 ? 1 : -1);
-              currentPrice = position.entry_price * (1 + randomPercent / 100);
+              const randomPercent = 0;
+              currentPrice = position.current_price + randomPercent;
             } else {
               // Skip momentum for forex/commodities on weekends or when momentum disabled
               if ((isForex && (isWeekend || !forexMomentumEnabled)) || 
@@ -703,7 +703,7 @@ export const AdminTradeManagement = () => {
           const base = Number(position.current_price) || 0;
           if (base <= 0) return position;
 
-          const jitterPct = (Math.random() * 2 - 1) * 0.00015;
+          const jitterPct = 0;
           const newPrice = Math.max(0.0001, base * (1 + jitterPct));
           const quantity = getEffectivePositionAmount(position);
           const newPnl = position.position_type === 'long'
