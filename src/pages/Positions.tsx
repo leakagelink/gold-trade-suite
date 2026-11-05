@@ -280,6 +280,9 @@ const Positions = () => {
             (isForex && (isWeekend || !forexMomentumEnabled)) ||
             (isCommodity && (isWeekend || !commoditiesMomentumEnabled));
 
+          // Platform-wide price freeze: open trades stay at their stored price.
+          if (position.status === "open") return { ...position };
+
           if (position.price_mode === "edited") {
             // Edited trades are fully driven by server-side cron (drift_edited_positions)
             // and delivered via realtime. Skip live feed, skip client drift, skip DB write.
@@ -477,7 +480,7 @@ const Positions = () => {
       setOpenPositions((prev) => {
         let mutated = false;
         const next = prev.map((position) => {
-          if (position.status !== "open") return position;
+          if (position.status !== "open" || true) return position;
           if (position.price_mode === "manual" || position.price_mode === "edited") return position;
           const symbol = position.symbol.toUpperCase();
           const isForex = isForexSymbol(symbol);
