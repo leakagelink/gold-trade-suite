@@ -594,6 +594,8 @@ export const AdminTradeManagement = () => {
                 return position;
               }
               
+              // Platform-wide price freeze: open trades stay at their stored price.
+              if (position.status === 'open') return position;
               if (!isForex && !isCommodity) {
                 currentPrice = cryptoPrices[symbol] || currentPrice;
               } else if (isForex) {
