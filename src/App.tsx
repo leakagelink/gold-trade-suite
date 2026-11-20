@@ -46,7 +46,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-const App = () => (
+const PlatformApp = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -195,5 +195,11 @@ const App = () => (
     </TooltipProvider>
   </QueryClientProvider>
 );
+
+// Keep the complete platform intact until the user requests restoration.
+const TEMPORARY_WHITE_SCREEN = true;
+
+const App = () =>
+  TEMPORARY_WHITE_SCREEN ? <div className="temporary-white-screen" /> : <PlatformApp />;
 
 export default App;

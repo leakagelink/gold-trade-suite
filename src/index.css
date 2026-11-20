@@ -10,6 +10,7 @@ All colors MUST be HSL.
   :root {
     /* SkyFX — Light Premium: white base, navy + royal blue (from logo) */
     --background: 216 45% 98%;
+    --blank-screen-background: 0 0% 100%;
     --foreground: 222 60% 12%;
     --card: 0 0% 100%;
     --card-foreground: 222 60% 12%;
@@ -69,6 +70,18 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  html:has(.temporary-white-screen),
+  body:has(.temporary-white-screen) {
+    background: hsl(var(--blank-screen-background));
+    overflow: hidden;
+  }
+
+  .temporary-white-screen {
+    position: fixed;
+    inset: 0;
+    background: hsl(var(--blank-screen-background));
   }
 
   h1, h2, h3, h4, h5, h6, .font-display {
