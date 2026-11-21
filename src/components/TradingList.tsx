@@ -1,4 +1,5 @@
 import { TrendingUp, TrendingDown, Activity, type LucideIcon } from "lucide-react";
+import { PRICE_FREEZE } from "@/lib/priceFreeze";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef, useMemo } from "react";
 
@@ -57,6 +58,7 @@ const TradingList = ({ data }: TradingListProps) => {
     basePricesRef.current = { ...basePricesRef.current, ...initPrices };
 
     // Live momentum micro-fluctuations
+    if (PRICE_FREEZE) return;
     intervalRef.current = setInterval(() => {
       const newMomentum: Record<number, 'up' | 'down' | 'neutral'> = {};
       const newFluctuations: Record<number, number> = {};

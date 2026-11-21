@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { PRICE_FREEZE } from "@/lib/priceFreeze";
 import type { Candle } from "@/components/charts/TradingChart";
 
 const BINANCE_INTERVALS = new Set([
@@ -53,7 +54,7 @@ export function useBinanceKlineStream({ symbol, interval, enabled, onCandle, onT
     };
 
     const connect = () => {
-      if (closed) return;
+      if (closed || PRICE_FREEZE) return;
       const ws = new WebSocket(url);
       wsRef.current = ws;
 

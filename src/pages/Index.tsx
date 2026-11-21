@@ -1,4 +1,5 @@
 import { Seo } from "@/components/Seo";
+import { PRICE_FREEZE } from "@/lib/priceFreeze";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -101,8 +102,8 @@ const Index = () => {
     };
 
     fetchCryptoPrices().then(() => applyMomentum());
-    const baseInterval = setInterval(fetchCryptoPrices, 60000);
-    const momentumInterval = setInterval(applyMomentum, 2000);
+    const baseInterval = setInterval(() => { if (!PRICE_FREEZE) fetchCryptoPrices(); }, 60000);
+    const momentumInterval = setInterval(() => { if (!PRICE_FREEZE) applyMomentum(); }, 2000);
     return () => {
       clearInterval(baseInterval);
       clearInterval(momentumInterval);

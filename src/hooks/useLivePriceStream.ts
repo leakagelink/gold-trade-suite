@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { PRICE_FREEZE } from "@/lib/priceFreeze";
 
 interface Options {
   symbol: string;
@@ -24,7 +25,7 @@ export function useLivePriceStream({ symbol, enabled, onPrice }: Options) {
   }, [onPrice]);
 
   useEffect(() => {
-    if (!enabled || !symbol) return;
+    if (PRICE_FREEZE || !enabled || !symbol) return;
 
     const base = import.meta.env.VITE_SUPABASE_URL as string | undefined;
     if (!base) return;

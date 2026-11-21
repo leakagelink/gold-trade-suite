@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { PRICE_FREEZE } from "@/lib/priceFreeze";
 import { Seo } from "@/components/Seo";
 import { supabase } from "@/integrations/supabase/client";
 import { invokeForexData, invokeCommoditiesData } from "@/lib/forexCache";
@@ -186,6 +187,7 @@ const Dashboard = () => {
       
       // Auto-refresh every 30 seconds for crypto + forex (skip frozen markets)
       const refreshInterval = setInterval(() => {
+        if (PRICE_FREEZE) return;
         fetchCryptoData(true);
         if (!forexFrozenRef.current) fetchForexData(true);
         if (!commoditiesFrozenRef.current) fetchCommoditiesData(true);
@@ -193,6 +195,7 @@ const Dashboard = () => {
 
       // Faster commodities-only refresh (every 15s) so the table stays live
       const commoditiesInterval = setInterval(() => {
+        if (PRICE_FREEZE) return;
         if (!commoditiesFrozenRef.current) fetchCommoditiesData(true);
       }, 15000);
 

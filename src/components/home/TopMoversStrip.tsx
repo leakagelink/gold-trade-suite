@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { PRICE_FREEZE } from "@/lib/priceFreeze";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, Flame } from "lucide-react";
@@ -46,7 +47,7 @@ export const TopMoversStrip = ({ compact = false }: TopMoversStripProps) => {
       }
     };
     fetchMovers();
-    const i = setInterval(fetchMovers, 60000);
+    const i = setInterval(() => { if (!PRICE_FREEZE) fetchMovers(); }, 60000);
     return () => clearInterval(i);
   }, []);
 

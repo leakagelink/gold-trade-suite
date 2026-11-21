@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { PRICE_FREEZE } from "@/lib/priceFreeze";
 import { useBinanceKlineStream } from "@/hooks/useBinanceKlineStream";
 import { useLivePriceStream } from "@/hooks/useLivePriceStream";
 import {
@@ -302,7 +303,7 @@ export default function Charts() {
     setLoading(true);
     // Debounce rapid switches (timeframe spam, symbol changes)
     const debounce = setTimeout(load, 120);
-    const id = setInterval(load, 30_000);
+    const id = setInterval(() => { if (!PRICE_FREEZE) load(); }, 30_000);
     return () => {
       cancelled = true;
       clearTimeout(debounce);

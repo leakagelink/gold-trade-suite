@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { PRICE_FREEZE } from "@/lib/priceFreeze";
 
 /**
  * Premium animated trading background for the hero section.
@@ -16,7 +17,7 @@ const HeroTradingAnimation = () => {
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), 900);
+    const id = setInterval(() => { if (!PRICE_FREEZE) setTick((t) => t + 1); }, 900);
     return () => clearInterval(id);
   }, []);
 

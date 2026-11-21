@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { PRICE_FREEZE } from "@/lib/priceFreeze";
 import { useNavigate } from "react-router-dom";
 
 const SYMBOLS = ["BTC", "ETH", "BNB", "SOL", "XRP", "DOGE", "ADA", "LTC", "TRX", "AVAX"];
@@ -23,7 +24,7 @@ const TickerTape = () => {
           const sym = String(d.s).replace("USDT", "");
           const p = parseFloat(d.c);
           const o = parseFloat(d.o);
-          setTicks((prev) => ({ ...prev, [sym]: { p, c: o ? ((p - o) / o) * 100 : 0 } }));
+          setTicks((prev) => (PRICE_FREEZE && prev[sym] ? prev : { ...prev, [sym]: { p, c: o ? ((p - o) / o) * 100 : 0 } }));
         } catch { /* ignore */ }
       };
       ws.onclose = () => { if (!closed) retry = setTimeout(connect, 4000); };
