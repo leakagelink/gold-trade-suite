@@ -919,6 +919,7 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: number
       }
+      admin_delete_deposit: { Args: { p_deposit_id: string }; Returns: Json }
       admin_delete_position: {
         Args: { p_position_id: string }
         Returns: undefined

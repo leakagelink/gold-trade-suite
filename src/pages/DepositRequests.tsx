@@ -3,10 +3,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, X, RefreshCw, Lock, Clock, CheckCircle, XCircle } from "lucide-react";
+import { Check, X, RefreshCw, Lock, Clock, CheckCircle, XCircle, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { DeleteConfirmDialog, type DeleteRecord } from "@/components/DeleteConfirmDialog";
 import logo from "@/assets/logo.png";
 import {
   Table,

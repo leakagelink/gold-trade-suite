@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AlertTriangle, Loader2 } from "lucide-react";
+import { getDepositDeletionEffects } from "@/lib/depositDeletion";
 
 export interface DeleteRecord {
   type: "deposit" | "withdrawal";
@@ -38,9 +39,13 @@ export const DeleteConfirmDialog = ({ open, onOpenChange, record, onConfirm }: P
 
   if (!record) return null;
 
-  const title = record.type === "deposit" ? "Delete deposit record?" : "Delete withdrawal record?";
-  const typeBadge = record.type === "deposit" ? "Deposit" : "Withdrawal";
-  const reasonValid = reason.trim().length >= 3;
+  const isPermanentDeposit = record.type === "deposit";
+  const deletionEffects = isPermanentDeposit
+    ? getDepositDeletionEffects(record.status || "")
+    : null;
+  const title = isPermanentDeposit ? "Permanently delete deposit?" : "Delete withdrawal record?";
+  const typeBadge = isPermanentDeposit ? "Deposit" : "Withdrawal";
+  const reasonValid = isPermanentDeposit || reason.trim().length >= 3;
 
   const handleConfirm = async () => {
     if (!reasonValid) return;
@@ -60,8 +65,20 @@ export const DeleteConfirmDialog = ({ open, onOpenChange, record, onConfirm }: P
             <AlertTriangle className="h-5 w-5 text-destructive" />
             {title}
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            Record will be moved to <strong>Trash</strong> (recoverable). This action is logged in the Audit Log.
+          <AlertDialogDescription asChild>
+            <div className="space-y-2">
+              {isPermanentDeposit ? (
+                <>
+                  <p>The request, linked wallet history and deposit audit entries will be permanently removed from every panel.</p>
+                  <p><strong>The available wallet balance will not change.</strong> This action cannot be undone.</p>
+                  {deletionEffects?.releasesLockedBalance && (
+                    <p>The locked amount for this request will also be released.</p>
+                  )}
+                </>
+              ) : (
+                <p>Record will be moved to <strong>Trash</strong> (recoverable). This action is logged in the Audit Log.</p>
+              )}
+            </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -117,20 +134,22 @@ export const DeleteConfirmDialog = ({ open, onOpenChange, record, onConfirm }: P
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="delete-reason">
-            Reason <span className="text-destructive">*</span>
-            <span className="text-xs text-muted-foreground ml-2">(min 3 chars, saved in audit log)</span>
-          </Label>
-          <Textarea
-            id="delete-reason"
-            placeholder="e.g. Duplicate entry, user requested removal, test record cleanup…"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            rows={3}
-            disabled={submitting}
-          />
-        </div>
+        {!isPermanentDeposit && (
+          <div className="space-y-2">
+            <Label htmlFor="delete-reason">
+              Reason <span className="text-destructive">*</span>
+              <span className="text-xs text-muted-foreground ml-2">(min 3 chars, saved in audit log)</span>
+            </Label>
+            <Textarea
+              id="delete-reason"
+              placeholder="e.g. Duplicate entry, user requested removal, test record cleanup…"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              rows={3}
+              disabled={submitting}
+            />
+          </div>
+        )}
 
         <AlertDialogFooter>
           <AlertDialogCancel disabled={submitting}>Cancel</AlertDialogCancel>
@@ -140,7 +159,7 @@ export const DeleteConfirmDialog = ({ open, onOpenChange, record, onConfirm }: P
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
             {submitting ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : null}
-            Move to Trash
+            {isPermanentDeposit ? "Delete Permanently" : "Move to Trash"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

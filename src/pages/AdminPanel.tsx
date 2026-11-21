@@ -635,42 +635,56 @@ const AdminPanel = () => {
     setDeleteDialogOpen(true);
   };
 
-  // Actual mutation invoked by the dialog after user confirms with a reason
+  // Actual mutation invoked by the dialog after confirmation
   const performDeleteConfirmed = async (reason: string) => {
     if (!deleteDialogRecord) return;
     const { type, id } = deleteDialogRecord;
-    const table = type === "deposit" ? "deposit_requests" : "withdrawal_requests";
+
     try {
-      const source: any = type === "deposit"
-        ? depositRequests.find(x => x.id === id)
-        : withdrawalRequests.find(x => x.id === id);
+      if (type === "deposit") {
+        const { error } = await supabase.rpc("admin_delete_deposit", {
+          p_deposit_id: id,
+        });
+        if (error) throw error;
+
+        toast({
+          title: "Deposit permanently deleted",
+          description: "Request and linked deposit history removed. Wallet balance was not changed.",
+        });
+        setDeleteDialogOpen(false);
+        setDeleteDialogRecord(null);
+        fetchAllData();
+        return;
+      }
+
+      const source = withdrawalRequests.find(x => x.id === id);
       const { data: { user } } = await supabase.auth.getUser();
       const { error } = await supabase
-        .from(table)
+        .from("withdrawal_requests")
         .update({ deleted_at: new Date().toISOString(), deleted_by: user?.id ?? null })
         .eq("id", id);
       if (error) throw error;
       await writeAuditLog({
         action: "soft_delete",
-        target_table: table,
+        target_table: "withdrawal_requests",
         target_id: id,
         target_user_id: source?.user_id ?? null,
         reason,
-        metadata: type === "deposit"
-          ? { amount: source?.amount, currency: source?.currency, status: source?.status }
-          : { amount: source?.amount, currency: source?.currency, status: source?.status, method: source?.withdrawal_method },
+        metadata: {
+          amount: source?.amount,
+          currency: source?.currency,
+          status: source?.status,
+          method: source?.withdrawal_method,
+        },
       });
       toast({
         title: "Moved to trash",
-        description: `${type === "deposit" ? "Deposit" : "Withdrawal"} archived. You can undo within 10 seconds.`,
+        description: "Withdrawal archived. You can undo within 10 seconds.",
         duration: 10000,
         action: (
           <ToastAction
             altText="Undo delete"
-            onClick={() => {
-              if (type === "deposit") handleRestoreDeposit(id, { silent: true });
-              else handleRestoreWithdrawal(id, { silent: true });
-            }}
+            onClick={() => handleRestoreWithdrawal(id, { silent: true })}
           >
             Undo
           </ToastAction>

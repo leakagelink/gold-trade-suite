@@ -29,6 +29,13 @@
       "when": 1793849138684,
       "tag": "0003_freeze_momentum",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795241802957,
+      "tag": "0004_admin_permanent_deposit_deletion",
+      "breakpoints": true
     }
   ]
 }
