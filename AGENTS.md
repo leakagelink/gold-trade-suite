@@ -1,9 +1,5 @@
 # Project Technical Decisions
 
-## Temporary blank screen
-Keep temporary white-screen mode at the App root, bypassing all routes and providers while retaining the platform for restoration.
-Why: every URL shows the same empty screen without mounting trading views or deleting existing functionality.
-
 ## User trade settlement
 User close controls check ownership and open status, then use the atomic `user_close_trade` RPC without forced-loss settlement; the server validates ownership and prevents duplicate wallet credits.
 Why: users can close their own positions while wallet settlement stays transactional and permission-checked.
