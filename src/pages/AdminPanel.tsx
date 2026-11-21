@@ -593,7 +593,7 @@ const AdminPanel = () => {
     }
   };
 
-  // Open the rich confirm dialog for deposit deletion
+  // Open the rich confirm dialog for permanent deposit deletion
   const handleDeleteDeposit = (depositId: string) => {
     const d = depositRequests.find(x => x.id === depositId);
     if (!d) return;
@@ -1731,7 +1731,7 @@ const AdminPanel = () => {
                                   </Button>
                                 </>
                               )}
-                              {request.deleted_at ? (
+                              {request.deleted_at && (
                                 <Button
                                   size="sm"
                                   variant="outline"
@@ -1741,16 +1741,16 @@ const AdminPanel = () => {
                                   <RefreshCw className="h-4 w-4 mr-1" />
                                   Restore
                                 </Button>
-                              ) : (
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => handleDeleteDeposit(request.id)}
-                                  title="Move to trash"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
                               )}
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleDeleteDeposit(request.id)}
+                                title="Delete permanently"
+                              >
+                                <Trash2 className="h-4 w-4 mr-1" />
+                                Delete
+                              </Button>
                             </div>
                           </TableCell>
 

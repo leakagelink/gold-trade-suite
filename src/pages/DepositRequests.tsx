@@ -26,6 +26,8 @@ const DepositRequests = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [exchangeRate, setExchangeRate] = useState(0.012);
   const [activeTab, setActiveTab] = useState<string>("all");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteDialogRecord, setDeleteDialogRecord] = useState<DeleteRecord | null>(null);
 
   const checkAdminStatus = async () => {
     try {
@@ -189,6 +191,47 @@ const DepositRequests = () => {
       });
 
       fetchRequests();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDelete = (request: any) => {
+    setDeleteDialogRecord({
+      type: "deposit",
+      id: request.id,
+      userName: request.profiles?.full_name,
+      userEmail: request.profiles?.email,
+      amount: request.amount,
+      currency: request.currency,
+      status: request.status,
+      method: request.payment_method,
+      reference: request.transaction_id,
+      createdAt: request.created_at,
+    });
+    setDeleteDialogOpen(true);
+  };
+
+  const performDelete = async () => {
+    if (!deleteDialogRecord) return;
+
+    try {
+      const { error } = await supabase.rpc("admin_delete_deposit", {
+        p_deposit_id: deleteDialogRecord.id,
+      });
+      if (error) throw error;
+
+      toast({
+        title: "Deposit permanently deleted",
+        description: "Request and linked deposit history removed. Wallet balance was not changed.",
+      });
+      setDeleteDialogOpen(false);
+      setDeleteDialogRecord(null);
+      await fetchRequests();
     } catch (error: any) {
       toast({
         title: "Error",
@@ -377,26 +420,37 @@ const DepositRequests = () => {
                       {new Date(request.created_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
-                      {(request.status === "pending" || request.status === "locked") && (
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            onClick={() => handleApprove(request.id)}
-                            className="bg-success hover:bg-success"
-                          >
-                            <Check className="h-4 w-4 mr-1" />
-                            {request.status === "locked" ? "Verify & Approve" : "Approve"}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => handleReject(request.id)}
-                          >
-                            <X className="h-4 w-4 mr-1" />
-                            Reject
-                          </Button>
-                        </div>
-                      )}
+                      <div className="flex gap-2 flex-wrap">
+                        {(request.status === "pending" || request.status === "locked") && (
+                          <>
+                            <Button
+                              size="sm"
+                              onClick={() => handleApprove(request.id)}
+                              className="bg-success hover:bg-success"
+                            >
+                              <Check className="h-4 w-4 mr-1" />
+                              {request.status === "locked" ? "Verify & Approve" : "Approve"}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleReject(request.id)}
+                            >
+                              <X className="h-4 w-4 mr-1" />
+                              Reject
+                            </Button>
+                          </>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleDelete(request)}
+                          title="Delete permanently"
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Delete
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -405,6 +459,16 @@ const DepositRequests = () => {
           )}
         </Card>
       </main>
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={(open) => {
+          setDeleteDialogOpen(open);
+          if (!open) setDeleteDialogRecord(null);
+        }}
+        record={deleteDialogRecord}
+        onConfirm={performDelete}
+      />
     </div>
   );
 };
