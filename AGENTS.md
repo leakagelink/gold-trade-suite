@@ -1,5 +1,9 @@
 # Project Technical Decisions
 
+## Android app distribution
+Use the Mobile App release manager for APK publishing and `app_download_url` for user discovery; use a short-lived storage download URL with an attachment filename for stored APKs.
+Why: a single publishing screen prevents conflicting app links and attachment responses reliably download cross-origin files.
+
 ## User trade settlement
 User close controls check ownership and open status, then use the atomic `user_close_trade` RPC without forced-loss settlement; the server validates ownership and prevents duplicate wallet credits.
 Why: users can close their own positions while wallet settlement stays transactional and permission-checked.

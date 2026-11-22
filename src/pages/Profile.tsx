@@ -24,6 +24,7 @@ import { supabase } from "@/integrations/supabase/client";
 import PageShell from "@/components/PageShell";
 import PaymentMethodsManager from "@/components/PaymentMethodsManager";
 import UserOffers from "@/components/UserOffers";
+import { downloadApp } from "@/lib/appDownload";
 
 interface Profile {
   id: string;
@@ -66,6 +67,7 @@ const Profile = () => {
   const [fullName, setFullName] = useState("");
   const [mobile, setMobile] = useState("");
   const [appDownloadUrl, setAppDownloadUrl] = useState<string | null>(null);
+  const [downloadingApp, setDownloadingApp] = useState(false);
   const [tradeHistory, setTradeHistory] = useState<TradeHistoryItem[]>([]);
 
   useEffect(() => {
@@ -92,7 +94,7 @@ const Profile = () => {
 
       const { data: appUrlSetting } = await supabase
         .from("payment_settings").select("setting_value").eq("setting_key", "app_download_url").maybeSingle();
-      if (appUrlSetting?.setting_value) setAppDownloadUrl(appUrlSetting.setting_value);
+      setAppDownloadUrl(appUrlSetting?.setting_value || null);
 
       const { data: closedPositions } = await supabase
         .from("positions")
@@ -418,26 +420,32 @@ const Profile = () => {
           </div>
 
           {/* Native App Callout */}
-          <div className="p-4 bg-gold/5 border border-gold/20 rounded-2xl flex items-center justify-between gap-3 animate-fade-in">
+          <div className="p-4 bg-accent/5 border border-accent/20 rounded-lg flex flex-wrap items-center justify-between gap-3 animate-fade-in">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-gold flex items-center justify-center text-gold-foreground shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground shrink-0">
                 <Smartphone className="w-4 h-4" />
               </div>
               <div className="min-w-0">
-                <p className="text-[11px] font-bold text-primary truncate">Download Mobile App</p>
-                <p className="text-[9px] text-muted-foreground truncate">
-                  {appDownloadUrl ? "Tap to download APK" : "Available soon on Android"}
+                <p className="text-sm font-bold text-primary">SkyFX Android App</p>
+                <p className="text-xs text-muted-foreground">
+                  {appDownloadUrl ? "Android · APK" : "Available soon on Android"}
                 </p>
               </div>
             </div>
             {appDownloadUrl ? (
               <Button
                 size="sm"
-                onClick={() => window.open(appDownloadUrl, "_blank")}
-                className="h-8 px-3 bg-gold hover:bg-gold/90 text-gold-foreground rounded-lg text-[10px] font-bold shrink-0"
+                disabled={downloadingApp}
+                onClick={async () => {
+                  setDownloadingApp(true);
+                  try { await downloadApp(appDownloadUrl); }
+                  catch { toast.error("Could not download the app. Please try again."); }
+                  finally { setDownloadingApp(false); }
+                }}
+                className="shrink-0"
               >
                 <Download className="w-3 h-3 mr-1" />
-                Get
+                {downloadingApp ? "Preparing..." : "Download APK"}
               </Button>
             ) : (
               <span className="text-[9px] font-bold text-gold bg-gold/10 px-2 py-1 rounded-md shrink-0">

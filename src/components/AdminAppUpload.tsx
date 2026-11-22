@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Smartphone, Upload, Download, Trash2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { downloadApp, validateApk } from "@/lib/appDownload";
 
 interface AppRelease {
   id: string;
@@ -35,6 +36,8 @@ export default function AdminAppUpload() {
   const [version, setVersion] = useState("");
   const [notes, setNotes] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   const fetchReleases = async () => {
     setLoading(true);
@@ -52,26 +55,19 @@ export default function AdminAppUpload() {
   }, []);
 
   const syncDownloadSetting = async (url: string) => {
-    const { data: existing } = await supabase
-      .from("payment_settings")
-      .select("id")
-      .eq("setting_key", "app_download_url")
-      .maybeSingle();
-    if (existing) {
-      await supabase
-        .from("payment_settings")
-        .update({ setting_value: url, updated_by: user?.id, updated_at: new Date().toISOString() })
-        .eq("id", existing.id);
-    } else {
-      await supabase
-        .from("payment_settings")
-        .insert({ setting_key: "app_download_url", setting_value: url, updated_by: user?.id });
-    }
+    const { error } = await supabase.from("payment_settings").upsert({
+      setting_key: "app_download_url", setting_value: url,
+      updated_by: user?.id, updated_at: new Date().toISOString(),
+    }, { onConflict: "setting_key" });
+    if (error) throw error;
   };
 
   const handleUpload = async () => {
     if (!file) return toast.error("Please choose an APK file");
+    const validationError = validateApk(file);
+    if (validationError) return toast.error(validationError);
     if (!version.trim()) return toast.error("Please enter a version");
+    if (!user) return toast.error("Please sign in again");
 
     try {
       setUploading(true);
@@ -86,27 +82,27 @@ export default function AdminAppUpload() {
       const { data: pub } = supabase.storage.from("app-releases").getPublicUrl(path);
       const publicUrl = pub.publicUrl;
 
-      // Deactivate previous releases
-      await supabase.from("app_releases").update({ is_active: false }).eq("is_active", true);
-
-      const { error: insErr } = await supabase.from("app_releases").insert({
+      const { data: inserted, error: insErr } = await supabase.from("app_releases").insert({
         version: version.trim(),
         file_url: publicUrl,
         file_path: path,
         file_size: file.size,
         release_notes: notes.trim() || null,
-        is_active: true,
+        is_active: false,
         uploaded_by: user?.id,
-      });
-      if (insErr) throw insErr;
-
-      await syncDownloadSetting(publicUrl);
+      }).select("*").single();
+      if (insErr) {
+        await supabase.storage.from("app-releases").remove([path]);
+        throw insErr;
+      }
+      if (!inserted) throw new Error("Release could not be saved");
+      await activateRelease(inserted as AppRelease);
 
       toast.success("App uploaded successfully");
       setVersion("");
       setNotes("");
       setFile(null);
-      (document.getElementById("apk-file-input") as HTMLInputElement | null)!.value = "";
+      if (fileInput.current) fileInput.current.value = "";
       fetchReleases();
     } catch (e: any) {
       toast.error(e.message || "Upload failed");
@@ -115,22 +111,44 @@ export default function AdminAppUpload() {
     }
   };
 
-  const handleSetActive = async (r: AppRelease) => {
-    await supabase.from("app_releases").update({ is_active: false }).eq("is_active", true);
-    const { error } = await supabase.from("app_releases").update({ is_active: true }).eq("id", r.id);
-    if (error) return toast.error(error.message);
+  const activateRelease = async (r: AppRelease) => {
+    // Publish the download link first; a failed upload never removes the previous APK.
     await syncDownloadSetting(r.file_url);
-    toast.success(`Version ${r.version} is now active`);
-    fetchReleases();
+    const { error } = await supabase.from("app_releases").update({ is_active: true }).eq("id", r.id);
+    if (error) throw error;
+    const { error: deactivateError } = await supabase.from("app_releases")
+      .update({ is_active: false }).eq("is_active", true).neq("id", r.id);
+    if (deactivateError) throw deactivateError;
+  };
+
+  const handleSetActive = async (r: AppRelease) => {
+    setBusyId(r.id);
+    try {
+      await activateRelease(r);
+      toast.success(`Version ${r.version} is now active`);
+      await fetchReleases();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not publish release");
+    } finally { setBusyId(null); }
   };
 
   const handleDelete = async (r: AppRelease) => {
     if (!confirm(`Delete version ${r.version}?`)) return;
-    await supabase.storage.from("app-releases").remove([r.file_path]);
-    const { error } = await supabase.from("app_releases").delete().eq("id", r.id);
-    if (error) return toast.error(error.message);
-    toast.success("Release deleted");
-    fetchReleases();
+    setBusyId(r.id);
+    try {
+      const { data: setting, error: settingError } = await supabase.from("payment_settings")
+        .select("setting_value").eq("setting_key", "app_download_url").maybeSingle();
+      if (settingError) throw settingError;
+      if (setting?.setting_value === r.file_url) await syncDownloadSetting("");
+      const { error: storageError } = await supabase.storage.from("app-releases").remove([r.file_path]);
+      if (storageError) throw storageError;
+      const { error } = await supabase.from("app_releases").delete().eq("id", r.id);
+      if (error) throw error;
+      toast.success("Release deleted");
+      await fetchReleases();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not delete release");
+    } finally { setBusyId(null); }
   };
 
   return (
@@ -142,7 +160,7 @@ export default function AdminAppUpload() {
             Upload Mobile App (APK)
           </CardTitle>
           <CardDescription>
-            Upload the Android APK so users can download it from their profile and the sign-in page.
+            SkyFX Android
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -160,10 +178,13 @@ export default function AdminAppUpload() {
               <Label htmlFor="apk-file-input">APK File</Label>
               <Input
                 id="apk-file-input"
+                ref={fileInput}
                 type="file"
+                disabled={uploading}
                 accept=".apk,application/vnd.android.package-archive"
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
               />
+              <p className="text-xs text-muted-foreground">.apk · Maximum 100 MB{file ? ` · ${formatSize(file.size)}` : ""}</p>
             </div>
           </div>
           <div className="space-y-2">
@@ -176,7 +197,7 @@ export default function AdminAppUpload() {
               rows={3}
             />
           </div>
-          <Button onClick={handleUpload} disabled={uploading} className="w-full">
+          <Button onClick={handleUpload} disabled={uploading || busyId !== null} className="w-full">
             <Upload className="h-4 w-4 mr-2" />
             {uploading ? "Uploading..." : "Upload & Publish"}
           </Button>
@@ -218,15 +239,15 @@ export default function AdminAppUpload() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <Button size="sm" variant="outline" onClick={() => window.open(r.file_url, "_blank")}>
+                    <Button size="sm" variant="outline" onClick={() => downloadApp(r.file_url).catch(() => toast.error("App download failed"))}>
                       <Download className="h-3.5 w-3.5 mr-1" /> Download
                     </Button>
                     {!r.is_active && (
-                      <Button size="sm" variant="secondary" onClick={() => handleSetActive(r)}>
+                      <Button size="sm" variant="secondary" disabled={uploading || busyId !== null} onClick={() => handleSetActive(r)}>
                         Set Active
                       </Button>
                     )}
-                    <Button size="sm" variant="destructive" onClick={() => handleDelete(r)}>
+                    <Button size="sm" variant="destructive" aria-label={`Delete version ${r.version}`} disabled={uploading || busyId !== null} onClick={() => handleDelete(r)}>
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>

@@ -138,7 +138,6 @@ const AdminPanel = () => {
   });
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [uploadingQr, setUploadingQr] = useState(false);
-  const [uploadingApp, setUploadingApp] = useState(false);
   
   // Deposit offer settings state
   const [depositOfferSettings, setDepositOfferSettings] = useState({
@@ -989,7 +988,6 @@ const AdminPanel = () => {
         { setting_key: "ifsc_code", setting_value: paymentSettings.ifsc },
         { setting_key: "bank_name", setting_value: paymentSettings.bankName },
         { setting_key: "exchange_rate", setting_value: (1 / parseFloat(paymentSettings.exchangeRate || "96")).toFixed(8) },
-        { setting_key: "app_download_url", setting_value: paymentSettings.appDownloadUrl },
        { setting_key: "max_leverage", setting_value: paymentSettings.maxLeverage || "100" },
        { setting_key: "brokerage_percentage", setting_value: paymentSettings.brokeragePercentage || "0.05" },
         // Deposit offer settings
@@ -2202,120 +2200,17 @@ const AdminPanel = () => {
                   </div>
                 </div>
 
-                {/* Mobile App Upload Settings */}
+                {/* Mobile App publishing is managed in one place. */}
                 <div className="space-y-4 border-t pt-6">
                   <h3 className="text-lg font-semibold flex items-center gap-2">
-                    <Smartphone className="h-5 w-5 text-purple-500" />
-                    Mobile App Settings
+                    <Smartphone className="h-5 w-5 text-primary" />
+                    Mobile App
                   </h3>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label>Upload APK/App File</Label>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          type="file"
-                          accept=".apk,.ipa,.zip"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (!file) return;
-                            
-                            if (file.size > 100 * 1024 * 1024) {
-                              toast({
-                                title: "Error",
-                                description: "File size must be less than 100MB",
-                                variant: "destructive",
-                              });
-                              return;
-                            }
-                            
-                            setUploadingApp(true);
-                            try {
-                              const fileExt = file.name.split('.').pop();
-                              const fileName = `growfxtrade-app.${fileExt}`;
-                              
-                              // Delete old file if exists
-                              await supabase.storage.from('app-files').remove([fileName]);
-                              
-                              const { data, error } = await supabase.storage
-                                .from('app-files')
-                                .upload(fileName, file, { upsert: true });
-                              
-                              if (error) throw error;
-                              
-                              const { data: urlData } = supabase.storage
-                                .from('app-files')
-                                .getPublicUrl(fileName);
-                              
-                              const newAppUrl = urlData.publicUrl;
-                              setPaymentSettings({ ...paymentSettings, appDownloadUrl: newAppUrl });
-                              
-                              // Auto-save the URL to database
-                              const { data: { user } } = await supabase.auth.getUser();
-                              if (user) {
-                                await supabase
-                                  .from("payment_settings")
-                                  .upsert({
-                                    setting_key: "app_download_url",
-                                    setting_value: newAppUrl,
-                                    updated_by: user.id,
-                                  }, {
-                                    onConflict: 'setting_key'
-                                  });
-                              }
-                              
-                              toast({
-                                title: "Success",
-                                description: "App file uploaded and saved successfully",
-                              });
-                            } catch (error: any) {
-                              toast({
-                                title: "Error",
-                                description: error.message,
-                                variant: "destructive",
-                              });
-                            } finally {
-                              setUploadingApp(false);
-                            }
-                          }}
-                          className="cursor-pointer"
-                        />
-                        {uploadingApp && <Loader2 className="h-4 w-4 animate-spin" />}
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        Upload APK file for Android users (max 100MB)
-                      </p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="appDownloadUrl">Or Enter Direct Download URL</Label>
-                      <Input
-                        id="appDownloadUrl"
-                        placeholder="https://example.com/app.apk"
-                        value={paymentSettings.appDownloadUrl}
-                        onChange={(e) =>
-                          setPaymentSettings({ ...paymentSettings, appDownloadUrl: e.target.value })
-                        }
-                      />
-                    </div>
-                    
-                    {paymentSettings.appDownloadUrl && (
-                      <div className="p-3 bg-purple-600/10 border border-purple-600/20 rounded-lg flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Download className="h-4 w-4 text-purple-500" />
-                          <span className="text-sm">App download link is active</span>
-                        </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => window.open(paymentSettings.appDownloadUrl, '_blank')}
-                        >
-                          Test Download
-                        </Button>
-                      </div>
-                    )}
-                  </div>
+                  <Button variant="outline" onClick={() => setActiveTab("app")}>
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Android App
+                  </Button>
                 </div>
-
 
                 {/* Market Settings */}
                 <div className="space-y-4 border-t pt-6">
